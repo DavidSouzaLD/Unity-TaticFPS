@@ -73,22 +73,13 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""TurnLeft"",
-                    ""type"": ""Button"",
+                    ""name"": ""Turn"",
+                    ""type"": ""Value"",
                     ""id"": ""0f966f47-4a76-4d61-b397-26829d08400c"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Analog"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""TurnRight"",
-                    ""type"": ""Button"",
-                    ""id"": ""341edc34-9781-427f-8af6-d11a363af2fd"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""FireAuto"",
@@ -410,26 +401,37 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""5b94a016-c2f2-46ae-941a-77e443759bf0"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""name"": ""PC"",
+                    ""id"": ""708aba3c-b78d-44cd-8042-bd8bae7c70ed"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TurnRight"",
-                    ""isComposite"": false,
+                    ""action"": ""Turn"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""904e8fc9-0175-4ec7-a5e8-ab5eaa19d2fe"",
+                    ""name"": ""negative"",
+                    ""id"": ""4e8dd702-5f06-437d-9f5a-4d2424dd58d2"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TurnLeft"",
+                    ""action"": ""Turn"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""38c78594-127a-4cb2-af5d-70d3f0cfc7dd"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Turn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -465,8 +467,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Keys_Jump = m_Keys.FindAction("Jump", throwIfNotFound: true);
         m_Keys_Run = m_Keys.FindAction("Run", throwIfNotFound: true);
         m_Keys_Crouch = m_Keys.FindAction("Crouch", throwIfNotFound: true);
-        m_Keys_TurnLeft = m_Keys.FindAction("TurnLeft", throwIfNotFound: true);
-        m_Keys_TurnRight = m_Keys.FindAction("TurnRight", throwIfNotFound: true);
+        m_Keys_Turn = m_Keys.FindAction("Turn", throwIfNotFound: true);
         m_Keys_FireAuto = m_Keys.FindAction("FireAuto", throwIfNotFound: true);
         m_Keys_FireTap = m_Keys.FindAction("FireTap", throwIfNotFound: true);
         m_Keys_Aim = m_Keys.FindAction("Aim", throwIfNotFound: true);
@@ -543,8 +544,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Keys_Jump;
     private readonly InputAction m_Keys_Run;
     private readonly InputAction m_Keys_Crouch;
-    private readonly InputAction m_Keys_TurnLeft;
-    private readonly InputAction m_Keys_TurnRight;
+    private readonly InputAction m_Keys_Turn;
     private readonly InputAction m_Keys_FireAuto;
     private readonly InputAction m_Keys_FireTap;
     private readonly InputAction m_Keys_Aim;
@@ -566,8 +566,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Keys_Jump;
         public InputAction @Run => m_Wrapper.m_Keys_Run;
         public InputAction @Crouch => m_Wrapper.m_Keys_Crouch;
-        public InputAction @TurnLeft => m_Wrapper.m_Keys_TurnLeft;
-        public InputAction @TurnRight => m_Wrapper.m_Keys_TurnRight;
+        public InputAction @Turn => m_Wrapper.m_Keys_Turn;
         public InputAction @FireAuto => m_Wrapper.m_Keys_FireAuto;
         public InputAction @FireTap => m_Wrapper.m_Keys_FireTap;
         public InputAction @Aim => m_Wrapper.m_Keys_Aim;
@@ -604,12 +603,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Crouch.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnCrouch;
-                @TurnLeft.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurnLeft;
-                @TurnLeft.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurnLeft;
-                @TurnLeft.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurnLeft;
-                @TurnRight.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurnRight;
-                @TurnRight.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurnRight;
-                @TurnRight.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurnRight;
+                @Turn.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurn;
+                @Turn.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurn;
+                @Turn.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurn;
                 @FireAuto.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireAuto;
                 @FireAuto.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireAuto;
                 @FireAuto.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireAuto;
@@ -665,12 +661,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
-                @TurnLeft.started += instance.OnTurnLeft;
-                @TurnLeft.performed += instance.OnTurnLeft;
-                @TurnLeft.canceled += instance.OnTurnLeft;
-                @TurnRight.started += instance.OnTurnRight;
-                @TurnRight.performed += instance.OnTurnRight;
-                @TurnRight.canceled += instance.OnTurnRight;
+                @Turn.started += instance.OnTurn;
+                @Turn.performed += instance.OnTurn;
+                @Turn.canceled += instance.OnTurn;
                 @FireAuto.started += instance.OnFireAuto;
                 @FireAuto.performed += instance.OnFireAuto;
                 @FireAuto.canceled += instance.OnFireAuto;
@@ -718,8 +711,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnTurnLeft(InputAction.CallbackContext context);
-        void OnTurnRight(InputAction.CallbackContext context);
+        void OnTurn(InputAction.CallbackContext context);
         void OnFireAuto(InputAction.CallbackContext context);
         void OnFireTap(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);

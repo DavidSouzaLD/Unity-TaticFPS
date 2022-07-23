@@ -2921,7 +2921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13a3036e52e2127488634d815af17a0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: 10
+  amount: 20
   smooth: 2
   resetSpeed: 5
   sensitivityX: 1
@@ -8720,7 +8720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c026c9e62d3c0644e8d9ab074f60aba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: 0.1
+  amount: 0.2
   smooth: 0.1
   resetSpeed: 5
   sensitivityX: 0.5

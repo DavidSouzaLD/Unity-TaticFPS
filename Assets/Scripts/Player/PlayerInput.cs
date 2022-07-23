@@ -146,19 +146,11 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
-    public bool TurnRight
+    public float Turn
     {
         get
         {
-            return _haveMap ? Map.Keys.TurnRight.ReadValue<float>() != 0 : false;
-        }
-    }
-
-    public bool TurnLeft
-    {
-        get
-        {
-            return _haveMap ? Map.Keys.TurnLeft.ReadValue<float>() != 0 : false;
+            return _haveMap ? Map.Keys.Turn.ReadValue<float>() : 0;
         }
     }
 

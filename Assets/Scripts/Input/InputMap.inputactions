@@ -51,22 +51,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TurnLeft",
-                    "type": "Button",
+                    "name": "Turn",
+                    "type": "Value",
                     "id": "0f966f47-4a76-4d61-b397-26829d08400c",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Analog",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TurnRight",
-                    "type": "Button",
-                    "id": "341edc34-9781-427f-8af6-d11a363af2fd",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "FireAuto",
@@ -388,26 +379,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "5b94a016-c2f2-46ae-941a-77e443759bf0",
-                    "path": "<Keyboard>/e",
+                    "name": "PC",
+                    "id": "708aba3c-b78d-44cd-8042-bd8bae7c70ed",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TurnRight",
-                    "isComposite": false,
+                    "action": "Turn",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "904e8fc9-0175-4ec7-a5e8-ab5eaa19d2fe",
+                    "name": "negative",
+                    "id": "4e8dd702-5f06-437d-9f5a-4d2424dd58d2",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TurnLeft",
+                    "action": "Turn",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "38c78594-127a-4cb2-af5d-70d3f0cfc7dd",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turn",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 },
                 {
                     "name": "",

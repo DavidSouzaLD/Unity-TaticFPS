@@ -176,6 +176,7 @@ public class WeaponSystem : MonoBehaviour
     private void AimUpdate()
     {
         bool _canAim = PlayerInput.Keys.Aim && Player.Camera.CursorLocked && !isReloading && !Player.isRunning;
+        Player.isAim = isAim;
 
         if (_canAim)
         {

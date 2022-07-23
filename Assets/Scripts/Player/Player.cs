@@ -41,6 +41,15 @@ public class Player : MonoBehaviour
     [SerializeField] private float groundHeightOffset = 0f;
     [SerializeField] private float groundRadiusOverride = 0f;
 
+    [Header("[Turn Settings]")]
+    [SerializeField] private Transform weaponTurnTransform;
+    [SerializeField] private Transform cameraTurnTransform;
+    [SerializeField] private float horizontalTurnAmount;
+    [SerializeField] private float cameraTurnTransformScale;
+    [SerializeField] private float turnSpeed;
+    Vector3 cameraTurnTransformStartPos;
+    Quaternion startTurnRot, cameraTurnTransformStartRot;
+
     [Header("[Animators Settings]")]
     [SerializeField] private Animator basicAnimator;
     [SerializeField] private Animator turnAnimator;
@@ -50,7 +59,7 @@ public class Player : MonoBehaviour
     #region Public Components/Info
 
     [HideInInspector]
-    public bool isWalking, isRunning, isCrouched, isJumping, isGrounded, isTurning;
+    public bool isWalking, isRunning, isCrouched, isJumping, isGrounded, isTurning, isAim;
 
     // Components
     [HideInInspector] public PlayerCamera Camera;
@@ -157,6 +166,11 @@ public class Player : MonoBehaviour
         // Starting values
         _startCameraHeight = Camera.transform.localPosition.y;
         _startCapsuleHeight = CapsuleCollider.height;
+
+        // Turn
+        startTurnRot = weaponTurnTransform.localRotation;
+        cameraTurnTransformStartPos = cameraTurnTransform.localPosition;
+        cameraTurnTransformStartRot = cameraTurnTransform.localRotation;
     }
 
     private void FixedUpdate()
@@ -304,10 +318,35 @@ public class Player : MonoBehaviour
 
         if (_canTurn)
         {
-            isTurning = PlayerInput.Keys.TurnRight || PlayerInput.Keys.TurnLeft;
-            turnAnimator.SetBool("RIGHT", PlayerInput.Keys.TurnRight);
-            turnAnimator.SetBool("LEFT", PlayerInput.Keys.TurnLeft);
-            Lock(LockType.BasicAnimator, "PLAYER_TURN", isTurning);
+            // Right
+            if (PlayerInput.Keys.Turn != 0)
+            {
+                isTurning = true;
+
+                Vector3 targetPos = new Vector3(horizontalTurnAmount * cameraTurnTransformScale * PlayerInput.Keys.Turn, 0f, 0f);
+                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, horizontalTurnAmount * -PlayerInput.Keys.Turn));
+
+                if (!isAim)
+                { // Weapon
+                    weaponTurnTransform.localRotation = Quaternion.Slerp(weaponTurnTransform.localRotation, targetRot, turnSpeed * Time.deltaTime);
+                    cameraTurnTransform.localRotation = Quaternion.Slerp(cameraTurnTransform.localRotation, cameraTurnTransformStartRot, turnSpeed * Time.deltaTime);
+                    cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, cameraTurnTransformStartPos, turnSpeed * Time.deltaTime);
+                }
+                else
+                { // Camera
+                    cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, targetPos, turnSpeed * Time.deltaTime);
+                    cameraTurnTransform.localRotation = Quaternion.Slerp(cameraTurnTransform.localRotation, targetRot, turnSpeed * Time.deltaTime);
+                    weaponTurnTransform.localRotation = Quaternion.Slerp(weaponTurnTransform.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+                }
+            }
+            else if (weaponTurnTransform.localRotation != startTurnRot || cameraTurnTransform.localRotation != cameraTurnTransformStartRot || cameraTurnTransform.localPosition != cameraTurnTransformStartPos)
+            {
+                isTurning = false;
+
+                weaponTurnTransform.localRotation = Quaternion.Slerp(weaponTurnTransform.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+                cameraTurnTransform.localRotation = Quaternion.Slerp(cameraTurnTransform.localRotation, cameraTurnTransformStartRot, turnSpeed * Time.deltaTime);
+                cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, cameraTurnTransformStartPos, turnSpeed * Time.deltaTime);
+            }
         }
     }
 
