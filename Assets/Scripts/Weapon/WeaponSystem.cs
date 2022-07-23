@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
@@ -258,15 +259,25 @@ public class WeaponSystem : MonoBehaviour
 
         if (_canFire)
         {
+            // Tracer
+            List<Vector3> positions = new List<Vector3>();
+            LineRenderer tracer = Instantiate(WeaponManager.TracerPrefab, firePoint.position, Quaternion.identity).GetComponent<LineRenderer>();
+            Tracer tracerScript = tracer.gameObject.GetComponent<Tracer>();
 
             Vector3 point1 = firePoint.position;
             Vector3 predictedBulletVelocity = firePoint.forward * maxRange;
             float stepSize = 0.01f;
 
+            // Tracer start position
+            positions.Add(point1);
+
             for (float step = 0f; step < 1; step += stepSize)
             {
                 predictedBulletVelocity += Physics.gravity * stepSize;
                 Vector3 point2 = point1 + predictedBulletVelocity * stepSize;
+
+                // Tracer positions
+                positions.Add(point2);
 
                 Ray ray = new Ray(point1, point2 - point1);
                 RaycastHit hit;
@@ -277,13 +288,18 @@ public class WeaponSystem : MonoBehaviour
                 {
                     if (hit.transform)
                     {
-                        StartCoroutine(DelayFire(((firePoint.position - hit.point).sqrMagnitude / bulletVelocity), hit));
+                        float distance = (firePoint.position - hit.point).sqrMagnitude;
+                        float time = distance / bulletVelocity;
+                        StartCoroutine(DelayFire(time, hit));
                         break;
                     }
                 }
 
                 point1 = point2;
             }
+
+            // Set tracer
+            tracerScript.pos = positions;
 
             RecoilEvent();
             AnimEvent("FIRE");
@@ -428,15 +444,6 @@ public class WeaponSystem : MonoBehaviour
                     Vector3 point2 = point1 + predictedBulletVelocity * stepSize;
 
                     Gizmos.DrawLine(point1, point2);
-
-                    Ray ray = new Ray(point1, point2 - point1);
-                    RaycastHit hit;
-
-                    if (Physics.Raycast(ray, out hit, (point2 - point1).magnitude))
-                    {
-                        Gizmos.color = Color.blue;
-                        Gizmos.DrawSphere(hit.point, 0.1f);
-                    }
 
                     point1 = point2;
                 }

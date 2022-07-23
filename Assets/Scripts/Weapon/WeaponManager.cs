@@ -11,6 +11,7 @@ public class WeaponManager : MonoBehaviour
 
     [Header("[Weapons Settings]")]
     public Impact[] Impacts;
+    public GameObject TracerPrefab;
 
     public Impact GetImpactWithTag(string _tag)
     {
