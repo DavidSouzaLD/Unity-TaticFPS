@@ -443,6 +443,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HouseTest1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 84c79a7e3f6e3d94d91ca5fe578e5406,
+        type: 3}
+      propertyPath: m_TagString
+      value: Concrete
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84c79a7e3f6e3d94d91ca5fe578e5406, type: 3}
 --- !u!1 &899037151 stripped
@@ -496,7 +501,7 @@ GameObject:
   - component: {fileID: 1109625427}
   m_Layer: 0
   m_Name: Targets
-  m_TagString: Untagged
+  m_TagString: Concrete
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -800,7 +805,7 @@ GameObject:
   - component: {fileID: 3469287837939374326}
   m_Layer: 3
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Concrete
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -876,6 +881,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2967566519240809002, guid: 90beb59f2761e7941b98f77cfe0e6aa9,
+        type: 3}
+      propertyPath: bulletVelocity
+      value: 15000
+      objectReference: {fileID: 0}
     - target: {fileID: 7979431165998472491, guid: 90beb59f2761e7941b98f77cfe0e6aa9,
         type: 3}
       propertyPath: m_RootOrder
