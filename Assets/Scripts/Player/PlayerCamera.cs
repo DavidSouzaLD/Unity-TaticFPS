@@ -1,27 +1,30 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
+[DisallowMultipleComponent]
 [RequireComponent(typeof(Camera))]
 [RequireComponent(typeof(Volume))]
 public class PlayerCamera : MonoBehaviour
 {
+    public static PlayerCamera Instance;
+
     [Header("[Camera Settings]")]
-    [SerializeField] private bool cursorLocked;
-    [SerializeField] private float cameraSmooth = 20f;
-    [SerializeField] private Vector2 sensitivity = new Vector2(0.15f, 0.15f);
-    [SerializeField] private Vector2 clampVertical = new Vector2(-90f, 90f);
-    [SerializeField] private VolumeProfile[] profiles;
-    Vector2 _cameraRot = Vector2.zero;
-    Quaternion _characterTargetRot, _cameraTargetRot;
+    public bool cursorLocked;
+    public float cameraSmooth = 20f;
+    public Vector2 sensitivity = new Vector2(0.15f, 0.15f);
+    public Vector2 clampVertical = new Vector2(-90f, 90f);
+    public VolumeProfile[] profiles;
 
     [Header("[Recoil Settings]")]
-    [SerializeField] private Transform recoilTransform;
-    [SerializeField] private float snappiness;
-    [SerializeField] private float resetSpeed;
+    public Transform recoilTransform;
+    public float snappiness;
+    public float resetSpeed;
     Vector3 currentRotation;
     Vector3 targetRotation;
 
-    // Components
+    // Private
+    private Vector2 _cameraRot = Vector2.zero;
+    private Quaternion _characterTargetRot, _cameraTargetRot;
     private Transform PlayerTransform;
     private Volume Volume;
     public static Camera Camera;
@@ -29,11 +32,19 @@ public class PlayerCamera : MonoBehaviour
     /// <summary>
     /// Returns whether the cursor is locked or not
     /// </summary>
-    public bool CursorLocked
+    public static bool CursorLocked
     {
         get
         {
-            return cursorLocked;
+            return Instance.cursorLocked;
+        }
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
         }
     }
 
@@ -57,6 +68,8 @@ public class PlayerCamera : MonoBehaviour
         // Camera
         if (Camera)
         {
+            StateLock.Lock("CURSOR_LOCKED", cursorLocked);
+
             if (cursorLocked)
             {
                 Vector2 cameraAxis = PlayerInput.Keys.CameraAxis;
@@ -86,12 +99,12 @@ public class PlayerCamera : MonoBehaviour
     /// <summary>
     /// Apply recoil to camera
     /// </summary>
-    public void ApplyRecoil(Vector3 _recoil)
+    public static void ApplyRecoil(Vector3 _recoil)
     {
-        targetRotation += new Vector3(-_recoil.x, Random.Range(-_recoil.y, _recoil.y), Random.Range(-_recoil.z, _recoil.z));
+        Instance.targetRotation += new Vector3(-_recoil.x, Random.Range(-_recoil.y, _recoil.y), Random.Range(-_recoil.z, _recoil.z));
     }
 
-    public void ApplyShake()
+    public static void ApplyShake()
     {
 
     }
@@ -99,22 +112,22 @@ public class PlayerCamera : MonoBehaviour
     /// <summary>
     /// Apply values in PostProcessing [BASE/NIGHTVISION/CUSTOM]
     /// </summary>
-    public void ApplyVolume(string _volumeName)
+    public static void ApplyVolume(string _volumeName)
     {
         string volumeName = _volumeName.ToUpper();
 
         switch (volumeName)
         {
             case "BASE":
-                Volume.profile = profiles[0];
+                Instance.Volume.profile = Instance.profiles[0];
                 break;
 
             case "NIGHTVISION":
-                Volume.profile = profiles[1];
+                Instance.Volume.profile = Instance.profiles[1];
                 break;
 
             case "CUSTOM":
-                Volume.profile = profiles[2];
+                Instance.Volume.profile = Instance.profiles[2];
                 break;
         }
     }
@@ -122,21 +135,21 @@ public class PlayerCamera : MonoBehaviour
     /// <summary>
     /// Returns the current volume value
     /// </summary>
-    public string GetVolume()
+    public static string GetVolume()
     {
         string volumeName = "";
 
-        if (Volume.profile == profiles[0])
+        if (Instance.Volume.profile == Instance.profiles[0])
         {
             volumeName = "BASE";
         }
 
-        if (Volume.profile == profiles[1])
+        if (Instance.Volume.profile == Instance.profiles[1])
         {
             volumeName = "NIGHTVISION";
         }
 
-        if (Volume.profile == profiles[2])
+        if (Instance.Volume.profile == Instance.profiles[2])
         {
             volumeName = "CUSTOM";
         }
@@ -147,20 +160,20 @@ public class PlayerCamera : MonoBehaviour
     /// <summary>
     /// Lock the cursor
     /// </summary>
-    public void LockCursor(bool value)
+    public static void LockCursor(bool value)
     {
         // Lock cursor in game
         if (value)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            cursorLocked = true;
+            Instance.cursorLocked = true;
         }
         else
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            cursorLocked = false;
+            Instance.cursorLocked = false;
         }
     }
 

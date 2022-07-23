@@ -55,9 +55,6 @@ public class WeaponSystem : MonoBehaviour
 
     [HideInInspector] public bool isReloading, isAim, isCustom, isInspect;
     [HideInInspector] public WeaponManager WeaponManager;
-    [HideInInspector] public WeaponSway WeaponSway;
-    [HideInInspector] public WeaponHorizontalMove WeaponHorizontalMove;
-    [HideInInspector] public Player Player;
     [HideInInspector] public NightVision NightVision;
     [HideInInspector] public Animator Animator;
     [HideInInspector] public AudioSource Source;
@@ -73,10 +70,7 @@ public class WeaponSystem : MonoBehaviour
     private void Start()
     {
         // Components
-        WeaponSway = GetComponentInParent<WeaponSway>();
         WeaponManager = GetComponentInParent<WeaponManager>();
-        WeaponHorizontalMove = GetComponentInParent<WeaponHorizontalMove>();
-        Player = GetComponentInParent<Player>();
         NightVision = GameObject.FindObjectOfType<NightVision>();
         Animator = GetComponentInChildren<Animator>();
         Source = GetComponent<AudioSource>();
@@ -102,7 +96,8 @@ public class WeaponSystem : MonoBehaviour
 
     private void FireUpdate()
     {
-        bool _canFire = !Player.isRunning && !isReloading && Player.Camera.CursorLocked;
+        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_FIRE") && StateLock.IsLocked("CURSOR_LOCKED");
+        bool _canFire = _stateLock && !Player.isRunning && !isReloading;
 
         if (_canFire)
         {
@@ -153,7 +148,8 @@ public class WeaponSystem : MonoBehaviour
 
     private void ReloadUpdate()
     {
-        bool _canReload = PlayerInput.Keys.Reload && Player.Camera.CursorLocked && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
+        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_RELOAD");
+        bool _canReload = _stateLock && PlayerInput.Keys.Reload && PlayerCamera.CursorLocked && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
 
         if (_canReload)
         {
@@ -175,14 +171,15 @@ public class WeaponSystem : MonoBehaviour
 
     private void AimUpdate()
     {
-        bool _canAim = PlayerInput.Keys.Aim && Player.Camera.CursorLocked && !isReloading && !Player.isRunning;
+        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_AIM");
+        bool _canAim = _stateLock && PlayerInput.Keys.Aim && PlayerCamera.CursorLocked && !isReloading && !Player.isRunning;
+
         Player.isAim = isAim;
 
         if (_canAim)
         {
             isAim = true;
-            WeaponSway.SetAccuracy(aimWeaponSwayAccuracy);
-            WeaponHorizontalMove.SetAccuracy(aimWeaponSwayAccuracy);
+            WeaponManager.SetAccuracy(aimWeaponSwayAccuracy);
             transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, aimSpeed * Time.deltaTime);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, aimRotation, aimSpeed * Time.deltaTime);
         }
@@ -195,8 +192,7 @@ public class WeaponSystem : MonoBehaviour
 
         if (_canResetAim)
         {
-            WeaponSway.SetMaxAccuracy();
-            WeaponHorizontalMove.SetMaxAccuracy();
+            WeaponManager.SetMaxAccuracy();
             transform.localPosition = Vector3.Lerp(transform.localPosition, _startAimPos, aimSpeed * Time.deltaTime);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, _startAimRot, aimSpeed * Time.deltaTime);
         }
@@ -204,7 +200,8 @@ public class WeaponSystem : MonoBehaviour
 
     private void CustomUpdate()
     {
-        bool _canCustom = PlayerInput.Keys.Custom && !NightVision.Enabled && HaveBulletsInMagazine && !isReloading && !isAim;
+        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_CUSTOM");
+        bool _canCustom = _stateLock && PlayerInput.Keys.Custom && !NightVision.Enabled && HaveBulletsInMagazine && !isReloading && !isAim;
 
         if (_canCustom)
         {
@@ -213,13 +210,13 @@ public class WeaponSystem : MonoBehaviour
                 isCustom = true;
 
                 Animator.SetBool("CUSTOM", isCustom);
-                Player.Camera.ApplyVolume("CUSTOM");
+                PlayerCamera.ApplyVolume("CUSTOM");
 
                 // Locks
-                Player.Camera.LockCursor(false);
-                Player.Lock(Player.LockType.Movement, "WEAPON_MOVEMENT", true);
-                Player.Lock(Player.LockType.Jump, "WEAPON_JUMP", true);
-                Player.Lock(Player.LockType.Jump, "WEAPON_TURN", true);
+                PlayerCamera.LockCursor(false);
+                StateLock.Lock("PLAYER_MOVEMENT", true);
+                StateLock.Lock("PLAYER_JUMP", true);
+                StateLock.Lock("PLAYER_RUN", true);
 
                 changeLockCursor = true;
             }
@@ -231,13 +228,13 @@ public class WeaponSystem : MonoBehaviour
                 isCustom = false;
 
                 Animator.SetBool("CUSTOM", isCustom);
-                Player.Camera.ApplyVolume("BASE");
+                PlayerCamera.ApplyVolume("BASE");
+                StateLock.Lock("PLAYER_MOVEMENT", false);
+                StateLock.Lock("PLAYER_JUMP", false);
+                StateLock.Lock("PLAYER_RUN", false);
 
                 // Locks
-                Player.Camera.LockCursor(true);
-                Player.Lock(Player.LockType.Movement, "WEAPON_MOVEMENT", false);
-                Player.Lock(Player.LockType.Jump, "WEAPON_JUMP", false);
-                Player.Lock(Player.LockType.Jump, "WEAPON_TURN", false);
+                PlayerCamera.LockCursor(true);
 
                 changeLockCursor = false;
             }
@@ -246,7 +243,8 @@ public class WeaponSystem : MonoBehaviour
 
     private void InspectUpdate()
     {
-        bool _canInspect = PlayerInput.Keys.Inspect && !isReloading && !isAim && !isCustom;
+        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_INSPECT");
+        bool _canInspect = _stateLock && PlayerInput.Keys.Inspect && !isReloading && !isAim && !isCustom;
 
         if (_canInspect)
         {
@@ -256,9 +254,7 @@ public class WeaponSystem : MonoBehaviour
 
     private void FireEvent()
     {
-        bool _canFire = currentBullets >= bulletsPerFire && _firerateTimer <= 0;
-
-        if (_canFire)
+        if (currentBullets >= bulletsPerFire && _firerateTimer <= 0)
         {
             // Tracer
             List<Vector3> positions = new List<Vector3>();
@@ -289,8 +285,7 @@ public class WeaponSystem : MonoBehaviour
                 {
                     if (hit.transform)
                     {
-                        float distance = (firePoint.position - hit.point).sqrMagnitude;
-                        float time = distance / bulletVelocity;
+                        float time = hit.distance / bulletVelocity;
                         StartCoroutine(DelayFire(time, hit));
                         break;
                     }
@@ -356,7 +351,7 @@ public class WeaponSystem : MonoBehaviour
         recoilTransform.localPosition += pos;
         recoilTransform.localRotation *= Quaternion.Euler(rot);
 
-        Player.Camera.ApplyRecoil(cameraRecoil);
+        PlayerCamera.ApplyRecoil(cameraRecoil);
     }
 
     public void AnimEvent(string _eventName, bool _stop = false)

@@ -3,7 +3,6 @@ using UnityEngine;
 public class NightVision : MonoBehaviour
 {
     [Header("[NightVision Settings]")]
-    [SerializeField] private PlayerCamera Camera;
     [SerializeField] private bool nightVisionMode;
     bool changeControl;
 
@@ -36,9 +35,9 @@ public class NightVision : MonoBehaviour
         {
             if (!changeControl)
             {
-                if (Camera.GetVolume() != "NIGHTVISION")
+                if (PlayerCamera.GetVolume() != "NIGHTVISION")
                 {
-                    Camera.ApplyVolume("NIGHTVISION");
+                    PlayerCamera.ApplyVolume("NIGHTVISION");
                     changeControl = true;
                 }
             }
@@ -47,9 +46,9 @@ public class NightVision : MonoBehaviour
         {
             if (changeControl)
             {
-                if (Camera.GetVolume() != "BASE")
+                if (PlayerCamera.GetVolume() != "BASE")
                 {
-                    Camera.ApplyVolume("BASE");
+                    PlayerCamera.ApplyVolume("BASE");
                     changeControl = false;
                 }
             }

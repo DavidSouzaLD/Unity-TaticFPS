@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float crouchHeight = 0.6f;
     [SerializeField] private float crouchSpeed = 5f;
     float _startCapsuleHeight;
-    float _startCameraHeight;
+    float _startCameraTransformHeight;
 
     [Header("[Drag Settings]")]
     [SerializeField] private float initialDrag = 0.5f;
@@ -59,62 +59,19 @@ public class Player : MonoBehaviour
     #region Public Components/Info
 
     [HideInInspector]
-    public bool isWalking, isRunning, isCrouched, isJumping, isGrounded, isTurning, isAim;
+    public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isAim;
+    public static bool isRunning => isWalking && !StateLock.IsLocked("PLAYER_RUN") && PlayerInput.Keys.Run;
 
     // Components
-    [HideInInspector] public PlayerCamera Camera;
+    [HideInInspector] public Transform CameraTransform;
     [HideInInspector] public Rigidbody Rigidbody;
     [HideInInspector] public CapsuleCollider CapsuleCollider;
 
     #endregion
 
-    #region Lock
-    public enum LockType { Movement, Run, Jump, Crouch, Turn, BasicAnimator }
-
-    [System.Serializable]
-    public class LockingClass
-    {
-        public string name;
-        public LockType lockType;
-        public bool locked;
-
-        public LockingClass(string _name, LockType _lockType, bool _locked)
-        {
-            name = _name;
-            lockType = _lockType;
-            locked = _locked;
-        }
-    }
-
-    public List<LockingClass> LockList = new List<LockingClass>();
-
-    private bool CheckLockType(LockType _lockType)
-    {
-        bool local = false;
-
-        for (int i = 0; i < LockList.Count; i++)
-        {
-            if (LockList[i].lockType.Equals(_lockType))
-            {
-                local = LockList[i].locked;
-            }
-        }
-
-        return local;
-    }
-
-    public bool LockMovement { get { return CheckLockType(LockType.Movement); } }
-    public bool LockRun { get { return CheckLockType(LockType.Run); } }
-    public bool LockJump { get { return CheckLockType(LockType.Jump); } }
-    public bool LockCrouch { get { return CheckLockType(LockType.Crouch); } }
-    public bool LockTurn { get { return CheckLockType(LockType.Turn); } }
-    public bool LockBasicAnimator { get { return CheckLockType(LockType.BasicAnimator); } }
-
-    #endregion
-
     #region Public Variables
-    public float CurrentSpeed { get { return !PlayerInput.Keys.Run ? walkAcceleration : runAcceleration; } }
-    public float LimitCurrentSpeed { get { return (!PlayerInput.Keys.Crouch ? (!PlayerInput.Keys.Run ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + _additionalVelocity.magnitude; } }
+    public float CurrentSpeed { get { return isRunning ? runAcceleration : walkAcceleration; } }
+    public float LimitCurrentSpeed { get { return (!PlayerInput.Keys.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + _additionalVelocity.magnitude; } }
     public float SlopeAngle { get { return Vector3.Angle(transform.up, Normal); } }
     public bool Grounded { get { return GroundColliders.Length > 0; } }
     public bool Sloped { get { return SlopeAngle > 0 && SlopeAngle <= maxAngleToSlope; } }
@@ -156,15 +113,15 @@ public class Player : MonoBehaviour
     private void Start()
     {
         // Get necessary components
-        Camera = GetComponentInChildren<PlayerCamera>();
+        CameraTransform = GetComponentInChildren<PlayerCamera>().transform;
         Rigidbody = GetComponent<Rigidbody>();
         CapsuleCollider = GetComponent<CapsuleCollider>();
 
         // Start locking cursor
-        Camera.LockCursor(true);
+        PlayerCamera.LockCursor(true);
 
         // Starting values
-        _startCameraHeight = Camera.transform.localPosition.y;
+        _startCameraTransformHeight = CameraTransform.transform.localPosition.y;
         _startCapsuleHeight = CapsuleCollider.height;
 
         // Turn
@@ -188,7 +145,7 @@ public class Player : MonoBehaviour
 
     public void UpdateMove()
     {
-        if (!LockMovement)
+        if (!StateLock.IsLocked("PLAYER_MOVEMENT"))
         {
             // Movement
             Vector2 moveAxis = PlayerInput.Keys.MoveAxis;
@@ -207,15 +164,6 @@ public class Player : MonoBehaviour
             if (moveAxis != Vector2.zero)
             {
                 isWalking = true;
-
-                if (CurrentSpeed == runAcceleration)
-                {
-                    isRunning = true;
-                }
-                else
-                {
-                    isRunning = false;
-                }
 
                 if (Rigidbody.drag != initialDrag)
                 {
@@ -241,7 +189,6 @@ public class Player : MonoBehaviour
             else
             {
                 isWalking = false;
-                isRunning = false;
 
                 // Reset animations
                 basicAnimator.SetBool("WALK", false);
@@ -270,14 +217,15 @@ public class Player : MonoBehaviour
 
     private void CrouchUpdate()
     {
-        bool _canCrouch = !LockCrouch && PlayerInput.Keys.Crouch;
+        bool _canCrouch = !StateLock.IsLocked("PLAYER_CROUCH") && PlayerInput.Keys.Crouch;
 
         if (_canCrouch)
         {
             isCrouched = true;
 
+            StateLock.Lock("PLAYER_RUN", true);
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, crouchHeight, crouchSpeed * Time.deltaTime);
-            Camera.transform.position = Vector3.Lerp(Camera.transform.position,
+            CameraTransform.transform.position = Vector3.Lerp(CameraTransform.transform.position,
             CapsuleTop, crouchSpeed * Time.deltaTime);
         }
         else
@@ -285,18 +233,18 @@ public class Player : MonoBehaviour
             isCrouched = false;
 
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, _startCapsuleHeight, crouchSpeed * Time.deltaTime);
-            Camera.transform.localPosition = Vector3.Lerp(Camera.transform.localPosition,
+            CameraTransform.transform.localPosition = Vector3.Lerp(CameraTransform.transform.localPosition,
             new Vector3(
-                Camera.transform.localPosition.x,
-                _startCameraHeight,
-                Camera.transform.localPosition.z
+                CameraTransform.transform.localPosition.x,
+                _startCameraTransformHeight,
+                CameraTransform.transform.localPosition.z
             ), crouchSpeed * Time.deltaTime);
         }
     }
 
     private void JumpUpdate()
     {
-        bool jump = !LockJump && PlayerInput.Keys.Jump && Grounded && _jumpFixTimer <= 0;
+        bool jump = !StateLock.IsLocked("PLAYER_JUMP") && PlayerInput.Keys.Jump && Grounded && _jumpFixTimer <= 0;
 
         if (jump)
         {
@@ -314,7 +262,7 @@ public class Player : MonoBehaviour
 
     private void TurnUpdate()
     {
-        bool _canTurn = !LockTurn && !isRunning;
+        bool _canTurn = !StateLock.IsLocked("PLAYER_TURN") && !isRunning;
 
         if (_canTurn)
         {
@@ -333,7 +281,7 @@ public class Player : MonoBehaviour
                     cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, cameraTurnTransformStartPos, turnSpeed * Time.deltaTime);
                 }
                 else
-                { // Camera
+                { // CameraTransform
                     cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, targetPos, turnSpeed * Time.deltaTime);
                     cameraTurnTransform.localRotation = Quaternion.Slerp(cameraTurnTransform.localRotation, targetRot, turnSpeed * Time.deltaTime);
                     weaponTurnTransform.localRotation = Quaternion.Slerp(weaponTurnTransform.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
@@ -352,30 +300,11 @@ public class Player : MonoBehaviour
 
     private void AnimatorUpdate()
     {
-        if (LockMovement || LockBasicAnimator)
+        if (StateLock.IsLocked("PLAYER_MOVEMENT") || StateLock.IsLocked("PLAYER_BASIC_ANIM"))
         {
             basicAnimator.SetBool("WALK", false);
             basicAnimator.SetBool("RUN", false);
         }
-    }
-
-    public void Lock(LockType _lockType, string _name, bool _locked = true)
-    {
-        string newName = _name.ToUpper();
-
-        for (int i = 0; i < LockList.Count; i++)
-        {
-            if (LockList[i].name.ToUpper().Equals(newName))
-            {
-                LockList[i].name = newName;
-                LockList[i].lockType = _lockType;
-                LockList[i].locked = _locked;
-
-                return;
-            }
-        }
-
-        LockList.Add(new LockingClass(newName, _lockType, _locked));
     }
 
     private void OnDrawGizmos()
