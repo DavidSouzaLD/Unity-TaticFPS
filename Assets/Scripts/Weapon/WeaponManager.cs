@@ -118,8 +118,8 @@ public class WeaponManager : MonoBehaviour
     {
         if (StateLock.IsLocked("CURSOR_LOCKED"))
         {
-            Vector2 cameraAxis = new Vector2(PlayerInput.Keys.CameraAxis.x * sensitivityX, PlayerInput.Keys.CameraAxis.y * sensitivityY) * sway_Accuracy;
-            float cameraAxisX = PlayerInput.Keys.MoveAxis.x * sensitivityX * sway_Accuracy;
+            Vector2 cameraAxis = new Vector2(Input.CameraAxis.x * sensitivityX, Input.CameraAxis.y * sensitivityY) * sway_Accuracy;
+            float cameraAxisX = Input.MoveAxis.x * sensitivityX * sway_Accuracy;
 
             // Basic sway
             if (cameraAxis != Vector2.zero)

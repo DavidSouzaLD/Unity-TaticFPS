@@ -72,7 +72,7 @@ public class PlayerCamera : MonoBehaviour
 
             if (cursorLocked)
             {
-                Vector2 cameraAxis = PlayerInput.Keys.CameraAxis;
+                Vector2 cameraAxis = Input.CameraAxis;
 
                 _cameraRot.x = -cameraAxis.y * sensitivity.y;
                 _cameraRot.y = cameraAxis.x * sensitivity.x;

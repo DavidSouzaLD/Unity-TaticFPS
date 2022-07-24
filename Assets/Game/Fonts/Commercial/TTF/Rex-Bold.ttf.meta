@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 4f727b563d6856e47bceaafc64502902
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Rex
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 02a5c02717982994083e094462b19db8, type: 3}
+  - {fileID: 12800000, guid: 7860b6256e340844caa5371e69a3f197, type: 3}
+  - {fileID: 12800000, guid: ae7dd68469faea6479a94a1d8f341e9e, type: 3}
+  - {fileID: 12800000, guid: eeefb338d30d85b4685e295bb736373f, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

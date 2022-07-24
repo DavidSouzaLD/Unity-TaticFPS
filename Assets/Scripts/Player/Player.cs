@@ -3,7 +3,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-[RequireComponent(typeof(Input))]
 public class Player : MonoBehaviour
 {
     #region Inspector
@@ -60,7 +59,7 @@ public class Player : MonoBehaviour
 
     [HideInInspector]
     public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isAim;
-    public static bool isRunning => isWalking && !StateLock.IsLocked("PLAYER_RUN") && PlayerInput.Keys.Run;
+    public static bool isRunning => isWalking && !StateLock.IsLocked("PLAYER_RUN") && Input.Run;
 
     // Components
     [HideInInspector] public Transform CameraTransform;
@@ -71,7 +70,7 @@ public class Player : MonoBehaviour
 
     #region Public Variables
     public float CurrentSpeed { get { return isRunning ? runAcceleration : walkAcceleration; } }
-    public float LimitCurrentSpeed { get { return (!PlayerInput.Keys.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + _additionalVelocity.magnitude; } }
+    public float LimitCurrentSpeed { get { return (!Input.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + _additionalVelocity.magnitude; } }
     public float SlopeAngle { get { return Vector3.Angle(transform.up, Normal); } }
     public bool Grounded { get { return GroundColliders.Length > 0; } }
     public bool Sloped { get { return SlopeAngle > 0 && SlopeAngle <= maxAngleToSlope; } }
@@ -148,7 +147,7 @@ public class Player : MonoBehaviour
         if (!StateLock.IsLocked("PLAYER_MOVEMENT"))
         {
             // Movement
-            Vector2 moveAxis = PlayerInput.Keys.MoveAxis;
+            Vector2 moveAxis = Input.MoveAxis;
             Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
             Vector3 dir2 = Vector3.Cross(transform.right, Normal) * moveAxis.y + Vector3.Cross(-transform.forward, Normal) * moveAxis.x;
             Vector3 direction = !Sloped ? dir1 : dir2;
@@ -217,7 +216,7 @@ public class Player : MonoBehaviour
 
     private void CrouchUpdate()
     {
-        bool _canCrouch = !StateLock.IsLocked("PLAYER_CROUCH") && PlayerInput.Keys.Crouch;
+        bool _canCrouch = !StateLock.IsLocked("PLAYER_CROUCH") && Input.Crouch;
 
         if (_canCrouch)
         {
@@ -244,7 +243,7 @@ public class Player : MonoBehaviour
 
     private void JumpUpdate()
     {
-        bool jump = !StateLock.IsLocked("PLAYER_JUMP") && PlayerInput.Keys.Jump && Grounded && _jumpFixTimer <= 0;
+        bool jump = !StateLock.IsLocked("PLAYER_JUMP") && Input.Jump && Grounded && _jumpFixTimer <= 0;
 
         if (jump)
         {
@@ -267,12 +266,12 @@ public class Player : MonoBehaviour
         if (_canTurn)
         {
             // Right
-            if (PlayerInput.Keys.Turn != 0)
+            if (Input.Turn != 0)
             {
                 isTurning = true;
 
-                Vector3 targetPos = new Vector3(horizontalTurnAmount * cameraTurnTransformScale * PlayerInput.Keys.Turn, 0f, 0f);
-                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, horizontalTurnAmount * -PlayerInput.Keys.Turn));
+                Vector3 targetPos = new Vector3(horizontalTurnAmount * cameraTurnTransformScale * Input.Turn, 0f, 0f);
+                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, horizontalTurnAmount * -Input.Turn));
 
                 if (!isAim)
                 { // Weapon

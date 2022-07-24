@@ -23,7 +23,7 @@ public class Sway : MonoBehaviour
 
     private void Update()
     {
-        Vector2 cameraAxis = new Vector2(PlayerInput.Keys.CameraAxis.x * sensitivityX, PlayerInput.Keys.CameraAxis.y * sensitivityY);
+        Vector2 cameraAxis = new Vector2(Input.CameraAxis.x * sensitivityX, Input.CameraAxis.y * sensitivityY);
 
         if (cameraAxis != Vector2.zero)
         {

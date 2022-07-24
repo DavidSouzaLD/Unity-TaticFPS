@@ -4882,7 +4882,7 @@ GameObject:
   - component: {fileID: 2383440206482012204}
   - component: {fileID: 4406149976551599005}
   m_Layer: 0
-  m_Name: METAL_IMPACT
+  m_Name: Metal_impact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

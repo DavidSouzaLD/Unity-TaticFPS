@@ -2,7 +2,7 @@
     "name": "InputMap",
     "maps": [
         {
-            "name": "Keys",
+            "name": "Player",
             "id": "0a1cb9a6-65dc-4d05-8c60-8c7af5ba2eda",
             "actions": [
                 {
@@ -450,6 +450,74 @@
                     "processors": "",
                     "groups": "",
                     "action": "FreeVision",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Customize",
+            "id": "3e48de3c-e3c9-45b3-8807-a857b620a534",
+            "actions": [
+                {
+                    "name": "Rotation",
+                    "type": "Button",
+                    "id": "a0acdb13-d9c1-48b9-af54-b79a3ff3ebb6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ResetRotation",
+                    "type": "Button",
+                    "id": "43956639-aa36-40cd-b2fb-0d14c8c5472a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Scroll",
+                    "type": "Value",
+                    "id": "caa39e92-bdd3-460f-a68e-877d8e66d480",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "411ce746-58de-4fbd-824d-c8db34fc6e79",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a97bf592-2b0f-4278-932d-68ae5c4ce4be",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ResetRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c3a9946e-493f-4212-83a4-b8987302ef0c",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Scroll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

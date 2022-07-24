@@ -24,7 +24,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     ""name"": ""InputMap"",
     ""maps"": [
         {
-            ""name"": ""Keys"",
+            ""name"": ""Player"",
             ""id"": ""0a1cb9a6-65dc-4d05-8c60-8c7af5ba2eda"",
             ""actions"": [
                 {
@@ -476,31 +476,104 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Customize"",
+            ""id"": ""3e48de3c-e3c9-45b3-8807-a857b620a534"",
+            ""actions"": [
+                {
+                    ""name"": ""Rotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""a0acdb13-d9c1-48b9-af54-b79a3ff3ebb6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ResetRotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""43956639-aa36-40cd-b2fb-0d14c8c5472a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""caa39e92-bdd3-460f-a68e-877d8e66d480"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""411ce746-58de-4fbd-824d-c8db34fc6e79"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a97bf592-2b0f-4278-932d-68ae5c4ce4be"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResetRotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3a9946e-493f-4212-83a4-b8987302ef0c"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // Keys
-        m_Keys = asset.FindActionMap("Keys", throwIfNotFound: true);
-        m_Keys_CameraAxis = m_Keys.FindAction("CameraAxis", throwIfNotFound: true);
-        m_Keys_MoveAxis = m_Keys.FindAction("MoveAxis", throwIfNotFound: true);
-        m_Keys_Jump = m_Keys.FindAction("Jump", throwIfNotFound: true);
-        m_Keys_Run = m_Keys.FindAction("Run", throwIfNotFound: true);
-        m_Keys_Crouch = m_Keys.FindAction("Crouch", throwIfNotFound: true);
-        m_Keys_Turn = m_Keys.FindAction("Turn", throwIfNotFound: true);
-        m_Keys_FireAuto = m_Keys.FindAction("FireAuto", throwIfNotFound: true);
-        m_Keys_FireTap = m_Keys.FindAction("FireTap", throwIfNotFound: true);
-        m_Keys_Aim = m_Keys.FindAction("Aim", throwIfNotFound: true);
-        m_Keys_Reload = m_Keys.FindAction("Reload", throwIfNotFound: true);
-        m_Keys_NightVision = m_Keys.FindAction("NightVision", throwIfNotFound: true);
-        m_Keys_FreeVision = m_Keys.FindAction("FreeVision", throwIfNotFound: true);
-        m_Keys_Flashlight = m_Keys.FindAction("Flashlight", throwIfNotFound: true);
-        m_Keys_Laser = m_Keys.FindAction("Laser", throwIfNotFound: true);
-        m_Keys_Interact = m_Keys.FindAction("Interact", throwIfNotFound: true);
-        m_Keys_Inspect = m_Keys.FindAction("Inspect", throwIfNotFound: true);
-        m_Keys_Custom = m_Keys.FindAction("Custom", throwIfNotFound: true);
-        m_Keys_EquipPrimary = m_Keys.FindAction("EquipPrimary", throwIfNotFound: true);
-        m_Keys_EquipSecondary = m_Keys.FindAction("EquipSecondary", throwIfNotFound: true);
+        // Player
+        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_CameraAxis = m_Player.FindAction("CameraAxis", throwIfNotFound: true);
+        m_Player_MoveAxis = m_Player.FindAction("MoveAxis", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
+        m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
+        m_Player_Turn = m_Player.FindAction("Turn", throwIfNotFound: true);
+        m_Player_FireAuto = m_Player.FindAction("FireAuto", throwIfNotFound: true);
+        m_Player_FireTap = m_Player.FindAction("FireTap", throwIfNotFound: true);
+        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
+        m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
+        m_Player_NightVision = m_Player.FindAction("NightVision", throwIfNotFound: true);
+        m_Player_FreeVision = m_Player.FindAction("FreeVision", throwIfNotFound: true);
+        m_Player_Flashlight = m_Player.FindAction("Flashlight", throwIfNotFound: true);
+        m_Player_Laser = m_Player.FindAction("Laser", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Inspect = m_Player.FindAction("Inspect", throwIfNotFound: true);
+        m_Player_Custom = m_Player.FindAction("Custom", throwIfNotFound: true);
+        m_Player_EquipPrimary = m_Player.FindAction("EquipPrimary", throwIfNotFound: true);
+        m_Player_EquipSecondary = m_Player.FindAction("EquipSecondary", throwIfNotFound: true);
+        // Customize
+        m_Customize = asset.FindActionMap("Customize", throwIfNotFound: true);
+        m_Customize_Rotation = m_Customize.FindAction("Rotation", throwIfNotFound: true);
+        m_Customize_ResetRotation = m_Customize.FindAction("ResetRotation", throwIfNotFound: true);
+        m_Customize_Scroll = m_Customize.FindAction("Scroll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -557,119 +630,119 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Keys
-    private readonly InputActionMap m_Keys;
-    private IKeysActions m_KeysActionsCallbackInterface;
-    private readonly InputAction m_Keys_CameraAxis;
-    private readonly InputAction m_Keys_MoveAxis;
-    private readonly InputAction m_Keys_Jump;
-    private readonly InputAction m_Keys_Run;
-    private readonly InputAction m_Keys_Crouch;
-    private readonly InputAction m_Keys_Turn;
-    private readonly InputAction m_Keys_FireAuto;
-    private readonly InputAction m_Keys_FireTap;
-    private readonly InputAction m_Keys_Aim;
-    private readonly InputAction m_Keys_Reload;
-    private readonly InputAction m_Keys_NightVision;
-    private readonly InputAction m_Keys_FreeVision;
-    private readonly InputAction m_Keys_Flashlight;
-    private readonly InputAction m_Keys_Laser;
-    private readonly InputAction m_Keys_Interact;
-    private readonly InputAction m_Keys_Inspect;
-    private readonly InputAction m_Keys_Custom;
-    private readonly InputAction m_Keys_EquipPrimary;
-    private readonly InputAction m_Keys_EquipSecondary;
-    public struct KeysActions
+    // Player
+    private readonly InputActionMap m_Player;
+    private IPlayerActions m_PlayerActionsCallbackInterface;
+    private readonly InputAction m_Player_CameraAxis;
+    private readonly InputAction m_Player_MoveAxis;
+    private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Run;
+    private readonly InputAction m_Player_Crouch;
+    private readonly InputAction m_Player_Turn;
+    private readonly InputAction m_Player_FireAuto;
+    private readonly InputAction m_Player_FireTap;
+    private readonly InputAction m_Player_Aim;
+    private readonly InputAction m_Player_Reload;
+    private readonly InputAction m_Player_NightVision;
+    private readonly InputAction m_Player_FreeVision;
+    private readonly InputAction m_Player_Flashlight;
+    private readonly InputAction m_Player_Laser;
+    private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Inspect;
+    private readonly InputAction m_Player_Custom;
+    private readonly InputAction m_Player_EquipPrimary;
+    private readonly InputAction m_Player_EquipSecondary;
+    public struct PlayerActions
     {
         private @InputMap m_Wrapper;
-        public KeysActions(@InputMap wrapper) { m_Wrapper = wrapper; }
-        public InputAction @CameraAxis => m_Wrapper.m_Keys_CameraAxis;
-        public InputAction @MoveAxis => m_Wrapper.m_Keys_MoveAxis;
-        public InputAction @Jump => m_Wrapper.m_Keys_Jump;
-        public InputAction @Run => m_Wrapper.m_Keys_Run;
-        public InputAction @Crouch => m_Wrapper.m_Keys_Crouch;
-        public InputAction @Turn => m_Wrapper.m_Keys_Turn;
-        public InputAction @FireAuto => m_Wrapper.m_Keys_FireAuto;
-        public InputAction @FireTap => m_Wrapper.m_Keys_FireTap;
-        public InputAction @Aim => m_Wrapper.m_Keys_Aim;
-        public InputAction @Reload => m_Wrapper.m_Keys_Reload;
-        public InputAction @NightVision => m_Wrapper.m_Keys_NightVision;
-        public InputAction @FreeVision => m_Wrapper.m_Keys_FreeVision;
-        public InputAction @Flashlight => m_Wrapper.m_Keys_Flashlight;
-        public InputAction @Laser => m_Wrapper.m_Keys_Laser;
-        public InputAction @Interact => m_Wrapper.m_Keys_Interact;
-        public InputAction @Inspect => m_Wrapper.m_Keys_Inspect;
-        public InputAction @Custom => m_Wrapper.m_Keys_Custom;
-        public InputAction @EquipPrimary => m_Wrapper.m_Keys_EquipPrimary;
-        public InputAction @EquipSecondary => m_Wrapper.m_Keys_EquipSecondary;
-        public InputActionMap Get() { return m_Wrapper.m_Keys; }
+        public PlayerActions(@InputMap wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CameraAxis => m_Wrapper.m_Player_CameraAxis;
+        public InputAction @MoveAxis => m_Wrapper.m_Player_MoveAxis;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Run => m_Wrapper.m_Player_Run;
+        public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
+        public InputAction @Turn => m_Wrapper.m_Player_Turn;
+        public InputAction @FireAuto => m_Wrapper.m_Player_FireAuto;
+        public InputAction @FireTap => m_Wrapper.m_Player_FireTap;
+        public InputAction @Aim => m_Wrapper.m_Player_Aim;
+        public InputAction @Reload => m_Wrapper.m_Player_Reload;
+        public InputAction @NightVision => m_Wrapper.m_Player_NightVision;
+        public InputAction @FreeVision => m_Wrapper.m_Player_FreeVision;
+        public InputAction @Flashlight => m_Wrapper.m_Player_Flashlight;
+        public InputAction @Laser => m_Wrapper.m_Player_Laser;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @Inspect => m_Wrapper.m_Player_Inspect;
+        public InputAction @Custom => m_Wrapper.m_Player_Custom;
+        public InputAction @EquipPrimary => m_Wrapper.m_Player_EquipPrimary;
+        public InputAction @EquipSecondary => m_Wrapper.m_Player_EquipSecondary;
+        public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(KeysActions set) { return set.Get(); }
-        public void SetCallbacks(IKeysActions instance)
+        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerActions instance)
         {
-            if (m_Wrapper.m_KeysActionsCallbackInterface != null)
+            if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @CameraAxis.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnCameraAxis;
-                @CameraAxis.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnCameraAxis;
-                @CameraAxis.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnCameraAxis;
-                @MoveAxis.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnMoveAxis;
-                @MoveAxis.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnMoveAxis;
-                @MoveAxis.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnMoveAxis;
-                @Jump.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnJump;
-                @Jump.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnJump;
-                @Jump.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnJump;
-                @Run.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnRun;
-                @Run.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnRun;
-                @Run.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnRun;
-                @Crouch.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnCrouch;
-                @Crouch.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnCrouch;
-                @Crouch.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnCrouch;
-                @Turn.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurn;
-                @Turn.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurn;
-                @Turn.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnTurn;
-                @FireAuto.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireAuto;
-                @FireAuto.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireAuto;
-                @FireAuto.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireAuto;
-                @FireTap.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireTap;
-                @FireTap.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireTap;
-                @FireTap.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnFireTap;
-                @Aim.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnAim;
-                @Aim.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnAim;
-                @Aim.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnAim;
-                @Reload.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnReload;
-                @Reload.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnReload;
-                @Reload.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnReload;
-                @NightVision.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnNightVision;
-                @NightVision.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnNightVision;
-                @NightVision.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnNightVision;
-                @FreeVision.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnFreeVision;
-                @FreeVision.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnFreeVision;
-                @FreeVision.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnFreeVision;
-                @Flashlight.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnFlashlight;
-                @Flashlight.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnFlashlight;
-                @Flashlight.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnFlashlight;
-                @Laser.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnLaser;
-                @Laser.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnLaser;
-                @Laser.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnLaser;
-                @Interact.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnInteract;
-                @Interact.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnInteract;
-                @Interact.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnInteract;
-                @Inspect.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnInspect;
-                @Inspect.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnInspect;
-                @Inspect.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnInspect;
-                @Custom.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnCustom;
-                @Custom.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnCustom;
-                @Custom.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnCustom;
-                @EquipPrimary.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnEquipPrimary;
-                @EquipPrimary.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnEquipPrimary;
-                @EquipPrimary.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnEquipPrimary;
-                @EquipSecondary.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnEquipSecondary;
-                @EquipSecondary.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnEquipSecondary;
-                @EquipSecondary.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnEquipSecondary;
+                @CameraAxis.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraAxis;
+                @CameraAxis.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraAxis;
+                @CameraAxis.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraAxis;
+                @MoveAxis.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMoveAxis;
+                @MoveAxis.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMoveAxis;
+                @MoveAxis.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMoveAxis;
+                @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Run.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRun;
+                @Run.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRun;
+                @Run.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRun;
+                @Crouch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                @Turn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
+                @Turn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
+                @Turn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
+                @FireAuto.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
+                @FireAuto.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
+                @FireAuto.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
+                @FireTap.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireTap;
+                @FireTap.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireTap;
+                @FireTap.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireTap;
+                @Aim.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
+                @Aim.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
+                @Aim.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
+                @Reload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
+                @Reload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
+                @Reload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
+                @NightVision.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
+                @NightVision.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
+                @NightVision.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
+                @FreeVision.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeVision;
+                @FreeVision.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeVision;
+                @FreeVision.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeVision;
+                @Flashlight.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlight;
+                @Flashlight.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlight;
+                @Flashlight.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlight;
+                @Laser.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
+                @Laser.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
+                @Laser.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
+                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Inspect.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
+                @Inspect.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
+                @Inspect.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
+                @Custom.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCustom;
+                @Custom.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCustom;
+                @Custom.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCustom;
+                @EquipPrimary.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
+                @EquipPrimary.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
+                @EquipPrimary.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
+                @EquipSecondary.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipSecondary;
+                @EquipSecondary.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipSecondary;
+                @EquipSecondary.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipSecondary;
             }
-            m_Wrapper.m_KeysActionsCallbackInterface = instance;
+            m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @CameraAxis.started += instance.OnCameraAxis;
@@ -732,8 +805,57 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
             }
         }
     }
-    public KeysActions @Keys => new KeysActions(this);
-    public interface IKeysActions
+    public PlayerActions @Player => new PlayerActions(this);
+
+    // Customize
+    private readonly InputActionMap m_Customize;
+    private ICustomizeActions m_CustomizeActionsCallbackInterface;
+    private readonly InputAction m_Customize_Rotation;
+    private readonly InputAction m_Customize_ResetRotation;
+    private readonly InputAction m_Customize_Scroll;
+    public struct CustomizeActions
+    {
+        private @InputMap m_Wrapper;
+        public CustomizeActions(@InputMap wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Rotation => m_Wrapper.m_Customize_Rotation;
+        public InputAction @ResetRotation => m_Wrapper.m_Customize_ResetRotation;
+        public InputAction @Scroll => m_Wrapper.m_Customize_Scroll;
+        public InputActionMap Get() { return m_Wrapper.m_Customize; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CustomizeActions set) { return set.Get(); }
+        public void SetCallbacks(ICustomizeActions instance)
+        {
+            if (m_Wrapper.m_CustomizeActionsCallbackInterface != null)
+            {
+                @Rotation.started -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnRotation;
+                @Rotation.performed -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnRotation;
+                @Rotation.canceled -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnRotation;
+                @ResetRotation.started -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnResetRotation;
+                @ResetRotation.performed -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnResetRotation;
+                @ResetRotation.canceled -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnResetRotation;
+                @Scroll.started -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnScroll;
+                @Scroll.performed -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnScroll;
+                @Scroll.canceled -= m_Wrapper.m_CustomizeActionsCallbackInterface.OnScroll;
+            }
+            m_Wrapper.m_CustomizeActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Rotation.started += instance.OnRotation;
+                @Rotation.performed += instance.OnRotation;
+                @Rotation.canceled += instance.OnRotation;
+                @ResetRotation.started += instance.OnResetRotation;
+                @ResetRotation.performed += instance.OnResetRotation;
+                @ResetRotation.canceled += instance.OnResetRotation;
+                @Scroll.started += instance.OnScroll;
+                @Scroll.performed += instance.OnScroll;
+                @Scroll.canceled += instance.OnScroll;
+            }
+        }
+    }
+    public CustomizeActions @Customize => new CustomizeActions(this);
+    public interface IPlayerActions
     {
         void OnCameraAxis(InputAction.CallbackContext context);
         void OnMoveAxis(InputAction.CallbackContext context);
@@ -754,5 +876,11 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnCustom(InputAction.CallbackContext context);
         void OnEquipPrimary(InputAction.CallbackContext context);
         void OnEquipSecondary(InputAction.CallbackContext context);
+    }
+    public interface ICustomizeActions
+    {
+        void OnRotation(InputAction.CallbackContext context);
+        void OnResetRotation(InputAction.CallbackContext context);
+        void OnScroll(InputAction.CallbackContext context);
     }
 }

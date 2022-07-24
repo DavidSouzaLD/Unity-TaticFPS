@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 277832011086963585}
   - component: {fileID: 6519366092426463599}
   m_Layer: 0
-  m_Name: BULLET_TRACER
+  m_Name: BulletTracer_weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

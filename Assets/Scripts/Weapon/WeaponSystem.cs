@@ -88,7 +88,6 @@ public class WeaponSystem : MonoBehaviour
         ReloadUpdate();
         RecoilUpdate();
         AimUpdate();
-        CustomUpdate();
         InspectUpdate();
     }
 
@@ -104,7 +103,7 @@ public class WeaponSystem : MonoBehaviour
             {
                 case FireMode.Semi:
 
-                    if (PlayerInput.Keys.FireTap)
+                    if (Input.FireTap)
                     {
                         FireEvent();
                     }
@@ -113,7 +112,7 @@ public class WeaponSystem : MonoBehaviour
 
                 case FireMode.Auto:
 
-                    if (PlayerInput.Keys.FireAuto)
+                    if (Input.FireAuto)
                     {
                         FireEvent();
                     }
@@ -122,7 +121,7 @@ public class WeaponSystem : MonoBehaviour
 
                 case FireMode.Gust:
 
-                    if (PlayerInput.Keys.FireTap)
+                    if (Input.FireTap)
                     {
                         for (int i = 0; i < bulletsPerFire; i++)
                         {
@@ -147,7 +146,7 @@ public class WeaponSystem : MonoBehaviour
     private void ReloadUpdate()
     {
         bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_RELOAD");
-        bool _canReload = _stateLock && PlayerInput.Keys.Reload && PlayerCamera.CursorLocked && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
+        bool _canReload = _stateLock && Input.Reload && PlayerCamera.CursorLocked && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
 
         if (_canReload)
         {
@@ -170,7 +169,7 @@ public class WeaponSystem : MonoBehaviour
     private void AimUpdate()
     {
         bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_AIM");
-        bool _canAim = _stateLock && PlayerInput.Keys.Aim && PlayerCamera.CursorLocked && !isReloading && !Player.isRunning;
+        bool _canAim = _stateLock && Input.Aim && PlayerCamera.CursorLocked && !isReloading && !Player.isRunning;
 
         Player.isAim = isAim;
 
@@ -186,7 +185,7 @@ public class WeaponSystem : MonoBehaviour
             isAim = false;
         }
 
-        bool _canResetAim = (!PlayerInput.Keys.Aim || PlayerInput.Keys.Run) && (transform.localPosition != _startAimPos || transform.localRotation != _startAimRot);
+        bool _canResetAim = (!Input.Aim || Input.Run) && (transform.localPosition != _startAimPos || transform.localRotation != _startAimRot);
 
         if (_canResetAim)
         {
@@ -196,53 +195,10 @@ public class WeaponSystem : MonoBehaviour
         }
     }
 
-    private void CustomUpdate()
-    {
-        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_CUSTOM");
-        bool _canCustom = _stateLock && PlayerInput.Keys.Custom && !NightVision.Enabled && HaveBulletsInMagazine && !isReloading && !isAim;
-
-        if (_canCustom)
-        {
-            if (!changeLockCursor)
-            {
-                isCustom = true;
-
-                Animator.SetBool("CUSTOM", isCustom);
-                PlayerCamera.ApplyVolume("CUSTOM");
-
-                // Locks
-                PlayerCamera.LockCursor(false);
-                StateLock.Lock("PLAYER_MOVEMENT", true);
-                StateLock.Lock("PLAYER_JUMP", true);
-                StateLock.Lock("PLAYER_RUN", true);
-
-                changeLockCursor = true;
-            }
-        }
-        else
-        {
-            if (changeLockCursor)
-            {
-                isCustom = false;
-
-                Animator.SetBool("CUSTOM", isCustom);
-                PlayerCamera.ApplyVolume("BASE");
-                StateLock.Lock("PLAYER_MOVEMENT", false);
-                StateLock.Lock("PLAYER_JUMP", false);
-                StateLock.Lock("PLAYER_RUN", false);
-
-                // Locks
-                PlayerCamera.LockCursor(true);
-
-                changeLockCursor = false;
-            }
-        }
-    }
-
     private void InspectUpdate()
     {
         bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_INSPECT");
-        bool _canInspect = _stateLock && PlayerInput.Keys.Inspect && !isReloading && !isAim && !isCustom;
+        bool _canInspect = _stateLock && Input.Inspect && !isReloading && !isAim && !isCustom;
 
         if (_canInspect)
         {
