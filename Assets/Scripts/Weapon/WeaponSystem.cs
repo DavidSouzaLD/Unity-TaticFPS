@@ -54,7 +54,6 @@ public class WeaponSystem : MonoBehaviour
     bool changeLockCursor;
 
     [HideInInspector] public bool isReloading, isAim, isCustom, isInspect;
-    [HideInInspector] public WeaponManager WeaponManager;
     [HideInInspector] public NightVision NightVision;
     [HideInInspector] public Animator Animator;
     [HideInInspector] public AudioSource Source;
@@ -70,7 +69,6 @@ public class WeaponSystem : MonoBehaviour
     private void Start()
     {
         // Components
-        WeaponManager = GetComponentInParent<WeaponManager>();
         NightVision = GameObject.FindObjectOfType<NightVision>();
         Animator = GetComponentInChildren<Animator>();
         Source = GetComponent<AudioSource>();
@@ -258,7 +256,7 @@ public class WeaponSystem : MonoBehaviour
         {
             // Tracer
             List<Vector3> positions = new List<Vector3>();
-            LineRenderer tracer = Instantiate(WeaponManager.TracerPrefab, firePoint.position, Quaternion.identity).GetComponent<LineRenderer>();
+            LineRenderer tracer = Instantiate(WeaponManager.GetTracerPrefab, firePoint.position, Quaternion.identity).GetComponent<LineRenderer>();
             Tracer tracerScript = tracer.gameObject.GetComponent<Tracer>();
 
             Vector3 point1 = firePoint.position;
@@ -285,6 +283,7 @@ public class WeaponSystem : MonoBehaviour
                 {
                     if (hit.transform)
                     {
+                        float distance = (firePoint.position - hit.point).sqrMagnitude;
                         float time = hit.distance / bulletVelocity;
                         StartCoroutine(DelayFire(time, hit));
                         break;
@@ -404,6 +403,7 @@ public class WeaponSystem : MonoBehaviour
     private IEnumerator DelayFire(float _time, RaycastHit hit)
     {
         yield return new WaitForSeconds(_time);
+
         // Force
         Rigidbody HitBody = hit.transform.GetComponent<Rigidbody>();
         if (HitBody)
@@ -417,6 +417,11 @@ public class WeaponSystem : MonoBehaviour
             GameObject impact = Instantiate(WeaponManager.GetImpactWithTag(hit.transform.tag).prefab, hit.point,
             Quaternion.LookRotation(hit.normal));
             impact.transform.position += impact.transform.forward * 0.001f;
+
+            if (hit.transform.tag.Equals("Enemy"))
+            {
+                WeaponManager.ApplyHitMark(PlayerCamera.WorldToScreen(hit.point));
+            }
 
             Destroy(impact, 5f);
         }

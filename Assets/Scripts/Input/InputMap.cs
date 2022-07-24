@@ -127,6 +127,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""FreeVision"",
+                    ""type"": ""Button"",
+                    ""id"": ""f5d6d683-ac12-4e97-8e0c-d7c109a4cbde"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Flashlight"",
                     ""type"": ""Button"",
                     ""id"": ""472f1a35-4de5-482a-8257-75611aaa3d73"",
@@ -454,6 +463,17 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""action"": ""Inspect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55f0a67e-5333-4d3b-8bfc-a0ab9c7b213d"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeVision"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -473,6 +493,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Keys_Aim = m_Keys.FindAction("Aim", throwIfNotFound: true);
         m_Keys_Reload = m_Keys.FindAction("Reload", throwIfNotFound: true);
         m_Keys_NightVision = m_Keys.FindAction("NightVision", throwIfNotFound: true);
+        m_Keys_FreeVision = m_Keys.FindAction("FreeVision", throwIfNotFound: true);
         m_Keys_Flashlight = m_Keys.FindAction("Flashlight", throwIfNotFound: true);
         m_Keys_Laser = m_Keys.FindAction("Laser", throwIfNotFound: true);
         m_Keys_Interact = m_Keys.FindAction("Interact", throwIfNotFound: true);
@@ -550,6 +571,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Keys_Aim;
     private readonly InputAction m_Keys_Reload;
     private readonly InputAction m_Keys_NightVision;
+    private readonly InputAction m_Keys_FreeVision;
     private readonly InputAction m_Keys_Flashlight;
     private readonly InputAction m_Keys_Laser;
     private readonly InputAction m_Keys_Interact;
@@ -572,6 +594,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @Aim => m_Wrapper.m_Keys_Aim;
         public InputAction @Reload => m_Wrapper.m_Keys_Reload;
         public InputAction @NightVision => m_Wrapper.m_Keys_NightVision;
+        public InputAction @FreeVision => m_Wrapper.m_Keys_FreeVision;
         public InputAction @Flashlight => m_Wrapper.m_Keys_Flashlight;
         public InputAction @Laser => m_Wrapper.m_Keys_Laser;
         public InputAction @Interact => m_Wrapper.m_Keys_Interact;
@@ -621,6 +644,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @NightVision.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnNightVision;
                 @NightVision.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnNightVision;
                 @NightVision.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnNightVision;
+                @FreeVision.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnFreeVision;
+                @FreeVision.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnFreeVision;
+                @FreeVision.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnFreeVision;
                 @Flashlight.started -= m_Wrapper.m_KeysActionsCallbackInterface.OnFlashlight;
                 @Flashlight.performed -= m_Wrapper.m_KeysActionsCallbackInterface.OnFlashlight;
                 @Flashlight.canceled -= m_Wrapper.m_KeysActionsCallbackInterface.OnFlashlight;
@@ -679,6 +705,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @NightVision.started += instance.OnNightVision;
                 @NightVision.performed += instance.OnNightVision;
                 @NightVision.canceled += instance.OnNightVision;
+                @FreeVision.started += instance.OnFreeVision;
+                @FreeVision.performed += instance.OnFreeVision;
+                @FreeVision.canceled += instance.OnFreeVision;
                 @Flashlight.started += instance.OnFlashlight;
                 @Flashlight.performed += instance.OnFlashlight;
                 @Flashlight.canceled += instance.OnFlashlight;
@@ -717,6 +746,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnAim(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnNightVision(InputAction.CallbackContext context);
+        void OnFreeVision(InputAction.CallbackContext context);
         void OnFlashlight(InputAction.CallbackContext context);
         void OnLaser(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);

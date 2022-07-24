@@ -114,6 +114,14 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
+    public bool FreeVision
+    {
+        get
+        {
+            return _haveMap ? Map.Keys.FreeVision.ReadValue<float>() != 0 : false;
+        }
+    }
+
     public bool Flashlight
     {
         get

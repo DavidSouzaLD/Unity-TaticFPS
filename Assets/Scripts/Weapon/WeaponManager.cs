@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
+    public static WeaponManager Global;
+
     #region Sway
 
     [Header("[Sway Settings]")]
@@ -20,9 +22,8 @@ public class WeaponManager : MonoBehaviour
     private Quaternion sway_initialRot;
     private Quaternion horizontalSway_initialRot;
     private Player Player;
-
-    public void SetAccuracy(float value = 0f) => sway_Accuracy = Mathf.Clamp(value, 0f, 1f);
-    public void SetMaxAccuracy() => sway_Accuracy = 1;
+    public static void SetAccuracy(float value = 0f) => Global.sway_Accuracy = Mathf.Clamp(value, 0f, 1f);
+    public static void SetMaxAccuracy() => Global.sway_Accuracy = 1;
 
     #endregion
 
@@ -51,9 +52,9 @@ public class WeaponManager : MonoBehaviour
     [Header("[HitImpact Settings]")]
     public Impact[] Impacts;
 
-    public Impact GetImpactWithTag(string _tag)
+    public static Impact GetImpactWithTag(string _tag)
     {
-        foreach (Impact imp in Impacts)
+        foreach (Impact imp in Global.Impacts)
         {
             if (imp.name == _tag)
             {
@@ -69,7 +70,28 @@ public class WeaponManager : MonoBehaviour
     [Space]
 
     [Header("[Tracer Settings]")]
-    public GameObject TracerPrefab;
+    public GameObject tracerPrefab;
+
+    public static GameObject GetTracerPrefab
+    {
+        get
+        {
+            return Global.tracerPrefab;
+        }
+    }
+
+    [Header("[HitMark Settings]")]
+    public GameObject hitMark;
+    public float hitMarkTime;
+    public float timerHitMark;
+
+    private void Awake()
+    {
+        if (Global == null)
+        {
+            Global = this;
+        }
+    }
 
     private void Start()
     {
@@ -89,6 +111,7 @@ public class WeaponManager : MonoBehaviour
         SwayUpdate();
         RetractUpdate();
         ResetSway();
+        ResetHitMark();
     }
 
     private void SwayUpdate()
@@ -146,6 +169,29 @@ public class WeaponManager : MonoBehaviour
         {
             swayTransform.localPosition = Vector3.Lerp(swayTransform.localPosition, sway_initialPos, resetSpeed * Time.deltaTime);
             swayTransform.localRotation = Quaternion.Slerp(swayTransform.localRotation, sway_initialRot, resetSpeed * Time.deltaTime);
+        }
+    }
+
+    public static void ApplyHitMark(Vector3 _position)
+    {
+        if (Global.timerHitMark <= 0)
+        {
+            Global.hitMark.transform.position = _position;
+            Global.hitMark.SetActive(true);
+            Global.timerHitMark = Global.hitMarkTime;
+        }
+    }
+
+    private void ResetHitMark()
+    {
+        if (timerHitMark > 0)
+        {
+            if (timerHitMark - Time.deltaTime <= 0)
+            {
+                Global.hitMark.SetActive(false);
+            }
+
+            timerHitMark -= Time.deltaTime;
         }
     }
 }

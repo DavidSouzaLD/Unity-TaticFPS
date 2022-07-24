@@ -105,6 +105,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "FreeVision",
+                    "type": "Button",
+                    "id": "f5d6d683-ac12-4e97-8e0c-d7c109a4cbde",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Flashlight",
                     "type": "Button",
                     "id": "472f1a35-4de5-482a-8257-75611aaa3d73",
@@ -430,6 +439,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Inspect",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "55f0a67e-5333-4d3b-8bfc-a0ab9c7b213d",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeVision",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
