@@ -28,6 +28,7 @@ public class WeaponManager : MonoBehaviour
 
     #region Retract
 
+    [Header("[Retract Settings]")]
     [SerializeField] private Transform retractRayTransform;
     [SerializeField] private Transform retractTransform;
     [SerializeField] private LayerMask retractLayers;
@@ -85,7 +86,13 @@ public class WeaponManager : MonoBehaviour
 
     private void Update()
     {
-        // Sway
+        SwayUpdate();
+        RetractUpdate();
+        ResetSway();
+    }
+
+    private void SwayUpdate()
+    {
         if (StateLock.IsLocked("CURSOR_LOCKED"))
         {
             Vector2 cameraAxis = new Vector2(PlayerInput.Keys.CameraAxis.x * sensitivityX, PlayerInput.Keys.CameraAxis.y * sensitivityY) * sway_Accuracy;
@@ -104,10 +111,10 @@ public class WeaponManager : MonoBehaviour
                 horizontalSwayTransform.localRotation = Quaternion.Slerp(horizontalSwayTransform.localRotation, Quaternion.Euler(horizontalSwayTransform.localRotation.x, horizontalSwayTransform.localRotation.y, -cameraAxisX * sway_Amount * horizontalSway_Scale), sway_Smooth * horizontalSway_Scale * Time.deltaTime);
             }
         }
+    }
 
-        ResetSway();
-
-        // Retract
+    private void RetractUpdate()
+    {
         RaycastHit hit;
         Debug.DrawRay(retractRayTransform.position, retractRayTransform.forward * retractDistance, Color.red);
 
