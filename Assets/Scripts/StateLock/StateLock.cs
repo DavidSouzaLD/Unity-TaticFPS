@@ -4,8 +4,20 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class StateLock : MonoBehaviour
 {
+    /// <summary>
+    /// Global public instance.
+    /// </summary>
     public static StateLock Instance;
+
+    /// <summary>
+    /// Maximum number of objects on the waiting list.
+    /// </summary>
     public const int maxWaitlistReferences = 3;
+
+    /// <summary>
+    /// List that saves all game states.
+    /// </summary>
+    [SerializeField] private List<State> states = new List<State>();
 
     [System.Serializable]
     public class State
@@ -25,6 +37,9 @@ public class StateLock : MonoBehaviour
             key = senderKey;
         }
 
+        /// <summary>
+        /// Add to waiting list.
+        /// </summary>
         public void AddWaitInList(Behaviour behaviour)
         {
             for (int i = 0; i < waitingList.Count; i++)
@@ -41,6 +56,9 @@ public class StateLock : MonoBehaviour
             }
         }
 
+        /// <summary>
+        /// Remove to waiting list.
+        /// </summary>
         public void RemoveAtWaitList(Behaviour behaviour)
         {
             for (int i = 0; i < waitingList.Count; i++)
@@ -54,8 +72,6 @@ public class StateLock : MonoBehaviour
         }
     }
 
-    public List<State> states = new List<State>();
-
     private void Awake()
     {
         if (Instance == null)
@@ -68,6 +84,12 @@ public class StateLock : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the current state of the state.
+    /// </summary>
+    /// <param name="key">Key to search state.</param>
+    /// <param name="reference">Reference of the script that is blocking the state.</param>
+    /// <param name="locking">Is it blocked or not?</param>
     public static void Lock(string key, Behaviour reference, bool locking)
     {
         if (locking)
@@ -99,6 +121,11 @@ public class StateLock : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns whether the current state of the key is locked or not.
+    /// </summary>
+    /// <param name="key">Key to search state.</param>
+    /// <returns></returns>
     public static bool IsLocked(string key)
     {
         for (int i = 0; i < Instance.states.Count; i++)

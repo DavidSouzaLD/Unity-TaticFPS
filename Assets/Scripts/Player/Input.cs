@@ -12,8 +12,6 @@ public class Input : MonoBehaviour
 
         if (Instance == null)
         {
-            transform.parent = null;
-            DontDestroyOnLoad(gameObject);
             Instance = this;
         }
         else
