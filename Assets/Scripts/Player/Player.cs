@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 
     [HideInInspector]
     public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isAim;
-    public static bool isRunning => isWalking && !StateLock.IsLocked("PLAYER_RUN") && Input.Run;
+    public static bool isRunning => isWalking && !StateLock.IsLocked("PLAYER_RUN") && Input.Run && Input.MoveAxis.y > 0;
 
     // Components
     [HideInInspector] public Transform CameraTransform;
@@ -231,6 +231,7 @@ public class Player : MonoBehaviour
         {
             isCrouched = false;
 
+            StateLock.Lock("PLAYER_RUN", false);
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, _startCapsuleHeight, crouchSpeed * Time.deltaTime);
             CameraTransform.transform.localPosition = Vector3.Lerp(CameraTransform.transform.localPosition,
             new Vector3(

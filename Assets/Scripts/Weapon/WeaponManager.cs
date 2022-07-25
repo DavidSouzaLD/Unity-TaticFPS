@@ -34,8 +34,9 @@ public class WeaponManager : MonoBehaviour
     }
 
     [Header("[HitMark Settings]")]
-    public GameObject hitMark;
-    public float hitMarkTime;
+    [SerializeField] private GameObject hitMark;
+    [SerializeField] private AudioClip hitMarkSound;
+    [SerializeField] private float hitMarkTime;
 
     // Private
     private float swayAccuracy;
@@ -76,6 +77,14 @@ public class WeaponManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns the hitmark sound.
+    /// </summary>
+    public static AudioClip GetHitMarkSound()
+    {
+        return Instance.hitMarkSound;
     }
 
     public static GameObject GetTracerPrefab

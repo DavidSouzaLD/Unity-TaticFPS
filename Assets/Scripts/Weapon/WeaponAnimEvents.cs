@@ -11,19 +11,19 @@ public class WeaponAnimEvents : MonoBehaviour
 
     public void StartEvent()
     {
-        WeaponSystem.SoundEvent("START_RELOAD");
+        WeaponSystem.ApplySound("START_RELOAD");
         WeaponSystem.isReloading = true;
     }
 
     public void MiddleEvent()
     {
-        WeaponSystem.SoundEvent("MIDDLE_RELOAD");
+        WeaponSystem.ApplySound("MIDDLE_RELOAD");
     }
 
     public void EndEvent()
     {
-        WeaponSystem.SoundEvent("END_RELOAD");
-        WeaponSystem.ReloadEvent();
+        WeaponSystem.ApplySound("END_RELOAD");
+        WeaponSystem.ApplyReload();
         WeaponSystem.isReloading = false;
     }
 }

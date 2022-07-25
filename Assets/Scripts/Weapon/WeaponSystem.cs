@@ -157,7 +157,8 @@ public class WeaponSystem : MonoBehaviour
 
         if (canReload)
         {
-            AnimEvent("RELOAD");
+            StateLock.Lock("PLAYER_RUN", true);
+            ApplyAnim("RELOAD");
         }
 
         // Animation no-bullet
@@ -209,7 +210,7 @@ public class WeaponSystem : MonoBehaviour
 
         if (canInspect)
         {
-            AnimEvent("INSPECT");
+            ApplyAnim("INSPECT");
         }
     }
 
@@ -259,16 +260,16 @@ public class WeaponSystem : MonoBehaviour
             // Set tracer
             tracerScript.pos = positions;
 
-            RecoilEvent();
-            AnimEvent("FIRE");
-            SoundEvent("FIRE");
+            ApplyRecoil();
+            ApplyAnim("FIRE");
+            ApplySound("FIRE");
 
             currentBullets -= bulletsPerFire;
             firerateTimer = firerate;
         }
     }
 
-    public void ReloadEvent()
+    public void ApplyReload()
     {
         if (currentBullets < bulletsPerMagazine)
         {
@@ -293,10 +294,12 @@ public class WeaponSystem : MonoBehaviour
                 currentBullets += necessaryBullets;
                 extraBullets = 0;
             }
+
+            StateLock.Lock("PLAYER_RUN", false);
         }
     }
 
-    public void RecoilEvent()
+    public void ApplyRecoil()
     {
         Vector3 pos = new Vector3(
             Random.Range(weaponRecoilPos.x / 2f, weaponRecoilPos.x),
@@ -316,13 +319,13 @@ public class WeaponSystem : MonoBehaviour
         PlayerCamera.ApplyRecoil(cameraRecoil);
     }
 
-    public void AnimEvent(string eventName, bool stop = false)
+    public void ApplyAnim(string eventName, bool stop = false)
     {
         string toUpper = eventName.ToUpper();
         Animator.Play(toUpper);
     }
 
-    public void SoundEvent(string eventName, AudioClip clip = null)
+    public void ApplySound(string eventName, AudioClip clip = null, float volume = 1f)
     {
         if (clip == null)
         {
@@ -354,12 +357,12 @@ public class WeaponSystem : MonoBehaviour
 
             if (selectedSound)
             {
-                Source.PlayOneShot(selectedSound);
+                Source.PlayOneShot(selectedSound, volume);
             }
         }
         else
         {
-            Source.PlayOneShot(clip);
+            Source.PlayOneShot(clip, volume);
         }
     }
 
@@ -374,17 +377,19 @@ public class WeaponSystem : MonoBehaviour
             HitBody.AddForceAtPosition(firePoint.forward * bulletHitForce, hit.point);
         }
 
+        // Hitmark in enemy
+        if (hit.transform.tag.Equals("Enemy"))
+        {
+            WeaponManager.ApplyHitMark(PlayerCamera.WorldToScreen(hit.point));
+            ApplySound("", WeaponManager.GetHitMarkSound(), 0.3f);
+        }
+
         // Bullet hole
         if (WeaponManager.GetImpactWithTag(hit.transform.tag) != null)
         {
             GameObject impact = Instantiate(WeaponManager.GetImpactWithTag(hit.transform.tag).prefab, hit.point,
             Quaternion.LookRotation(hit.normal));
             impact.transform.position += impact.transform.forward * 0.001f;
-
-            if (hit.transform.tag.Equals("Enemy"))
-            {
-                WeaponManager.ApplyHitMark(PlayerCamera.WorldToScreen(hit.point));
-            }
 
             Destroy(impact, 5f);
         }
