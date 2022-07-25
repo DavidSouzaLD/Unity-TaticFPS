@@ -137,6 +137,7 @@ public class Weapon : MonoBehaviour
 
     // Privates
     private float firerateTimer; // Fire rate counter.
+    private Vector3 defaultAimPos; //
     private Vector3 startAimPos; // Initial position of the aim root.
     private Vector3 startRecoilPos; // Initial position of the recoil root.
     private Quaternion startAimRot; // Initial rotation of the aim root.
@@ -157,6 +158,16 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    public void SetAimPosition(Vector3 aimPos)
+    {
+        aimPosition = aimPos;
+    }
+
+    public void ResetAimPosition()
+    {
+        aimPosition = defaultAimPos;
+    }
+
     private void Start()
     {
         // Components
@@ -168,6 +179,7 @@ public class Weapon : MonoBehaviour
         Events.SetWeapon(this);
 
         // Aim
+        defaultAimPos = aimPosition;
         startAimPos = transform.localPosition;
         startAimRot = transform.localRotation;
 
