@@ -258,6 +258,8 @@ public class Weapon : MonoBehaviour
         if (canAim)
         {
             isAim = true;
+            StateLock.Lock("PLAYER_BASIC_ANIM", this, true);
+
             WeaponManager.SwayAccuracy(aimSwayScale);
             transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, aimSpeed * Time.deltaTime);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, aimRotation, aimSpeed * Time.deltaTime);
@@ -265,6 +267,7 @@ public class Weapon : MonoBehaviour
         else
         {
             isAim = false;
+            StateLock.Lock("PLAYER_BASIC_ANIM", this, false);
         }
 
         bool canResetAim = (!Input.Aim || Input.Run) && (transform.localPosition != startAimPos || transform.localRotation != startAimRot);

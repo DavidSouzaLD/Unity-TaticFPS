@@ -173,15 +173,18 @@ public class Player : MonoBehaviour
                 {
                     Rigidbody.AddForce(direction.normalized * CurrentSpeed * 10f, ForceMode.Force);
 
-                    if (CurrentSpeed == walkAcceleration)
+                    if (!StateLock.IsLocked("PLAYER_BASIC_ANIM"))
                     {
-                        basicAnimator.SetBool("WALK", true);
-                        basicAnimator.SetBool("RUN", false);
-                    }
-                    else if (CurrentSpeed == runAcceleration)
-                    {
-                        basicAnimator.SetBool("WALK", false);
-                        basicAnimator.SetBool("RUN", true);
+                        if (CurrentSpeed == walkAcceleration)
+                        {
+                            basicAnimator.SetBool("WALK", true);
+                            basicAnimator.SetBool("RUN", false);
+                        }
+                        else if (CurrentSpeed == runAcceleration)
+                        {
+                            basicAnimator.SetBool("WALK", false);
+                            basicAnimator.SetBool("RUN", true);
+                        }
                     }
                 }
             }
@@ -304,6 +307,12 @@ public class Player : MonoBehaviour
         {
             basicAnimator.SetBool("WALK", false);
             basicAnimator.SetBool("RUN", false);
+            basicAnimator.Rebind();
+            basicAnimator.enabled = false;
+        }
+        else
+        {
+            basicAnimator.enabled = true;
         }
     }
 
