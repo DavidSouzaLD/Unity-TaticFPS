@@ -5957,22 +5957,29 @@ AnimationClip:
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
   m_Events:
+  - time: 0
+    functionName: StartAnimation
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.9166667
-    functionName: StartEvent
+    functionName: RemoveMagazine
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 2.45
-    functionName: MiddleEvent
+    functionName: PutMagazine
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 3.0166667
-    functionName: EndEvent
+  - time: 3.05
+    functionName: EndAnimation
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

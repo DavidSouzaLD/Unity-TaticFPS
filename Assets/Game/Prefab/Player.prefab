@@ -919,6 +919,7 @@ GameObject:
   - component: {fileID: 1427516789024919715}
   - component: {fileID: 1427516789024919741}
   - component: {fileID: 1427516789024919714}
+  - component: {fileID: 798115260399868740}
   m_Layer: 7
   m_Name: HK416 [Weapon]
   m_TagString: Untagged
@@ -956,9 +957,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetLayers:
     serializedVersion: 2
-    m_Bits: 63
+    m_Bits: 9
   fireMode: 1
-  firePoint: {fileID: 4652089145024770340}
+  firePoint: {fileID: 0}
   maxRange: 1000
   bulletsPerMagazine: 35
   currentBullets: 35
@@ -1086,6 +1087,48 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &798115260399868740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427516789024919712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f7413ad320d3d489727e70fb1f9f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hittableLayers:
+    serializedVersion: 2
+    m_Bits: 9
+  fireMode: 1
+  muzzlePosition: {fileID: 6926302669976442366}
+  firerate: 0.1
+  bulletsPerMagazine: 30
+  currentBullets: 30
+  extraBullets: 120
+  bulletHitForce: 500
+  bulletVelocity: 7000
+  bulletsPerFire: 1
+  bulletGravityScale: 2
+  maxBulletDistance: 1500
+  aimSpeed: 5
+  aimSwayScale: 0.2
+  aimPosition: {x: 0, y: 0, z: 0}
+  aimRotation: {x: 0, y: 0, z: 0, w: 0}
+  recoilResetSpeed: 5
+  recoilForcePos: {x: 0, y: 0, z: 0}
+  recoilForceRot: {x: 0, y: 0, z: 0}
+  recoilForceCamera: {x: 0, y: 0, z: 0}
+  fireSounds: []
+  noBulletSound: {fileID: 0}
+  startReloadSound: {fileID: 0}
+  middleReloadSound: {fileID: 0}
+  endReloadSound: {fileID: 0}
+  isReloading: 0
+  isAim: 0
+  isInspect: 0
 --- !u!1 &1602419289333852527
 GameObject:
   m_ObjectHideFlags: 0
@@ -2180,37 +2223,6 @@ Transform:
   m_Father: {fileID: 6501311316685275087}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 71.188}
---- !u!1 &4652089145024770341
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4652089145024770340}
-  m_Layer: 7
-  m_Name: FirePoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4652089145024770340
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4652089145024770341}
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.5255, y: 0.074, z: -0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7464033490497819794}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &4685668728683308708
 GameObject:
   m_ObjectHideFlags: 0
@@ -2872,7 +2884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302668755907732}
   m_Layer: 6
-  m_Name: Recoil [T]
+  m_Name: Camera Recoil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3674,7 +3686,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302668880110344}
   m_Layer: 6
-  m_Name: WeaponTurn [T]
+  m_Name: WeaponTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3706,7 +3718,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302668880831084}
   m_Layer: 6
-  m_Name: Turn [T]
+  m_Name: Turn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4782,7 +4794,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302669280418194}
   m_Layer: 6
-  m_Name: SwayX [T]
+  m_Name: Sway Horizontal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4816,7 +4828,7 @@ GameObject:
   - component: {fileID: 6926302669281560078}
   - component: {fileID: 6926302669281560077}
   m_Layer: 6
-  m_Name: Stack [C]
+  m_Name: Stack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6034,7 +6046,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302669573496598}
   m_Layer: 6
-  m_Name: Retract [T]
+  m_Name: Retract
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6662,7 +6674,7 @@ GameObject:
   - component: {fileID: 6926302669667958800}
   - component: {fileID: 6926302669667958807}
   m_Layer: 6
-  m_Name: Camera [C]
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8006,7 +8018,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302669976442366}
   m_Layer: 7
-  m_Name: FIRE_POINT
+  m_Name: MuzzlePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8092,7 +8104,7 @@ GameObject:
   - component: {fileID: 6926302669995640255}
   - component: {fileID: 6926302669995640248}
   m_Layer: 6
-  m_Name: Player [P]
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8285,7 +8297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302670017717136}
   m_Layer: 6
-  m_Name: WeaponRecoil [T]
+  m_Name: WeaponRecoil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9703,7 +9715,7 @@ GameObject:
   - component: {fileID: 6926302670515680789}
   - component: {fileID: 6926302670515680788}
   m_Layer: 6
-  m_Name: Basic [A]
+  m_Name: Basic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9869,7 +9881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302670542400046}
   m_Layer: 7
-  m_Name: Weapons [F]
+  m_Name: Weapons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10475,7 +10487,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302670796270924}
   m_Layer: 6
-  m_Name: Sway [T]
+  m_Name: Sway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10811,7 +10823,6 @@ Transform:
   m_Children:
   - {fileID: 1956048482419999756}
   - {fileID: 8251526448650282010}
-  - {fileID: 4652089145024770340}
   m_Father: {fileID: 6926302669886327702}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}

@@ -4,28 +4,6 @@ public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager Instance;
 
-    [Header("[Basic Settings]")]
-    [SerializeField] private GameObject tracerPrefab;
-    [SerializeField] private Impact[] Impacts;
-
-    [Header("[Sway Settings]")]
-    [SerializeField] private Transform swayTransform;
-    [SerializeField] private Transform horizontalSwayTransform;
-    [SerializeField] private float swayAmount = 0.1f;
-    [SerializeField] private float swaySmooth = 0.1f;
-    [SerializeField] private float hswayScale = 1f;
-    [Space]
-    [SerializeField] private float resetSpeed;
-    [SerializeField] private Vector2 swayMultiplier;
-
-    [Header("[Retract Settings]")]
-    [SerializeField] private LayerMask retractLayers;
-    [SerializeField] private Transform retractRayTransform;
-    [SerializeField] private Transform retractTransform;
-    [SerializeField] private float retractDistance;
-    [SerializeField] private float retractAngle;
-    [SerializeField] private float retractSpeed;
-
     [System.Serializable]
     public class Impact
     {
@@ -33,19 +11,98 @@ public class WeaponManager : MonoBehaviour
         public GameObject prefab;
     }
 
-    [Header("[HitMark Settings]")]
+    [Header("Basic")]
+
+    /// <summary>
+    /// List of impacts by tag.
+    /// </summary>
+    [SerializeField] private Impact[] Impacts;
+
+    /// <summary>
+    /// Ray tracer bullet prefab.
+    /// </summary>
+    [SerializeField] private GameObject tracerPrefab;
+
+    [Header("Sway")]
+
+    /// <summary>
+    /// Maximum amount of sway movement.
+    /// </summary>
+    [SerializeField] private float swayAmount = 0.1f;
+
+    /// <summary>
+    /// Smooth sway motion speed.
+    /// </summary>
+    [SerializeField] private float swaySmooth = 0.1f;
+
+    /// <summary>
+    /// Horizontal sway scale that multiplies the current sway value.
+    /// </summary>
+    [SerializeField] private float horizontalSwayScale = 1f;
+
+    [Space]
+
+    /// <summary>
+    /// Sway reset speed;
+    /// </summary>
+    [SerializeField] private float swayResetSpeed;
+
+    /// <summary>
+    /// Multiplies the sway axis.
+    /// </summary>
+    [SerializeField] private Vector2 swayMultiplier;
+
+    [Header("Retract")]
+
+    /// <summary>
+    /// Layers that accept retract.
+    /// </summary>
+    [SerializeField] private LayerMask retractLayers;
+
+    /// <summary>
+    /// Maximum distance to check the retract.
+    /// </summary>
+    [SerializeField] private float retractRayDistance;
+
+    /// <summary>
+    /// Maximum retraction angle
+    /// </summary>
+    [SerializeField] private float retractAngle;
+
+    /// <summary>
+    /// Retraction speed
+    /// </summary>
+    [SerializeField] private float retractSpeed;
+
+    [Header("HitMark")]
+
+    /// <summary>
+    /// Hit mark prefab
+    /// </summary>
     [SerializeField] private GameObject hitMark;
+
+    /// <summary>
+    /// Hit mark sound
+    /// </summary>
     [SerializeField] private AudioClip hitMarkSound;
+
+    /// <summary>
+    /// Hit mark duration time.
+    /// </summary>
     [SerializeField] private float hitMarkTime;
 
     // Private
-    private float swayAccuracy;
-    private float timerHitMark;
-    private Vector3 swayInitialPos;
-    private Quaternion swayInitialRot;
-    private Quaternion hswayInitialRot;
-    private Quaternion retractInitialRot;
-    private Player PlayerCode;
+    private float swayAccuracy; // Sway scale.
+    private float timerHitMark; // Time counter hit mark.
+    private Vector3 swayInitialPos; // Initial position of main sway root.
+    private Quaternion swayInitialRot; // Initial rotation of main sway root.
+    private Quaternion horSwayInitialRot; // Initial rotation of horizontal sway root.
+    private Quaternion retractInitialRot; // Initial rotation of retract root.
+    private Transform swayRoot; // Root of the main sway.
+    private Transform horizontalSwayRoot; // Root of the horizontal sway.
+    private Transform retractRayRoot; // Point to cast retraction raycast.
+    private Transform retracRoot; // Object to apply retraction.
+    private Player Player; // Player component for states conditions.
 
     /// <summary>
     /// Precision that the sway will work from (0 to 1).
@@ -87,6 +144,9 @@ public class WeaponManager : MonoBehaviour
         return Instance.hitMarkSound;
     }
 
+    /// <summary>
+    /// Returns the tracer prefab.
+    /// </summary>
     public static GameObject GetTracerPrefab
     {
         get
@@ -105,26 +165,38 @@ public class WeaponManager : MonoBehaviour
 
     private void Start()
     {
-        // Sway
-        PlayerCode = GetComponentInParent<Player>();
+        // Get component
+        Player = GetComponentInParent<Player>();
 
-        swayInitialPos = swayTransform.localPosition;
-        swayInitialRot = swayTransform.localRotation;
-        hswayInitialRot = horizontalSwayTransform.localRotation;
-        retractInitialRot = retractTransform.localRotation;
+        // Roots
+        swayRoot = GameObject.Find("Sway").transform;
+        horizontalSwayRoot = GameObject.Find("SwayHorizontal").transform;
 
+        // Setting start values
+        swayInitialPos = swayRoot.localPosition;
+        swayInitialRot = swayRoot.localRotation;
+        horSwayInitialRot = horizontalSwayRoot.localRotation;
+        retractInitialRot = retracRoot.localRotation;
+
+        // Setting maximum accuracy
         MaxAccuracy();
+
+        // Error
+        if (swayRoot == null || horizontalSwayRoot == null)
+        {
+            Debug.LogError("SwayRoot or HorizontalSwayRoot not assigned, solve please.");
+        }
     }
 
     private void Update()
     {
-        SwayUpdate();
-        RetractUpdate();
+        Sway();
+        Retract();
         ResetSway();
         ResetHitMark();
     }
 
-    private void SwayUpdate()
+    private void Sway()
     {
         if (StateLock.IsLocked("CURSOR_LOCKED"))
         {
@@ -134,30 +206,30 @@ public class WeaponManager : MonoBehaviour
             // Basic sway
             if (cameraAxis != Vector2.zero)
             {
-                swayTransform.localPosition = Vector3.Lerp(swayTransform.localPosition, new Vector3(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount), swaySmooth * Time.deltaTime);
-                swayTransform.localRotation = Quaternion.Slerp(swayTransform.localRotation, Quaternion.Euler(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount, swayTransform.localRotation.z), swaySmooth * Time.deltaTime);
+                swayRoot.localPosition = Vector3.Lerp(swayRoot.localPosition, new Vector3(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount), swaySmooth * Time.deltaTime);
+                swayRoot.localRotation = Quaternion.Slerp(swayRoot.localRotation, Quaternion.Euler(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount, swayRoot.localRotation.z), swaySmooth * Time.deltaTime);
             }
 
             // Horizontal sway
             if (cameraAxisX != 0f)
             {
-                horizontalSwayTransform.localRotation = Quaternion.Slerp(horizontalSwayTransform.localRotation, Quaternion.Euler(horizontalSwayTransform.localRotation.x, horizontalSwayTransform.localRotation.y, -cameraAxisX * swayAmount * hswayScale), swaySmooth * hswayScale * Time.deltaTime);
+                horizontalSwayRoot.localRotation = Quaternion.Slerp(horizontalSwayRoot.localRotation, Quaternion.Euler(horizontalSwayRoot.localRotation.x, horizontalSwayRoot.localRotation.y, -cameraAxisX * swayAmount * horizontalSwayScale), swaySmooth * horizontalSwayScale * Time.deltaTime);
             }
         }
     }
 
-    private void RetractUpdate()
+    private void Retract()
     {
         RaycastHit hit;
-        Debug.DrawRay(retractRayTransform.position, retractRayTransform.forward * retractDistance, Color.red);
+        Debug.DrawRay(retractRayRoot.position, retractRayRoot.forward * retractRayDistance, Color.red);
 
-        if (Physics.Raycast(retractRayTransform.position, retractRayTransform.forward, out hit, retractDistance, retractLayers))
+        if (Physics.Raycast(retractRayRoot.position, retractRayRoot.forward, out hit, retractRayDistance, retractLayers))
         {
             if (hit.transform)
             {
                 StateLock.Lock("WEAPON_ALL", true);
                 Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retractInitialRot.y, retractInitialRot.z));
-                retractTransform.localRotation = Quaternion.Slerp(retractTransform.localRotation, targetRot, retractSpeed * Time.deltaTime);
+                retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, targetRot, retractSpeed * Time.deltaTime);
             }
         }
         else
@@ -165,20 +237,20 @@ public class WeaponManager : MonoBehaviour
             StateLock.Lock("WEAPON_ALL", false);
         }
 
-        retractTransform.localRotation = Quaternion.Slerp(retractTransform.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);
+        retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);
     }
 
     private void ResetSway()
     {
-        if (horizontalSwayTransform.localRotation != hswayInitialRot || swayAccuracy != 1f)
+        if (horizontalSwayRoot.localRotation != horSwayInitialRot || swayAccuracy != 1f)
         {
-            horizontalSwayTransform.localRotation = Quaternion.Slerp(horizontalSwayTransform.localRotation, hswayInitialRot, resetSpeed * Time.deltaTime);
+            horizontalSwayRoot.localRotation = Quaternion.Slerp(horizontalSwayRoot.localRotation, horSwayInitialRot, swayResetSpeed * Time.deltaTime);
         }
 
-        if (swayTransform.localPosition != swayInitialPos || swayTransform.localRotation != swayInitialRot || swayAccuracy != 1f)
+        if (swayRoot.localPosition != swayInitialPos || swayRoot.localRotation != swayInitialRot || swayAccuracy != 1f)
         {
-            swayTransform.localPosition = Vector3.Lerp(swayTransform.localPosition, swayInitialPos, resetSpeed * Time.deltaTime);
-            swayTransform.localRotation = Quaternion.Slerp(swayTransform.localRotation, swayInitialRot, resetSpeed * Time.deltaTime);
+            swayRoot.localPosition = Vector3.Lerp(swayRoot.localPosition, swayInitialPos, swayResetSpeed * Time.deltaTime);
+            swayRoot.localRotation = Quaternion.Slerp(swayRoot.localRotation, swayInitialRot, swayResetSpeed * Time.deltaTime);
         }
     }
 
