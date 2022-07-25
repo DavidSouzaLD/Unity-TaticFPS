@@ -3,11 +3,13 @@ using UnityEngine;
 public class AttachmentRuntime : MonoBehaviour
 {
     public enum AttachmentType { Muzzle, Sight }
-    public Weapon Weapon;
     public AttachmentType attachmentType = AttachmentType.Sight;
 
     // Sight
-    [SerializeField] private Vector3 sightPosition;
+    [SerializeField] private Vector3 aimPosition;
+    [SerializeField] private Transform newMuzzlePoint;
+
+    private Weapon Weapon;
 
     private void Awake()
     {
@@ -19,7 +21,8 @@ public class AttachmentRuntime : MonoBehaviour
         switch (attachmentType)
         {
             case AttachmentType.Sight:
-                Weapon.SetAimPosition(sightPosition);
+                Weapon.SetMuzzlePoint(newMuzzlePoint);
+                Weapon.SetAimPosition(aimPosition);
                 break;
         }
     }
@@ -29,8 +32,18 @@ public class AttachmentRuntime : MonoBehaviour
         switch (attachmentType)
         {
             case AttachmentType.Sight:
+                Weapon.ResetMuzzlePoint();
                 Weapon.ResetAimPosition();
                 break;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (newMuzzlePoint != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(newMuzzlePoint.position, newMuzzlePoint.forward * 2f);
         }
     }
 }

@@ -135,9 +135,12 @@ public class Weapon : MonoBehaviour
     /// </summary>
     [HideInInspector] public bool isReloading, isAim, isInspect;
 
+    // Default
+    private Transform defaultMuzzlePoint;
+    private Vector3 defaultAimPos;
+
     // Privates
     private float firerateTimer; // Fire rate counter.
-    private Vector3 defaultAimPos; //
     private Vector3 startAimPos; // Initial position of the aim root.
     private Vector3 startRecoilPos; // Initial position of the recoil root.
     private Quaternion startAimRot; // Initial rotation of the aim root.
@@ -158,15 +161,10 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void SetAimPosition(Vector3 aimPos)
-    {
-        aimPosition = aimPos;
-    }
-
-    public void ResetAimPosition()
-    {
-        aimPosition = defaultAimPos;
-    }
+    public void SetMuzzlePoint(Transform muzzle) => muzzlePoint = muzzle;
+    public void SetAimPosition(Vector3 aimPos) => aimPosition = aimPos;
+    public void ResetMuzzlePoint() => muzzlePoint = defaultMuzzlePoint;
+    public void ResetAimPosition() => aimPosition = defaultAimPos;
 
     private void Start()
     {
@@ -178,8 +176,11 @@ public class Weapon : MonoBehaviour
         // Weapon events
         Events.SetWeapon(this);
 
-        // Aim
+        // Default
+        defaultMuzzlePoint = muzzlePoint;
         defaultAimPos = aimPosition;
+
+        // Aim
         startAimPos = transform.localPosition;
         startAimRot = transform.localRotation;
 
