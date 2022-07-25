@@ -6,33 +6,29 @@ using UnityEngine;
 public class WeaponSystem : MonoBehaviour
 {
     public enum FireMode { Semi, Auto, Gust }
-    [SerializeField] private bool disableGizmos;
+
+    [Header("[Weapon Settings]")]
+    [SerializeField] private LayerMask targetLayers;
+    [SerializeField] private FireMode fireMode;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private float maxRange = 100f;
 
     [Header("[Weapon Data]")]
     public int bulletsPerMagazine = 12;
     public int currentBullets = 12;
     public int extraBullets = 24;
 
-    [Header("[Weapon Settings]")]
-    [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private FireMode fireMode;
-    [SerializeField] private Transform firePoint;
-
     [Header("[Fire Settings]")]
     [SerializeField] private float firerate = 1f;
-    [SerializeField] private float maxRange = 100f;
     [SerializeField] private float bulletHitForce = 100f;
     [SerializeField] private float bulletVelocity = 25f;
     [SerializeField] private int bulletsPerFire = 1;
-    float _firerateTimer;
 
     [Header("[Aim Settings]")]
     [SerializeField] private float aimSpeed = 5f;
     [SerializeField] private float aimWeaponSwayAccuracy = 0.2f;
     [SerializeField] private Vector3 aimPosition;
     [SerializeField] private Quaternion aimRotation;
-    Vector3 _startAimPos;
-    Quaternion _startAimRot;
 
     [Header("[Recoil Settings]")]
     [SerializeField] private Transform recoilTransform;
@@ -41,8 +37,7 @@ public class WeaponSystem : MonoBehaviour
     [SerializeField] private Vector3 cameraRecoil;
     [Space]
     [SerializeField] private float resetRecoil = 5f;
-    Vector3 _startRecoilPos;
-    Quaternion _startRecoilRot;
+
 
     [Header("[Sounds Settings]")]
     [SerializeField] private AudioClip[] fireSound;
@@ -51,13 +46,25 @@ public class WeaponSystem : MonoBehaviour
     [SerializeField] private AudioClip middleReloadSound;
     [SerializeField] private AudioClip endReloadSound;
 
-    bool changeLockCursor;
+    [Header("[Gizmos Settings]")]
+    [SerializeField] private bool disableGizmos;
 
-    [HideInInspector] public bool isReloading, isAim, isCustom, isInspect;
-    [HideInInspector] public NightVision NightVision;
-    [HideInInspector] public Animator Animator;
-    [HideInInspector] public AudioSource Source;
+    // State
+    [HideInInspector] public bool isReloading, isAim, isInspect;
 
+    // Privates
+    private float firerateTimer;
+    private Vector3 startAimPos;
+    private Vector3 startRecoilPos;
+    private Quaternion startAimRot;
+    private Quaternion startRecoilRot;
+    private NightVision NightVision;
+    private Animator Animator;
+    private AudioSource Source;
+
+    /// <summary>
+    /// Returns if there is a bullet in the current magazine.
+    /// </summary>
     public bool HaveBulletsInMagazine
     {
         get
@@ -74,12 +81,12 @@ public class WeaponSystem : MonoBehaviour
         Source = GetComponent<AudioSource>();
 
         // Aim
-        _startAimPos = transform.localPosition;
-        _startAimRot = transform.localRotation;
+        startAimPos = transform.localPosition;
+        startAimRot = transform.localRotation;
 
         // Recoil
-        _startRecoilPos = recoilTransform.localPosition;
-        _startRecoilRot = recoilTransform.localRotation;
+        startRecoilPos = recoilTransform.localPosition;
+        startRecoilRot = recoilTransform.localRotation;
     }
 
     private void Update()
@@ -93,10 +100,10 @@ public class WeaponSystem : MonoBehaviour
 
     private void FireUpdate()
     {
-        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_FIRE") && StateLock.IsLocked("CURSOR_LOCKED");
-        bool _canFire = _stateLock && !Player.isRunning && !isReloading;
+        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_FIRE") && StateLock.IsLocked("CURSOR_LOCKED");
+        bool canFire = stateLock && !Player.isRunning && !isReloading;
 
-        if (_canFire)
+        if (canFire)
         {
             // Fire
             switch (fireMode)
@@ -132,9 +139,9 @@ public class WeaponSystem : MonoBehaviour
                     break;
             }
 
-            if (_firerateTimer >= 0)
+            if (firerateTimer >= 0)
             {
-                _firerateTimer -= Time.deltaTime;
+                firerateTimer -= Time.deltaTime;
             }
         }
         else
@@ -145,38 +152,38 @@ public class WeaponSystem : MonoBehaviour
 
     private void ReloadUpdate()
     {
-        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_RELOAD");
-        bool _canReload = _stateLock && Input.Reload && PlayerCamera.CursorLocked && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
+        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_RELOAD");
+        bool canReload = stateLock && Input.Reload && PlayerCamera.CursorLocked && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
 
-        if (_canReload)
+        if (canReload)
         {
             AnimEvent("RELOAD");
         }
 
         // Animation no-bullet
-        Animator.SetBool("NOBULLET", !HaveBulletsInMagazine);
+        Animator.SetBool("NO_BULLET", !HaveBulletsInMagazine);
     }
 
     private void RecoilUpdate()
     {
-        if (recoilTransform.localPosition != _startRecoilPos || recoilTransform.localRotation != _startRecoilRot)
+        if (recoilTransform.localPosition != startRecoilPos || recoilTransform.localRotation != startRecoilRot)
         {
-            recoilTransform.localPosition = Vector3.Lerp(recoilTransform.localPosition, _startRecoilPos, resetRecoil * Time.deltaTime);
-            recoilTransform.localRotation = Quaternion.Slerp(recoilTransform.localRotation, _startRecoilRot, resetRecoil * Time.deltaTime);
+            recoilTransform.localPosition = Vector3.Lerp(recoilTransform.localPosition, startRecoilPos, resetRecoil * Time.deltaTime);
+            recoilTransform.localRotation = Quaternion.Slerp(recoilTransform.localRotation, startRecoilRot, resetRecoil * Time.deltaTime);
         }
     }
 
     private void AimUpdate()
     {
-        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_AIM");
-        bool _canAim = _stateLock && Input.Aim && PlayerCamera.CursorLocked && !isReloading && !Player.isRunning;
+        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_AIM");
+        bool canAim = stateLock && Input.Aim && PlayerCamera.CursorLocked && !isReloading && !Player.isRunning;
 
         Player.isAim = isAim;
 
-        if (_canAim)
+        if (canAim)
         {
             isAim = true;
-            WeaponManager.SetAccuracy(aimWeaponSwayAccuracy);
+            WeaponManager.SwayAccuracy(aimWeaponSwayAccuracy);
             transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, aimSpeed * Time.deltaTime);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, aimRotation, aimSpeed * Time.deltaTime);
         }
@@ -185,22 +192,22 @@ public class WeaponSystem : MonoBehaviour
             isAim = false;
         }
 
-        bool _canResetAim = (!Input.Aim || Input.Run) && (transform.localPosition != _startAimPos || transform.localRotation != _startAimRot);
+        bool canResetAim = (!Input.Aim || Input.Run) && (transform.localPosition != startAimPos || transform.localRotation != startAimRot);
 
-        if (_canResetAim)
+        if (canResetAim)
         {
-            WeaponManager.SetMaxAccuracy();
-            transform.localPosition = Vector3.Lerp(transform.localPosition, _startAimPos, aimSpeed * Time.deltaTime);
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, _startAimRot, aimSpeed * Time.deltaTime);
+            WeaponManager.MaxAccuracy();
+            transform.localPosition = Vector3.Lerp(transform.localPosition, startAimPos, aimSpeed * Time.deltaTime);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, startAimRot, aimSpeed * Time.deltaTime);
         }
     }
 
     private void InspectUpdate()
     {
-        bool _stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_INSPECT");
-        bool _canInspect = _stateLock && Input.Inspect && !isReloading && !isAim && !isCustom;
+        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_INSPECT");
+        bool canInspect = stateLock && Input.Inspect && !isReloading && !isAim;
 
-        if (_canInspect)
+        if (canInspect)
         {
             AnimEvent("INSPECT");
         }
@@ -208,7 +215,7 @@ public class WeaponSystem : MonoBehaviour
 
     private void FireEvent()
     {
-        if (currentBullets >= bulletsPerFire && _firerateTimer <= 0)
+        if (currentBullets >= bulletsPerFire && firerateTimer <= 0)
         {
             // Tracer
             List<Vector3> positions = new List<Vector3>();
@@ -257,7 +264,7 @@ public class WeaponSystem : MonoBehaviour
             SoundEvent("FIRE");
 
             currentBullets -= bulletsPerFire;
-            _firerateTimer = firerate;
+            firerateTimer = firerate;
         }
     }
 
@@ -309,17 +316,17 @@ public class WeaponSystem : MonoBehaviour
         PlayerCamera.ApplyRecoil(cameraRecoil);
     }
 
-    public void AnimEvent(string _eventName, bool _stop = false)
+    public void AnimEvent(string eventName, bool stop = false)
     {
-        string toUpper = _eventName.ToUpper();
+        string toUpper = eventName.ToUpper();
         Animator.Play(toUpper);
     }
 
-    public void SoundEvent(string _eventName, AudioClip _clip = null)
+    public void SoundEvent(string eventName, AudioClip clip = null)
     {
-        if (_clip == null)
+        if (clip == null)
         {
-            string toLower = _eventName.ToLower();
+            string toLower = eventName.ToLower();
             AudioClip selectedSound = null;
 
             switch (toLower)
@@ -352,13 +359,13 @@ public class WeaponSystem : MonoBehaviour
         }
         else
         {
-            Source.PlayOneShot(_clip);
+            Source.PlayOneShot(clip);
         }
     }
 
-    private IEnumerator DelayFire(float _time, RaycastHit hit)
+    private IEnumerator DelayFire(float time, RaycastHit hit)
     {
-        yield return new WaitForSeconds(_time);
+        yield return new WaitForSeconds(time);
 
         // Force
         Rigidbody HitBody = hit.transform.GetComponent<Rigidbody>();

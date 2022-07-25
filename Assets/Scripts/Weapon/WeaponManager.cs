@@ -2,45 +2,29 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    public static WeaponManager Global;
+    public static WeaponManager Instance;
 
-    #region Sway
+    [Header("[Basic Settings]")]
+    [SerializeField] private GameObject tracerPrefab;
+    [SerializeField] private Impact[] Impacts;
 
     [Header("[Sway Settings]")]
     [SerializeField] private Transform swayTransform;
     [SerializeField] private Transform horizontalSwayTransform;
-    [SerializeField] private float sway_Amount = 0.1f;
-    [SerializeField] private float sway_Smooth = 0.1f;
-    [SerializeField] private float horizontalSway_Scale = 1f;
+    [SerializeField] private float swayAmount = 0.1f;
+    [SerializeField] private float swaySmooth = 0.1f;
+    [SerializeField] private float hswayScale = 1f;
     [Space]
     [SerializeField] private float resetSpeed;
-    [SerializeField, Range(0f, 1f)] private float sensitivityX = 1f;
-    [SerializeField, Range(0f, 1f)] private float sensitivityY = 1f;
-
-    private float sway_Accuracy;
-    private Vector3 sway_initialPos;
-    private Quaternion sway_initialRot;
-    private Quaternion horizontalSway_initialRot;
-    private Player Player;
-    public static void SetAccuracy(float value = 0f) => Global.sway_Accuracy = Mathf.Clamp(value, 0f, 1f);
-    public static void SetMaxAccuracy() => Global.sway_Accuracy = 1;
-
-    #endregion
-
-    #region Retract
+    [SerializeField] private Vector2 swayMultiplier;
 
     [Header("[Retract Settings]")]
+    [SerializeField] private LayerMask retractLayers;
     [SerializeField] private Transform retractRayTransform;
     [SerializeField] private Transform retractTransform;
-    [SerializeField] private LayerMask retractLayers;
     [SerializeField] private float retractDistance;
     [SerializeField] private float retractAngle;
     [SerializeField] private float retractSpeed;
-    private Quaternion retract_initialRot;
-
-    #endregion
-
-    #region Hit Impact
 
     [System.Serializable]
     public class Impact
@@ -49,14 +33,43 @@ public class WeaponManager : MonoBehaviour
         public GameObject prefab;
     }
 
-    [Header("[HitImpact Settings]")]
-    public Impact[] Impacts;
+    [Header("[HitMark Settings]")]
+    public GameObject hitMark;
+    public float hitMarkTime;
 
-    public static Impact GetImpactWithTag(string _tag)
+    // Private
+    private float swayAccuracy;
+    private float timerHitMark;
+    private Vector3 swayInitialPos;
+    private Quaternion swayInitialRot;
+    private Quaternion hswayInitialRot;
+    private Quaternion retractInitialRot;
+    private Player PlayerCode;
+
+    /// <summary>
+    /// Precision that the sway will work from (0 to 1).
+    /// </summary>
+    public static void SwayAccuracy(float value = 0f)
     {
-        foreach (Impact imp in Global.Impacts)
+        Instance.swayAccuracy = Mathf.Clamp(value, 0f, 1f);
+    }
+
+    /// <summary>
+    /// Leave the sway accuracy at maximum. (1)
+    /// </summary>
+    public static void MaxAccuracy()
+    {
+        SwayAccuracy(1f);
+    }
+
+    /// <summary>
+    /// Returns the type of impact based on the object's tag.
+    /// </summary>
+    public static Impact GetImpactWithTag(string tag)
+    {
+        foreach (Impact imp in Instance.Impacts)
         {
-            if (imp.name == _tag)
+            if (imp.name == tag)
             {
                 return imp;
             }
@@ -65,45 +78,33 @@ public class WeaponManager : MonoBehaviour
         return null;
     }
 
-    #endregion
-
-    [Space]
-
-    [Header("[Tracer Settings]")]
-    public GameObject tracerPrefab;
-
     public static GameObject GetTracerPrefab
     {
         get
         {
-            return Global.tracerPrefab;
+            return Instance.tracerPrefab;
         }
     }
 
-    [Header("[HitMark Settings]")]
-    public GameObject hitMark;
-    public float hitMarkTime;
-    public float timerHitMark;
-
     private void Awake()
     {
-        if (Global == null)
+        if (Instance == null)
         {
-            Global = this;
+            Instance = this;
         }
     }
 
     private void Start()
     {
         // Sway
-        Player = GetComponentInParent<Player>();
+        PlayerCode = GetComponentInParent<Player>();
 
-        sway_initialPos = swayTransform.localPosition;
-        sway_initialRot = swayTransform.localRotation;
-        horizontalSway_initialRot = horizontalSwayTransform.localRotation;
-        retract_initialRot = retractTransform.localRotation;
+        swayInitialPos = swayTransform.localPosition;
+        swayInitialRot = swayTransform.localRotation;
+        hswayInitialRot = horizontalSwayTransform.localRotation;
+        retractInitialRot = retractTransform.localRotation;
 
-        SetMaxAccuracy();
+        MaxAccuracy();
     }
 
     private void Update()
@@ -118,20 +119,20 @@ public class WeaponManager : MonoBehaviour
     {
         if (StateLock.IsLocked("CURSOR_LOCKED"))
         {
-            Vector2 cameraAxis = new Vector2(Input.CameraAxis.x * sensitivityX, Input.CameraAxis.y * sensitivityY) * sway_Accuracy;
-            float cameraAxisX = Input.MoveAxis.x * sensitivityX * sway_Accuracy;
+            Vector2 cameraAxis = new Vector2(Input.CameraAxis.x * swayMultiplier.x, Input.CameraAxis.y * swayMultiplier.y) * swayAccuracy;
+            float cameraAxisX = Input.MoveAxis.x * swayMultiplier.x * swayAccuracy;
 
             // Basic sway
             if (cameraAxis != Vector2.zero)
             {
-                swayTransform.localPosition = Vector3.Lerp(swayTransform.localPosition, new Vector3(-cameraAxis.x * sway_Amount, -cameraAxis.y * sway_Amount), sway_Smooth * Time.deltaTime);
-                swayTransform.localRotation = Quaternion.Slerp(swayTransform.localRotation, Quaternion.Euler(-cameraAxis.x * sway_Amount, -cameraAxis.y * sway_Amount, swayTransform.localRotation.z), sway_Smooth * Time.deltaTime);
+                swayTransform.localPosition = Vector3.Lerp(swayTransform.localPosition, new Vector3(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount), swaySmooth * Time.deltaTime);
+                swayTransform.localRotation = Quaternion.Slerp(swayTransform.localRotation, Quaternion.Euler(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount, swayTransform.localRotation.z), swaySmooth * Time.deltaTime);
             }
 
             // Horizontal sway
             if (cameraAxisX != 0f)
             {
-                horizontalSwayTransform.localRotation = Quaternion.Slerp(horizontalSwayTransform.localRotation, Quaternion.Euler(horizontalSwayTransform.localRotation.x, horizontalSwayTransform.localRotation.y, -cameraAxisX * sway_Amount * horizontalSway_Scale), sway_Smooth * horizontalSway_Scale * Time.deltaTime);
+                horizontalSwayTransform.localRotation = Quaternion.Slerp(horizontalSwayTransform.localRotation, Quaternion.Euler(horizontalSwayTransform.localRotation.x, horizontalSwayTransform.localRotation.y, -cameraAxisX * swayAmount * hswayScale), swaySmooth * hswayScale * Time.deltaTime);
             }
         }
     }
@@ -146,7 +147,7 @@ public class WeaponManager : MonoBehaviour
             if (hit.transform)
             {
                 StateLock.Lock("WEAPON_ALL", true);
-                Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retract_initialRot.y, retract_initialRot.z));
+                Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retractInitialRot.y, retractInitialRot.z));
                 retractTransform.localRotation = Quaternion.Slerp(retractTransform.localRotation, targetRot, retractSpeed * Time.deltaTime);
             }
         }
@@ -155,30 +156,30 @@ public class WeaponManager : MonoBehaviour
             StateLock.Lock("WEAPON_ALL", false);
         }
 
-        retractTransform.localRotation = Quaternion.Slerp(retractTransform.localRotation, retract_initialRot, retractSpeed * Time.deltaTime);
+        retractTransform.localRotation = Quaternion.Slerp(retractTransform.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);
     }
 
     private void ResetSway()
     {
-        if (horizontalSwayTransform.localRotation != horizontalSway_initialRot || sway_Accuracy != 1f)
+        if (horizontalSwayTransform.localRotation != hswayInitialRot || swayAccuracy != 1f)
         {
-            horizontalSwayTransform.localRotation = Quaternion.Slerp(horizontalSwayTransform.localRotation, horizontalSway_initialRot, resetSpeed * Time.deltaTime);
+            horizontalSwayTransform.localRotation = Quaternion.Slerp(horizontalSwayTransform.localRotation, hswayInitialRot, resetSpeed * Time.deltaTime);
         }
 
-        if (swayTransform.localPosition != sway_initialPos || swayTransform.localRotation != sway_initialRot || sway_Accuracy != 1f)
+        if (swayTransform.localPosition != swayInitialPos || swayTransform.localRotation != swayInitialRot || swayAccuracy != 1f)
         {
-            swayTransform.localPosition = Vector3.Lerp(swayTransform.localPosition, sway_initialPos, resetSpeed * Time.deltaTime);
-            swayTransform.localRotation = Quaternion.Slerp(swayTransform.localRotation, sway_initialRot, resetSpeed * Time.deltaTime);
+            swayTransform.localPosition = Vector3.Lerp(swayTransform.localPosition, swayInitialPos, resetSpeed * Time.deltaTime);
+            swayTransform.localRotation = Quaternion.Slerp(swayTransform.localRotation, swayInitialRot, resetSpeed * Time.deltaTime);
         }
     }
 
     public static void ApplyHitMark(Vector3 _position)
     {
-        if (Global.timerHitMark <= 0)
+        if (Instance.timerHitMark <= 0)
         {
-            Global.hitMark.transform.position = _position;
-            Global.hitMark.SetActive(true);
-            Global.timerHitMark = Global.hitMarkTime;
+            Instance.hitMark.transform.position = _position;
+            Instance.hitMark.SetActive(true);
+            Instance.timerHitMark = Instance.hitMarkTime;
         }
     }
 
@@ -188,7 +189,7 @@ public class WeaponManager : MonoBehaviour
         {
             if (timerHitMark - Time.deltaTime <= 0)
             {
-                Global.hitMark.SetActive(false);
+                Instance.hitMark.SetActive(false);
             }
 
             timerHitMark -= Time.deltaTime;
