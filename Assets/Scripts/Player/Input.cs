@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Input : MonoBehaviour
 {
-    private InputMap Map;
-    private bool _haveInstance => Map != null;
     private static Input Instance;
+    private InputMap Map;
+    private bool _haveMap => Map != null;
 
     private void Awake()
     {
@@ -12,6 +12,7 @@ public class Input : MonoBehaviour
 
         if (Instance == null)
         {
+            transform.parent = null;
             DontDestroyOnLoad(gameObject);
             Instance = this;
         }
@@ -37,7 +38,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.CameraAxis.ReadValue<Vector2>() : Vector2.zero;
+            return Instance._haveMap ? Instance.Map.Player.CameraAxis.ReadValue<Vector2>() : Vector2.zero;
         }
     }
 
@@ -45,7 +46,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.MoveAxis.ReadValue<Vector2>().normalized : Vector2.zero;
+            return Instance._haveMap ? Instance.Map.Player.MoveAxis.ReadValue<Vector2>().normalized : Vector2.zero;
         }
     }
 
@@ -53,7 +54,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Run.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Run.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -61,7 +62,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Crouch.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Crouch.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -69,7 +70,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Jump.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Jump.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -77,7 +78,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Interact.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Interact.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -85,7 +86,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.FireAuto.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.FireAuto.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -93,7 +94,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.FireTap.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.FireTap.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -101,7 +102,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Aim.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Aim.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -109,7 +110,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Reload.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Reload.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -117,7 +118,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.NightVision.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.NightVision.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -125,7 +126,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.FreeVision.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.FreeVision.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -133,7 +134,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Flashlight.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Flashlight.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -141,7 +142,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Laser.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Laser.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -149,7 +150,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.EquipPrimary.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.EquipPrimary.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -157,7 +158,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.EquipSecondary.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.EquipSecondary.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -165,7 +166,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Turn.ReadValue<float>() : 0;
+            return Instance._haveMap ? Instance.Map.Player.Turn.ReadValue<float>() : 0;
         }
     }
 
@@ -173,7 +174,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Player.Inspect.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Inspect.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -185,7 +186,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Customize.Rotation.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Customize.Rotation.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -193,7 +194,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Customize.ResetRotation.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Customize.ResetRotation.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -201,7 +202,7 @@ public class Input : MonoBehaviour
     {
         get
         {
-            return Instance._haveInstance ? Instance.Map.Customize.Scroll.ReadValue<float>() : 0f;
+            return Instance._haveMap ? Instance.Map.Customize.Scroll.ReadValue<float>() : 0f;
         }
     }
 
