@@ -221,8 +221,8 @@ public class Player : MonoBehaviour
         if (_canCrouch)
         {
             isCrouched = true;
+            StateLock.Lock("PLAYER_RUN", this, true);
 
-            StateLock.Lock("PLAYER_RUN", true);
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, crouchHeight, crouchSpeed * Time.deltaTime);
             CameraTransform.transform.position = Vector3.Lerp(CameraTransform.transform.position,
             CapsuleTop, crouchSpeed * Time.deltaTime);
@@ -230,8 +230,8 @@ public class Player : MonoBehaviour
         else
         {
             isCrouched = false;
+            StateLock.Lock("PLAYER_RUN", this, false);
 
-            StateLock.Lock("PLAYER_RUN", false);
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, _startCapsuleHeight, crouchSpeed * Time.deltaTime);
             CameraTransform.transform.localPosition = Vector3.Lerp(CameraTransform.transform.localPosition,
             new Vector3(

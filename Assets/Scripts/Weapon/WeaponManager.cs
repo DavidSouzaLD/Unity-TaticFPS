@@ -12,18 +12,17 @@ public class WeaponManager : MonoBehaviour
     }
 
     [Header("Basic")]
-
-    /// <summary>
-    /// List of impacts by tag.
-    /// </summary>
-    [SerializeField] private Impact[] Impacts;
-
     /// <summary>
     /// Ray tracer bullet prefab.
     /// </summary>
     [SerializeField] private GameObject tracerPrefab;
 
     [Header("Sway")]
+
+    /// <summary>
+    /// Multiplies the sway axis.
+    /// </summary>
+    [SerializeField] private Vector2 swayMultiplier;
 
     /// <summary>
     /// Maximum amount of sway movement.
@@ -36,21 +35,14 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] private float swaySmooth = 0.1f;
 
     /// <summary>
-    /// Horizontal sway scale that multiplies the current sway value.
-    /// </summary>
-    [SerializeField] private float horizontalSwayScale = 1f;
-
-    [Space]
-
-    /// <summary>
     /// Sway reset speed;
     /// </summary>
     [SerializeField] private float swayResetSpeed;
 
     /// <summary>
-    /// Multiplies the sway axis.
+    /// Horizontal sway scale that multiplies the current sway value.
     /// </summary>
-    [SerializeField] private Vector2 swayMultiplier;
+    [SerializeField] private float horizontalSwayScale = 1f;
 
     [Header("Retract")]
 
@@ -90,6 +82,12 @@ public class WeaponManager : MonoBehaviour
     /// Hit mark duration time.
     /// </summary>
     [SerializeField] private float hitMarkTime;
+
+    [Header("Impact")]
+    /// <summary>
+    /// List of impacts by tag.
+    /// </summary>
+    [SerializeField] private Impact[] Impacts;
 
     // Private
     private float swayAccuracy; // Sway scale.
@@ -171,6 +169,8 @@ public class WeaponManager : MonoBehaviour
         // Roots
         swayRoot = GameObject.Find("Sway").transform;
         horizontalSwayRoot = GameObject.Find("SwayHorizontal").transform;
+        retracRoot = GameObject.Find("Retract").transform;
+        retractRayRoot = GameObject.Find("Camera").transform;
 
         // Setting start values
         swayInitialPos = swayRoot.localPosition;
@@ -182,9 +182,9 @@ public class WeaponManager : MonoBehaviour
         MaxAccuracy();
 
         // Error
-        if (swayRoot == null || horizontalSwayRoot == null)
+        if (swayRoot == null || horizontalSwayRoot == null || retracRoot == null)
         {
-            Debug.LogError("SwayRoot or HorizontalSwayRoot not assigned, solve please.");
+            Debug.LogError("(SwayRoot/HorizontalSwayRoot/RetractRoot) not assigned, solve please.");
         }
     }
 
@@ -227,14 +227,14 @@ public class WeaponManager : MonoBehaviour
         {
             if (hit.transform)
             {
-                StateLock.Lock("WEAPON_ALL", true);
+                StateLock.Lock("WEAPON_ALL", this, true);
                 Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retractInitialRot.y, retractInitialRot.z));
                 retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, targetRot, retractSpeed * Time.deltaTime);
             }
         }
         else
         {
-            StateLock.Lock("WEAPON_ALL", false);
+            StateLock.Lock("WEAPON_ALL", this, false);
         }
 
         retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);

@@ -4,62 +4,111 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class StateLock : MonoBehaviour
 {
-    public static StateLock Global;
+    public static StateLock Instance;
+    public const int maxWaitlistReferences = 3;
 
     [System.Serializable]
-    public class LockingClass
+    public class State
     {
-        public string name;
-        public bool locked;
-
-        public LockingClass(string _key, bool _locked)
+        public string key;
+        public List<Behaviour> waitingList = new List<Behaviour>();
+        public bool locked
         {
-            name = _key;
-            locked = _locked;
-        }
-    }
-
-    public List<LockingClass> LockList = new List<LockingClass>();
-
-    public static bool IsLocked(string _keyName)
-    {
-        string keyName = _keyName.ToUpper();
-
-        for (int i = 0; i < Global.LockList.Count; i++)
-        {
-            if (Global.LockList[i].name.Equals(keyName))
+            get
             {
-                return Global.LockList[i].locked;
+                return waitingList.Count > 0;
             }
         }
 
-        Lock(keyName, false);
-        return false;
-    }
-
-    public static void Lock(string _key, bool _locked = true)
-    {
-        string newName = _key.ToUpper();
-
-        for (int i = 0; i < Global.LockList.Count; i++)
+        public State(string senderKey)
         {
-            if (Global.LockList[i].name.ToUpper().Equals(newName))
-            {
-                Global.LockList[i].name = newName;
-                Global.LockList[i].locked = _locked;
+            key = senderKey;
+        }
 
-                return;
+        public void AddWaitInList(Behaviour behaviour)
+        {
+            for (int i = 0; i < waitingList.Count; i++)
+            {
+                if (waitingList[i].Equals(behaviour))
+                {
+                    return;
+                }
+            }
+
+            if (waitingList.Count <= maxWaitlistReferences)
+            {
+                waitingList.Add(behaviour);
             }
         }
 
-        Global.LockList.Add(new LockingClass(newName, _locked));
+        public void RemoveAtWaitList(Behaviour behaviour)
+        {
+            for (int i = 0; i < waitingList.Count; i++)
+            {
+                if (waitingList[i].Equals(behaviour))
+                {
+                    waitingList.RemoveAt(i);
+                    return;
+                }
+            }
+        }
     }
+
+    public List<State> states = new List<State>();
 
     private void Awake()
     {
-        if (Global == null)
+        if (Instance == null)
         {
-            Global = this;
+            Instance = this;
         }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public static void Lock(string key, Behaviour reference, bool locking)
+    {
+        if (locking)
+        {
+            for (int i = 0; i < Instance.states.Count; i++)
+            {
+                if (Instance.states[i].key.Equals(key))
+                {
+                    Instance.states[i].AddWaitInList(reference);
+                    return;
+                }
+            }
+
+            Instance.states.Add(new State(key));
+        }
+        else
+        {
+            for (int i = 0; i < Instance.states.Count; i++)
+            {
+                if (Instance.states[i].waitingList.Count > 0)
+                {
+                    if (Instance.states[i].key.Equals(key))
+                    {
+                        Instance.states[i].RemoveAtWaitList(reference);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public static bool IsLocked(string key)
+    {
+        for (int i = 0; i < Instance.states.Count; i++)
+        {
+            if (Instance.states[i].key.Equals(key))
+            {
+                return Instance.states[i].locked;
+            }
+        }
+
+        return false;
     }
 }

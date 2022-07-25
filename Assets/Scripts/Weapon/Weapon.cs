@@ -21,7 +21,7 @@ public class Weapon : MonoBehaviour
     /// <summary>
     /// Position of the gun barrel where the raycast is launched.
     /// </summary>
-    [SerializeField] private Transform muzzlePosition;
+    [SerializeField] private Transform muzzlePoint;
 
     [SerializeField] private float firerate = 1f;
 
@@ -177,7 +177,7 @@ public class Weapon : MonoBehaviour
         startRecoilRot = recoilRoot.localRotation;
 
         // Error
-        if (recoilRoot)
+        if (recoilRoot == null)
         {
             Debug.LogError("RecoilRoot not assigned, solve please.");
         }
@@ -238,9 +238,11 @@ public class Weapon : MonoBehaviour
 
         if (canReload)
         {
-            StateLock.Lock("PLAYER_RUN", true);
             PlayAnimation("RELOAD");
         }
+
+        // Lock state
+        StateLock.Lock("PLAYER_RUN", this, isReloading);
 
         // Animation no-bullet
         Animator.SetBool("NO_BULLET", !HaveBullets);
@@ -302,11 +304,11 @@ public class Weapon : MonoBehaviour
         {
             // Tracer
             List<Vector3> positions = new List<Vector3>();
-            LineRenderer tracer = Instantiate(WeaponManager.GetTracerPrefab, muzzlePosition.position, Quaternion.identity).GetComponent<LineRenderer>();
+            LineRenderer tracer = Instantiate(WeaponManager.GetTracerPrefab, muzzlePoint.position, Quaternion.identity).GetComponent<LineRenderer>();
             Tracer tracerScript = tracer.gameObject.GetComponent<Tracer>();
 
-            Vector3 point1 = muzzlePosition.position;
-            Vector3 predictedBulletVelocity = muzzlePosition.forward * maxBulletDistance;
+            Vector3 point1 = muzzlePoint.position;
+            Vector3 predictedBulletVelocity = muzzlePoint.forward * maxBulletDistance;
             float stepSize = 0.01f;
 
             // Tracer start position
@@ -329,7 +331,7 @@ public class Weapon : MonoBehaviour
                 {
                     if (hit.transform)
                     {
-                        float distance = (muzzlePosition.position - hit.point).sqrMagnitude;
+                        float distance = (muzzlePoint.position - hit.point).sqrMagnitude;
                         float time = hit.distance / bulletVelocity;
                         StartCoroutine(CalculateDelay(time, hit));
                         break;
@@ -392,8 +394,6 @@ public class Weapon : MonoBehaviour
                 currentBullets += necessaryBullets;
                 extraBullets = 0;
             }
-
-            StateLock.Lock("PLAYER_RUN", false);
         }
     }
 
@@ -405,7 +405,7 @@ public class Weapon : MonoBehaviour
         Rigidbody HitBody = hit.transform.GetComponent<Rigidbody>();
         if (HitBody)
         {
-            HitBody.AddForceAtPosition(muzzlePosition.forward * bulletHitForce, hit.point);
+            HitBody.AddForceAtPosition(muzzlePoint.forward * bulletHitForce, hit.point);
         }
 
         // Hitmark in enemy
@@ -475,11 +475,11 @@ public class Weapon : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (muzzlePosition)
+        if (muzzlePoint)
         {
             Gizmos.color = Color.red;
-            Vector3 point1 = muzzlePosition.position;
-            Vector3 predictedBulletVelocity = muzzlePosition.forward * maxBulletDistance;
+            Vector3 point1 = muzzlePoint.position;
+            Vector3 predictedBulletVelocity = muzzlePoint.forward * maxBulletDistance;
             float stepSize = 0.01f;
 
             for (float step = 0f; step < 1; step += stepSize)

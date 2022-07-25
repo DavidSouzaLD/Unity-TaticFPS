@@ -68,7 +68,7 @@ public class PlayerCamera : MonoBehaviour
         // Camera
         if (Camera)
         {
-            StateLock.Lock("CURSOR_LOCKED", cursorLocked);
+            StateLock.Lock("CURSOR_LOCKED", this, cursorLocked);
 
             if (cursorLocked)
             {
