@@ -102,7 +102,7 @@ public class PlayerCamera : MonoBehaviour
         // Camera
         if (Camera)
         {
-            LockManager.Lock("CURSOR_LOCKED", this, isCursorLocked);
+            LockManager.Lock("CAMERA", "CURSOR_LOCKED", isCursorLocked);
 
             if (isCursorLocked)
             {

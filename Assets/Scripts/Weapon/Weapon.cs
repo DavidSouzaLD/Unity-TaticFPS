@@ -261,7 +261,7 @@ public class Weapon : MonoBehaviour
         }
 
         // Lock state
-        LockManager.Lock("PLAYER_RUN", this, isReloading);
+        LockManager.Lock("RELOAD", "PLAYER_RUN", isReloading);
 
         // Animation no-bullet
         Animator.SetBool("NO_BULLET", !HaveBullets);
@@ -278,7 +278,7 @@ public class Weapon : MonoBehaviour
         {
             isAim = true;
 
-            LockManager.Lock("PLAYER_BASIC_ANIM", this, true);
+            LockManager.Lock("AIM", "PLAYER_BASIC_ANIM", true);
             PlayerCamera.SetSensitivityScale(aimSensitivityScale);
             WeaponManager.SwayAccuracy(aimSwayScale);
 
@@ -288,7 +288,7 @@ public class Weapon : MonoBehaviour
         else
         {
             isAim = false;
-            LockManager.Lock("PLAYER_BASIC_ANIM", this, false);
+            LockManager.Lock("AIM", "PLAYER_BASIC_ANIM", false);
             PlayerCamera.MaxSensitivityScale();
         }
 

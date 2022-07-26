@@ -222,14 +222,14 @@ public class WeaponManager : MonoBehaviour
         {
             if (hit.transform)
             {
-                LockManager.Lock("WEAPON_ALL", this, true);
+                LockManager.Lock("RETRACT", "WEAPON_ALL", true);
                 Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retractInitialRot.y, retractInitialRot.z));
                 retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, targetRot, retractSpeed * Time.deltaTime);
             }
         }
         else
         {
-            LockManager.Lock("WEAPON_ALL", this, false);
+            LockManager.Lock("RETRACT", "WEAPON_ALL", false);
         }
 
         retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);

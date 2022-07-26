@@ -23,7 +23,7 @@ public class LockManager : MonoBehaviour
     public class State
     {
         public string key;
-        public List<Behaviour> waitingList = new List<Behaviour>();
+        public List<string> waitingList = new List<string>();
         public bool locked
         {
             get
@@ -40,11 +40,11 @@ public class LockManager : MonoBehaviour
         /// <summary>
         /// Add to waiting list.
         /// </summary>
-        public void AddWaitInList(Behaviour behaviour)
+        public void AddWaitInList(string nameObject)
         {
             for (int i = 0; i < waitingList.Count; i++)
             {
-                if (waitingList[i].Equals(behaviour))
+                if (waitingList[i].Equals(nameObject))
                 {
                     return;
                 }
@@ -52,18 +52,18 @@ public class LockManager : MonoBehaviour
 
             if (waitingList.Count <= maxWaitlistReferences)
             {
-                waitingList.Add(behaviour);
+                waitingList.Add(nameObject);
             }
         }
 
         /// <summary>
         /// Remove to waiting list.
         /// </summary>
-        public void RemoveAtWaitList(Behaviour behaviour)
+        public void RemoveAtWaitList(string nameObject)
         {
             for (int i = 0; i < waitingList.Count; i++)
             {
-                if (waitingList[i].Equals(behaviour))
+                if (waitingList[i].Equals(nameObject))
                 {
                     waitingList.RemoveAt(i);
                     return;
@@ -90,7 +90,7 @@ public class LockManager : MonoBehaviour
     /// <param name="key">Key to search state.</param>
     /// <param name="reference">Reference of the script that is blocking the state.</param>
     /// <param name="locking">Is it blocked or not?</param>
-    public static void Lock(string key, Behaviour reference, bool locking)
+    public static void Lock(string nameObject, string key, bool locking)
     {
         if (locking)
         {
@@ -98,7 +98,7 @@ public class LockManager : MonoBehaviour
             {
                 if (Instance.states[i].key.Equals(key))
                 {
-                    Instance.states[i].AddWaitInList(reference);
+                    Instance.states[i].AddWaitInList(nameObject);
                     return;
                 }
             }
@@ -113,7 +113,7 @@ public class LockManager : MonoBehaviour
                 {
                     if (Instance.states[i].key.Equals(key))
                     {
-                        Instance.states[i].RemoveAtWaitList(reference);
+                        Instance.states[i].RemoveAtWaitList(nameObject);
                         return;
                     }
                 }

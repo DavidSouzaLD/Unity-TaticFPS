@@ -34,6 +34,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float limitRunVelocity = 4.5f;
 
     /// <summary>
+    /// Up ladder speed limit.
+    /// </summary>
+    [SerializeField] private float limitLadderVelocity = 4.5f;
+
+    /// <summary>
     /// Squat speed limit.
     /// </summary>
     [SerializeField] private float limitCrouchVelocity = 1.5f;
@@ -121,33 +126,107 @@ public class Player : MonoBehaviour
     /// Player states.
     /// </summary>
     [HideInInspector]
-    public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isAim;
-    public static bool isRunning => isWalking && !LockManager.IsLocked("PLAYER_RUN") && InputManager.Run && InputManager.MoveAxis.y > 0;
+    public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isLadder, isAim;
+    public static bool isRunning => !LockManager.IsLocked("PLAYER_RUN") && InputManager.Run && isWalking && InputManager.MoveAxis.y > 0;
 
     // Private
     private Transform weaponTurn;
     private Transform cameraTurn;
     private float jumpFixTimer = 0f;
     private float startCapsuleHeight;
-    private float startCameraHeight;
     private Vector3 startCameraTurnPos;
     private Vector3 additionalVelocity;
+    private Vector3 additionalDirection;
     private Quaternion startTurnRot;
     private Quaternion startTurnCameraRot;
     private Transform CameraTransform;
     private Rigidbody Rigidbody;
     private CapsuleCollider CapsuleCollider;
 
-    public float CurrentSpeed { get { return isRunning ? runAcceleration : walkAcceleration; } }
-    public float LimitCurrentSpeed { get { return (!InputManager.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + additionalVelocity.magnitude; } }
-    public float SlopeAngle { get { return Vector3.Angle(transform.up, Normal); } }
-    public bool Grounded { get { return GroundColliders.Length > 0; } }
-    public bool Sloped { get { return SlopeAngle > 0 && SlopeAngle <= maxAngleToSlope; } }
-    public float LocalYRotation { get { return transform.localEulerAngles.y; } }
-    public Vector2 ForwardXZ { get { return new Vector2(transform.forward.x, transform.forward.z); } }
-    public Vector3 CapsuleTop { get { return (transform.position - CapsuleCollider.center) + (transform.up * ((CapsuleCollider.height / 2f) + groundHeightOffset)); } }
-    public Vector3 CapsuleBottom { get { return (transform.position + CapsuleCollider.center) - (transform.up * ((CapsuleCollider.height / 2f) + groundHeightOffset)); } }
+    /// <summary>
+    /// Returns current speed.
+    /// </summary>
+    public bool UseGravity
+    {
+        set
+        {
+            Rigidbody.useGravity = value;
+        }
+    }
 
+    /// <summary>
+    /// Returns current speed.
+    /// </summary>
+    public float CurrentSpeed
+    {
+        get
+        {
+            return isRunning ? runAcceleration : walkAcceleration;
+        }
+    }
+
+    /// <summary>
+    /// Returns the current speed limit.
+    /// </summary>
+    public float LimitCurrentSpeed
+    {
+        get
+        {
+            return (!isLadder ? (!InputManager.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) : limitLadderVelocity) + additionalVelocity.magnitude;
+        }
+    }
+
+    /// <summary>
+    /// Returns whether the surface the player is on is curved or not.
+    /// </summary>
+    public bool Sloped
+    {
+        get
+        {
+            return SlopeAngle > 0 && SlopeAngle <= maxAngleToSlope;
+        }
+    }
+
+    /// <summary>
+    /// Returns the angle of the surface the player is standing on.
+    /// </summary>
+    public float SlopeAngle { get { return Vector3.Angle(transform.up, Normal); } }
+
+    /// <summary>
+    /// Returns the rotation Y axis of the player's transform.
+    /// </summary>
+    public float LocalYRotation { get { return transform.localEulerAngles.y; } }
+
+    /// <summary>
+    /// Returns the player's forward XZ axis
+    /// </summary>
+    public Vector2 ForwardXZ { get { return new Vector2(transform.forward.x, transform.forward.z); } }
+
+    /// <summary>
+    /// /// Returns the exact position of the top of the capsule.
+    /// </summary>
+    public Vector3 CapsuleTop
+    {
+        get
+        {
+            return (transform.position - CapsuleCollider.center) + (transform.up * ((CapsuleCollider.height / 2f) + groundHeightOffset));
+        }
+    }
+
+    /// <summary>
+    /// Returns the exact position of the bottom of the capsule.
+    /// </summary>
+    public Vector3 CapsuleBottom
+    {
+        get
+        {
+            return (transform.position + CapsuleCollider.center) - (transform.up * ((CapsuleCollider.height / 2f) + groundHeightOffset));
+        }
+    }
+
+    /// <summary>
+    /// Returns the normal vector of the surface the player is standing on.
+    /// </summary>
     public Vector3 Normal
     {
         get
@@ -166,6 +245,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns the colliders the player is touching the ground.
+    /// </summary>
     public Collider[] GroundColliders
     {
         get
@@ -174,6 +256,22 @@ public class Player : MonoBehaviour
             Collider[] hits = Physics.OverlapSphere(CapsuleBottom, radius, groundableMask);
             return hits;
         }
+    }
+
+    /// <summary>
+    /// Adds an additional direction that is superior to basic movement.
+    /// </summary>
+    public void SetAdditionalDirection(Vector3 direction)
+    {
+        additionalDirection = direction;
+    }
+
+    /// <summary>
+    /// Resets additional direction to Vector3.zero.
+    /// </summary>
+    public void ResetAdditionalDirection()
+    {
+        additionalDirection = Vector3.zero;
     }
 
     private void Start()
@@ -191,7 +289,6 @@ public class Player : MonoBehaviour
         PlayerCamera.LockCursor(true);
 
         // Starting values
-        startCameraHeight = CameraTransform.transform.localPosition.y;
         startCapsuleHeight = CapsuleCollider.height;
 
         // Turn
@@ -218,85 +315,59 @@ public class Player : MonoBehaviour
         AnimatorUpdate();
     }
 
+    private void LateUpdate()
+    {
+        // Locking
+        LockManager.Lock("LADDER", "PLAYER_RUN", isLadder);
+        LockManager.Lock("LADDER", "PLAYER_CROUCH", isLadder);
+        LockManager.Lock("LADDER", "PLAYER_JUMP", isLadder);
+        LockManager.Lock("CROUCH", "PLAYER_RUN", isCrouched);
+        LockManager.Lock("RUN", "PLAYER_TURN", isRunning);
+        LockManager.Lock("TURN", "PLAYER_BASIC_ANIM", isTurning);
+    }
+
     public void UpdateMove()
     {
+        isGrounded = GroundColliders.Length > 0;
+
         if (!LockManager.IsLocked("PLAYER_MOVEMENT"))
         {
-            // Movement
-            Vector2 moveAxis = InputManager.MoveAxis;
-            Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
-            Vector3 dir2 = Vector3.Cross(transform.right, Normal) * moveAxis.y + Vector3.Cross(-transform.forward, Normal) * moveAxis.x;
-            Vector3 direction = !Sloped ? dir1 : dir2;
-
-            // Direction Ray
-            if (!disableGizmos)
+            if (!isLadder)
             {
-                Debug.DrawRay(transform.position, direction * 2f, Color.magenta);
-            }
-
-            isGrounded = Grounded;
-
-            if (moveAxis != Vector2.zero)
-            {
-                isWalking = true;
-
-                if (Rigidbody.drag != moveFriction)
+                if (isGrounded)
                 {
-                    Rigidbody.drag = moveFriction;
-                }
+                    // Movement
+                    Vector2 moveAxis = InputManager.MoveAxis;
+                    Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
+                    Vector3 dir2 = Vector3.Cross(transform.right, Normal) * moveAxis.y + Vector3.Cross(-transform.forward, Normal) * moveAxis.x;
+                    Vector3 direction = (!Sloped ? dir1 : dir2);
 
-                if (Grounded)
-                {
-                    Rigidbody.AddForce(direction.normalized * CurrentSpeed * 10f, ForceMode.Force);
-
-                    if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
-                    {
-                        if (CurrentSpeed == walkAcceleration)
-                        {
-                            LockManager.Lock("PLAYER_TURN", this, false);
-                            basicAnimator.SetBool("WALK", true);
-                            basicAnimator.SetBool("RUN", false);
-                        }
-                        else if (CurrentSpeed == runAcceleration)
-                        {
-                            LockManager.Lock("PLAYER_TURN", this, true);
-                            basicAnimator.SetBool("WALK", false);
-                            basicAnimator.SetBool("RUN", true);
-                        }
-                    }
+                    Move(direction);
                 }
             }
             else
             {
-                isWalking = false;
+                // Movement
+                Vector2 moveAxis = InputManager.MoveAxis;
+                Vector3 direction = CameraTransform.forward * moveAxis.y + CameraTransform.right * moveAxis.x;
 
-                // Reset animations
-                basicAnimator.SetBool("WALK", false);
-                basicAnimator.SetBool("RUN", false);
-
-                if (Grounded)
-                {
-                    Rigidbody.drag = idleFriction;
-                }
-                else
-                {
-                    Rigidbody.drag = moveFriction;
-                }
+                Move(direction);
             }
-        }
 
-        if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
-        {
-            basicAnimator.SetBool("AIR", !isGrounded);
-        }
+            // Air animation
+            if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
+            {
+                basicAnimator.SetBool("AIR", !isGrounded);
+            }
 
-        // Limit Velocity
-        Vector3 flatVel = new Vector3(Rigidbody.velocity.x, 0f, Rigidbody.velocity.z);
+            // Limit Velocity
+            Vector3 flatVel = new Vector3(Rigidbody.velocity.x, !isLadder ? 0f : Rigidbody.velocity.y, Rigidbody.velocity.z);
 
-        if (flatVel.magnitude > LimitCurrentSpeed)
-        {
-            Vector3 limitedVel = flatVel.normalized * LimitCurrentSpeed;
-            Rigidbody.velocity = new Vector3(limitedVel.x, Rigidbody.velocity.y, limitedVel.z);
+            if (flatVel.magnitude > LimitCurrentSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * LimitCurrentSpeed;
+                Rigidbody.velocity = new Vector3(limitedVel.x, !isLadder ? Rigidbody.velocity.y : limitedVel.y, limitedVel.z);
+            }
         }
     }
 
@@ -307,30 +378,18 @@ public class Player : MonoBehaviour
         if (_canCrouch)
         {
             isCrouched = true;
-            LockManager.Lock("PLAYER_RUN", this, true);
-
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, crouchHeight, crouchSpeed * Time.deltaTime);
-            CameraTransform.transform.position = Vector3.Lerp(CameraTransform.transform.position,
-            CapsuleTop, crouchSpeed * Time.deltaTime);
         }
         else
         {
             isCrouched = false;
-            LockManager.Lock("PLAYER_RUN", this, false);
-
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, startCapsuleHeight, crouchSpeed * Time.deltaTime);
-            CameraTransform.transform.localPosition = Vector3.Lerp(CameraTransform.transform.localPosition,
-            new Vector3(
-                CameraTransform.transform.localPosition.x,
-                startCameraHeight,
-                CameraTransform.transform.localPosition.z
-            ), crouchSpeed * Time.deltaTime);
         }
     }
 
     private void JumpUpdate()
     {
-        bool jump = !LockManager.IsLocked("PLAYER_JUMP") && InputManager.Jump && Grounded && jumpFixTimer <= 0;
+        bool jump = !LockManager.IsLocked("PLAYER_JUMP") && InputManager.Jump && isGrounded && jumpFixTimer <= 0;
 
         if (jump)
         {
@@ -352,12 +411,9 @@ public class Player : MonoBehaviour
 
         if (_canTurn)
         {
-            // Right
-            if (InputManager.Turn != 0 && !isRunning)
+            if (InputManager.Turn != 0)
             {
                 isTurning = true;
-                LockManager.Lock("PLAYER_BASIC_ANIM", this, true);
-                LockManager.Lock("PLAYER_RUN", this, true);
 
                 Vector3 targetPos = new Vector3(turnHorizontalAmount * turnCameraScale * InputManager.Turn, 0f, 0f);
                 Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, turnHorizontalAmount * -InputManager.Turn));
@@ -370,16 +426,14 @@ public class Player : MonoBehaviour
                 }
                 else
                 { // CameraTransform
-                    cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, targetPos, turnSpeed * Time.deltaTime);
-                    cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
                     weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+                    cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
+                    cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, targetPos, turnSpeed * Time.deltaTime);
                 }
             }
             else if (weaponTurn.localRotation != startTurnRot || cameraTurn.localRotation != startTurnCameraRot || cameraTurn.localPosition != startCameraTurnPos)
             {
                 isTurning = false;
-                LockManager.Lock("PLAYER_BASIC_ANIM", this, false);
-                LockManager.Lock("PLAYER_RUN", this, false);
 
                 weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
                 cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
@@ -390,12 +444,64 @@ public class Player : MonoBehaviour
         if (!_canTurn)
         {
             isTurning = false;
-            LockManager.Lock("PLAYER_BASIC_ANIM", this, false);
-            LockManager.Lock("PLAYER_RUN", this, false);
 
             weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
             cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
             cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, startCameraTurnPos, turnSpeed * Time.deltaTime);
+        }
+    }
+
+    public void Move(Vector3 direction)
+    {
+        // Direction Ray
+        if (!disableGizmos)
+        {
+            Debug.DrawRay(transform.position, direction * 2f, Color.magenta);
+        }
+
+        if (direction != Vector3.zero)
+        {
+            isWalking = true;
+            Rigidbody.AddForce(direction.normalized * CurrentSpeed * 10f, ForceMode.Force);
+
+            if (Rigidbody.drag != moveFriction)
+            {
+                Rigidbody.drag = moveFriction;
+            }
+
+            if (isGrounded)
+            {
+                if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
+                {
+                    if (CurrentSpeed == walkAcceleration)
+                    {
+                        basicAnimator.SetBool("WALK", true);
+                        basicAnimator.SetBool("RUN", false);
+                    }
+                    else if (CurrentSpeed == runAcceleration)
+                    {
+                        basicAnimator.SetBool("WALK", false);
+                        basicAnimator.SetBool("RUN", true);
+                    }
+                }
+            }
+        }
+        else
+        {
+            isWalking = false;
+
+            // Reset animations
+            basicAnimator.SetBool("WALK", false);
+            basicAnimator.SetBool("RUN", false);
+
+            if (isGrounded)
+            {
+                Rigidbody.drag = idleFriction;
+            }
+            else
+            {
+                Rigidbody.drag = moveFriction;
+            }
         }
     }
 
@@ -422,7 +528,7 @@ public class Player : MonoBehaviour
             if (CapsuleCollider)
             {
                 float radius = CapsuleCollider.radius + groundRadiusOverride;
-                Gizmos.color = Grounded ? Color.green : Color.red;
+                Gizmos.color = isGrounded ? Color.green : Color.red;
                 Gizmos.DrawWireSphere(CapsuleBottom, radius);
 
                 // Normal check
