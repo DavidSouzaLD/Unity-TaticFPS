@@ -193,23 +193,20 @@ public class WeaponManager : MonoBehaviour
 
     private void Sway()
     {
-        if (LockManager.IsLocked("CURSOR_LOCKED"))
+        Vector2 cameraAxis = new Vector2(InputManager.CameraAxis.x * swayMultiplier.x, InputManager.CameraAxis.y * swayMultiplier.y) * swayAccuracy;
+        float cameraAxisX = InputManager.MoveAxis.x * swayMultiplier.x * swayAccuracy;
+
+        // Basic sway
+        if (cameraAxis != Vector2.zero)
         {
-            Vector2 cameraAxis = new Vector2(InputManager.CameraAxis.x * swayMultiplier.x, InputManager.CameraAxis.y * swayMultiplier.y) * swayAccuracy;
-            float cameraAxisX = InputManager.MoveAxis.x * swayMultiplier.x * swayAccuracy;
+            swayRoot.localPosition = Vector3.Lerp(swayRoot.localPosition, new Vector3(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount), swaySmooth * Time.deltaTime);
+            swayRoot.localRotation = Quaternion.Slerp(swayRoot.localRotation, Quaternion.Euler(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount, swayRoot.localRotation.z), swaySmooth * Time.deltaTime);
+        }
 
-            // Basic sway
-            if (cameraAxis != Vector2.zero)
-            {
-                swayRoot.localPosition = Vector3.Lerp(swayRoot.localPosition, new Vector3(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount), swaySmooth * Time.deltaTime);
-                swayRoot.localRotation = Quaternion.Slerp(swayRoot.localRotation, Quaternion.Euler(-cameraAxis.x * swayAmount, -cameraAxis.y * swayAmount, swayRoot.localRotation.z), swaySmooth * Time.deltaTime);
-            }
-
-            // Horizontal sway
-            if (cameraAxisX != 0f)
-            {
-                horizontalSwayRoot.localRotation = Quaternion.Slerp(horizontalSwayRoot.localRotation, Quaternion.Euler(horizontalSwayRoot.localRotation.x, horizontalSwayRoot.localRotation.y, -cameraAxisX * swayAmount * horizontalSwayScale), swaySmooth * horizontalSwayScale * Time.deltaTime);
-            }
+        // Horizontal sway
+        if (cameraAxisX != 0f)
+        {
+            horizontalSwayRoot.localRotation = Quaternion.Slerp(horizontalSwayRoot.localRotation, Quaternion.Euler(horizontalSwayRoot.localRotation.x, horizontalSwayRoot.localRotation.y, -cameraAxisX * swayAmount * horizontalSwayScale), swaySmooth * horizontalSwayScale * Time.deltaTime);
         }
     }
 
@@ -222,14 +219,9 @@ public class WeaponManager : MonoBehaviour
         {
             if (hit.transform)
             {
-                LockManager.Lock("RETRACT", "WEAPON_ALL", true);
                 Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retractInitialRot.y, retractInitialRot.z));
                 retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, targetRot, retractSpeed * Time.deltaTime);
             }
-        }
-        else
-        {
-            LockManager.Lock("RETRACT", "WEAPON_ALL", false);
         }
 
         retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);

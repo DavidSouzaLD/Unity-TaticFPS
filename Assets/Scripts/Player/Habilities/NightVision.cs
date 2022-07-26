@@ -22,7 +22,7 @@ public class NightVision : MonoBehaviour
     private void Update()
     {
         // Night vision
-        if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_HABILITIES") && InputManager.NightVision)
+        if (InputManager.NightVision)
         {
             nightVisionMode = !nightVisionMode;
             NightVisionUpdate();

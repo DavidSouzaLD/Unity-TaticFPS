@@ -127,7 +127,7 @@ public class Player : MonoBehaviour
     /// </summary>
     [HideInInspector]
     public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isLadder, isAim;
-    public static bool isRunning => !LockManager.IsLocked("PLAYER_RUN") && InputManager.Run && isWalking && InputManager.MoveAxis.y > 0;
+    public static bool isRunning => InputManager.Run && isWalking && InputManager.MoveAxis.y > 0;
 
     // Private
     private Transform weaponTurn;
@@ -312,69 +312,50 @@ public class Player : MonoBehaviour
         CrouchUpdate();
         JumpUpdate();
         TurnUpdate();
-        AnimatorUpdate();
-    }
-
-    private void LateUpdate()
-    {
-        // Locking
-        LockManager.Lock("LADDER", "PLAYER_MARKER", isLadder);
-        LockManager.Lock("LADDER", "PLAYER_RUN", isLadder);
-        LockManager.Lock("LADDER", "PLAYER_CROUCH", isLadder);
-        LockManager.Lock("LADDER", "PLAYER_JUMP", isLadder);
-        LockManager.Lock("CROUCH", "PLAYER_RUN", isCrouched);
-        LockManager.Lock("RUN", "PLAYER_TURN", isRunning);
-        LockManager.Lock("TURN", "PLAYER_BASIC_ANIM", isTurning);
     }
 
     public void UpdateMove()
     {
         isGrounded = GroundColliders.Length > 0;
 
-        if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_MOVEMENT"))
+        if (!isLadder)
         {
-            if (!isLadder)
-            {
-                if (isGrounded)
-                {
-                    // Movement
-                    Vector2 moveAxis = InputManager.MoveAxis;
-                    Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
-                    Vector3 dir2 = Vector3.Cross(transform.right, Normal) * moveAxis.y + Vector3.Cross(-transform.forward, Normal) * moveAxis.x;
-                    Vector3 direction = (!Sloped ? dir1 : dir2);
-
-                    Move(direction);
-                }
-            }
-            else
+            if (isGrounded)
             {
                 // Movement
                 Vector2 moveAxis = InputManager.MoveAxis;
-                Vector3 direction = CameraTransform.forward * moveAxis.y + CameraTransform.right * moveAxis.x;
+                Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
+                Vector3 dir2 = Vector3.Cross(transform.right, Normal) * moveAxis.y + Vector3.Cross(-transform.forward, Normal) * moveAxis.x;
+                Vector3 direction = (!Sloped ? dir1 : dir2);
 
                 Move(direction);
             }
+        }
+        else
+        {
+            // Movement
+            Vector2 moveAxis = InputManager.MoveAxis;
+            Vector3 direction = CameraTransform.forward * moveAxis.y + CameraTransform.right * moveAxis.x;
 
-            // Air animation
-            if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_BASIC_ANIM"))
-            {
-                basicAnimator.SetBool("AIR", !isGrounded);
-            }
+            Move(direction);
+        }
 
-            // Limit Velocity
-            Vector3 flatVel = new Vector3(Rigidbody.velocity.x, !isLadder ? 0f : Rigidbody.velocity.y, Rigidbody.velocity.z);
+        // Air animation
+        basicAnimator.SetBool("AIR", !isGrounded);
 
-            if (flatVel.magnitude > LimitCurrentSpeed)
-            {
-                Vector3 limitedVel = flatVel.normalized * LimitCurrentSpeed;
-                Rigidbody.velocity = new Vector3(limitedVel.x, !isLadder ? Rigidbody.velocity.y : limitedVel.y, limitedVel.z);
-            }
+        // Limit Velocity
+        Vector3 flatVel = new Vector3(Rigidbody.velocity.x, !isLadder ? 0f : Rigidbody.velocity.y, Rigidbody.velocity.z);
+
+        if (flatVel.magnitude > LimitCurrentSpeed)
+        {
+            Vector3 limitedVel = flatVel.normalized * LimitCurrentSpeed;
+            Rigidbody.velocity = new Vector3(limitedVel.x, !isLadder ? Rigidbody.velocity.y : limitedVel.y, limitedVel.z);
         }
     }
 
     private void CrouchUpdate()
     {
-        bool _canCrouch = !LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_CROUCH") && InputManager.Crouch;
+        bool _canCrouch = InputManager.Crouch;
 
         if (_canCrouch)
         {
@@ -390,7 +371,7 @@ public class Player : MonoBehaviour
 
     private void JumpUpdate()
     {
-        bool jump = !LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_JUMP") && InputManager.Jump && isGrounded && jumpFixTimer <= 0;
+        bool jump = InputManager.Jump && isGrounded && jumpFixTimer <= 0;
 
         if (jump)
         {
@@ -408,41 +389,27 @@ public class Player : MonoBehaviour
 
     private void TurnUpdate()
     {
-        bool _canTurn = !LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_TURN");
-
-        if (_canTurn)
+        if (InputManager.Turn != 0)
         {
-            if (InputManager.Turn != 0)
-            {
-                isTurning = true;
+            isTurning = true;
 
-                Vector3 targetPos = new Vector3(turnHorizontalAmount * turnCameraScale * InputManager.Turn, 0f, 0f);
-                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, turnHorizontalAmount * -InputManager.Turn));
+            Vector3 targetPos = new Vector3(turnHorizontalAmount * turnCameraScale * InputManager.Turn, 0f, 0f);
+            Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, turnHorizontalAmount * -InputManager.Turn));
 
-                if (!isAim)
-                { // Weapon
-                    weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
-                    cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
-                    cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, startCameraTurnPos, turnSpeed * Time.deltaTime);
-                }
-                else
-                { // CameraTransform
-                    weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
-                    cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
-                    cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, targetPos, turnSpeed * Time.deltaTime);
-                }
-            }
-            else if (weaponTurn.localRotation != startTurnRot || cameraTurn.localRotation != startTurnCameraRot || cameraTurn.localPosition != startCameraTurnPos)
-            {
-                isTurning = false;
-
-                weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+            if (!isAim)
+            { // Weapon
+                weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
                 cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
                 cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, startCameraTurnPos, turnSpeed * Time.deltaTime);
             }
+            else
+            { // CameraTransform
+                weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+                cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
+                cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, targetPos, turnSpeed * Time.deltaTime);
+            }
         }
-
-        if (!_canTurn)
+        else if (weaponTurn.localRotation != startTurnRot || cameraTurn.localRotation != startTurnCameraRot || cameraTurn.localPosition != startCameraTurnPos)
         {
             isTurning = false;
 
@@ -472,18 +439,15 @@ public class Player : MonoBehaviour
 
             if (isGrounded)
             {
-                if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_BASIC_ANIM"))
+                if (CurrentSpeed == walkAcceleration)
                 {
-                    if (CurrentSpeed == walkAcceleration)
-                    {
-                        basicAnimator.SetBool("WALK", true);
-                        basicAnimator.SetBool("RUN", false);
-                    }
-                    else if (CurrentSpeed == runAcceleration)
-                    {
-                        basicAnimator.SetBool("WALK", false);
-                        basicAnimator.SetBool("RUN", true);
-                    }
+                    basicAnimator.SetBool("WALK", true);
+                    basicAnimator.SetBool("RUN", false);
+                }
+                else if (CurrentSpeed == runAcceleration)
+                {
+                    basicAnimator.SetBool("WALK", false);
+                    basicAnimator.SetBool("RUN", true);
                 }
             }
         }
@@ -503,21 +467,6 @@ public class Player : MonoBehaviour
             {
                 Rigidbody.drag = moveFriction;
             }
-        }
-    }
-
-    private void AnimatorUpdate()
-    {
-        if (LockManager.IsLocked("PLAYER_ALL") || LockManager.IsLocked("PLAYER_MOVEMENT") || LockManager.IsLocked("PLAYER_BASIC_ANIM"))
-        {
-            basicAnimator.SetBool("WALK", false);
-            basicAnimator.SetBool("RUN", false);
-            basicAnimator.Rebind();
-            basicAnimator.enabled = false;
-        }
-        else
-        {
-            basicAnimator.enabled = true;
         }
     }
 

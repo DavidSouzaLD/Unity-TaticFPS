@@ -8,8 +8,6 @@ public class Weapon : MonoBehaviour
 
     [Header("Settings")]
 
-    public float drawTime = 1f;
-
     /// <summary>
     /// Defines what types of objects can be hit by the layer-based shot.
     /// </summary>
@@ -186,11 +184,6 @@ public class Weapon : MonoBehaviour
     public void ResetMuzzlePoint() => muzzlePoint = defaultMuzzlePoint;
     public void ResetAimPosition() => aimPosition = defaultAimPos;
 
-    private void OnEnable()
-    {
-        timerDraw = drawTime;
-    }
-
     private void Start()
     {
         // Components
@@ -228,22 +221,11 @@ public class Weapon : MonoBehaviour
         Reload();
         Aim();
         Recoil();
-
-        if (timerDraw > 0)
-        {
-            LockManager.Lock("TIME_DRAW", "WEAPON_ALL", true);
-            timerDraw -= Time.deltaTime;
-        }
-        else if (timerDraw <= 0)
-        {
-            LockManager.Lock("TIME_DRAW", "WEAPON_ALL", false);
-        }
     }
 
     private void Fire()
     {
-        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_FIRE") && LockManager.IsLocked("CURSOR_LOCKED");
-        bool canFire = stateLock && !Player.isRunning && !isReloading;
+        bool canFire = !Player.isRunning && !isReloading;
 
         if (canFire)
         {
@@ -281,16 +263,12 @@ public class Weapon : MonoBehaviour
     }
     private void Reload()
     {
-        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_RELOAD");
-        bool canReload = stateLock && InputManager.Reload && PlayerCamera.IsCursorLocked() && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
+        bool canReload = InputManager.Reload && PlayerCamera.IsCursorLocked() && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
 
         if (canReload)
         {
             PlayAnimation("RELOAD");
         }
-
-        // Lock state
-        LockManager.Lock("RELOAD", "PLAYER_RUN", isReloading);
 
         // Animation no-bullet
         Animator.SetBool("NO_BULLET", !HaveBullets);
@@ -298,8 +276,7 @@ public class Weapon : MonoBehaviour
 
     private void Aim()
     {
-        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_AIM");
-        bool canAim = stateLock && InputManager.Aim && PlayerCamera.IsCursorLocked() && !isReloading && !Player.isRunning;
+        bool canAim = InputManager.Aim && PlayerCamera.IsCursorLocked() && !isReloading && !Player.isRunning;
 
         Player.isAim = isAim;
 
@@ -307,8 +284,6 @@ public class Weapon : MonoBehaviour
         {
             isAim = true;
 
-            LockManager.Lock("AIM", "PLAYER_BASIC_ANIM", true);
-            LockManager.Lock("AIM", "WEAPON_CHANGE", true);
             PlayerCamera.SetSensitivityScale(aimSensitivityScale);
             WeaponManager.SwayAccuracy(aimSwayScale);
 
@@ -318,8 +293,6 @@ public class Weapon : MonoBehaviour
         else
         {
             isAim = false;
-            LockManager.Lock("AIM", "PLAYER_BASIC_ANIM", false);
-            LockManager.Lock("AIM", "WEAPON_CHANGE", false);
             PlayerCamera.MaxSensitivityScale();
         }
 

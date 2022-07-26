@@ -54,7 +54,7 @@ public class Laser : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_HABILITIES") && InputManager.Laser)
+        if (InputManager.Laser)
         {
             laserMode = !laserMode;
             LineRenderer.enabled = laserMode;

@@ -23,7 +23,6 @@ public class WeaponEvents : MonoBehaviour
     public void StartAnimation()
     {
         Weapon.isReloading = true;
-        LockManager.Lock("RELOAD", "WEAPON_CHANGE", true);
     }
 
     /// <summary>
@@ -57,6 +56,5 @@ public class WeaponEvents : MonoBehaviour
     {
         Weapon.CalculateReload();
         Weapon.isReloading = false;
-        LockManager.Lock("RELOAD", "WEAPON_CHANGE", false);
     }
 }
