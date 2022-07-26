@@ -102,9 +102,7 @@ public class PlayerCamera : MonoBehaviour
         // Camera
         if (Camera)
         {
-            LockManager.Lock("CAMERA", "CURSOR_LOCKED", isCursorLocked);
-
-            if (isCursorLocked)
+            if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_CAMERA"))
             {
                 Vector2 cameraAxis = InputManager.CameraAxis;
 
@@ -114,11 +112,26 @@ public class PlayerCamera : MonoBehaviour
                 characterTargetRot *= Quaternion.Euler(0f, cameraRot.y, 0f);
                 cameraTargetRot *= Quaternion.Euler(cameraRot.x, 0f, 0f);
 
-                cameraTargetRot = Rotation.Clamp(cameraTargetRot, clampVertical.x, clampVertical.y, Rotation.Axis.X);
+                cameraTargetRot = RotationExtension.Clamp(cameraTargetRot, clampVertical.x, clampVertical.y, RotationExtension.Axis.X);
 
                 PlayerTransform.localRotation = Quaternion.Slerp(PlayerTransform.localRotation, characterTargetRot, cameraSmooth * Time.deltaTime);
                 transform.localRotation = Quaternion.Slerp(transform.localRotation, cameraTargetRot, cameraSmooth * Time.deltaTime);
             }
+        }
+
+        // Cursor 
+        LockManager.Lock("CAMERA", "CURSOR_LOCKED", isCursorLocked);
+
+        if (LockManager.IsLocked("CURSOR_LOCKED"))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Instance.isCursorLocked = false;
         }
 
         // Recoil
@@ -202,14 +215,10 @@ public class PlayerCamera : MonoBehaviour
         // Lock cursor in game
         if (value)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
             Instance.isCursorLocked = true;
         }
         else
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
             Instance.isCursorLocked = false;
         }
     }

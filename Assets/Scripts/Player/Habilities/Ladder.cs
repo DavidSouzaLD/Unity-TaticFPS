@@ -9,7 +9,7 @@ public class Ladder : MonoBehaviour
 
     private void Update()
     {
-        if (InputManager.Interact)
+        if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_HABILITIES") && InputManager.Interact)
         {
             inLadder = !inLadder;
         }

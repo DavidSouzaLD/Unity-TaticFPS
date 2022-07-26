@@ -82,6 +82,24 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""225bbfd4-b488-4af1-8a69-04a63452c000"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap(duration=0.005)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Marker"",
+                    ""type"": ""Button"",
+                    ""id"": ""50ea85c8-57ac-44c6-86cf-0ed19fd4df4c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap(duration=0.005)"",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""FireAuto"",
                     ""type"": ""Button"",
                     ""id"": ""3aa5d608-5d84-4bef-85dd-1bb961fcb3a0"",
@@ -148,15 +166,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""name"": ""Laser"",
                     ""type"": ""Button"",
                     ""id"": ""e224c223-efea-4d55-b2bb-1dad95351a64"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap(duration=0.005)"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Interact"",
-                    ""type"": ""Button"",
-                    ""id"": ""968abc51-a4fa-4cd2-8166-4c3fdea91b2d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Tap(duration=0.005)"",
@@ -399,17 +408,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""d21cf65d-ff94-4120-9650-0ba7c93f4569"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": ""PC"",
                     ""id"": ""708aba3c-b78d-44cd-8042-bd8bae7c70ed"",
                     ""path"": ""1DAxis"",
@@ -472,6 +470,28 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""FreeVision"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b802726-8e5d-4718-9b6d-0a01fc3c47b0"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cefbeab4-34f2-42b2-9b79-ed0bbcd9b724"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Marker"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -556,6 +576,8 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Turn = m_Player.FindAction("Turn", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Marker = m_Player.FindAction("Marker", throwIfNotFound: true);
         m_Player_FireAuto = m_Player.FindAction("FireAuto", throwIfNotFound: true);
         m_Player_FireTap = m_Player.FindAction("FireTap", throwIfNotFound: true);
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
@@ -564,7 +586,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Player_FreeVision = m_Player.FindAction("FreeVision", throwIfNotFound: true);
         m_Player_Flashlight = m_Player.FindAction("Flashlight", throwIfNotFound: true);
         m_Player_Laser = m_Player.FindAction("Laser", throwIfNotFound: true);
-        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Inspect = m_Player.FindAction("Inspect", throwIfNotFound: true);
         m_Player_Custom = m_Player.FindAction("Custom", throwIfNotFound: true);
         m_Player_EquipPrimary = m_Player.FindAction("EquipPrimary", throwIfNotFound: true);
@@ -639,6 +660,8 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Turn;
+    private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Marker;
     private readonly InputAction m_Player_FireAuto;
     private readonly InputAction m_Player_FireTap;
     private readonly InputAction m_Player_Aim;
@@ -647,7 +670,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_FreeVision;
     private readonly InputAction m_Player_Flashlight;
     private readonly InputAction m_Player_Laser;
-    private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Inspect;
     private readonly InputAction m_Player_Custom;
     private readonly InputAction m_Player_EquipPrimary;
@@ -662,6 +684,8 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @Run => m_Wrapper.m_Player_Run;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @Turn => m_Wrapper.m_Player_Turn;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @Marker => m_Wrapper.m_Player_Marker;
         public InputAction @FireAuto => m_Wrapper.m_Player_FireAuto;
         public InputAction @FireTap => m_Wrapper.m_Player_FireTap;
         public InputAction @Aim => m_Wrapper.m_Player_Aim;
@@ -670,7 +694,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @FreeVision => m_Wrapper.m_Player_FreeVision;
         public InputAction @Flashlight => m_Wrapper.m_Player_Flashlight;
         public InputAction @Laser => m_Wrapper.m_Player_Laser;
-        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Inspect => m_Wrapper.m_Player_Inspect;
         public InputAction @Custom => m_Wrapper.m_Player_Custom;
         public InputAction @EquipPrimary => m_Wrapper.m_Player_EquipPrimary;
@@ -702,6 +725,12 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Turn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
                 @Turn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
                 @Turn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
+                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Marker.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarker;
+                @Marker.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarker;
+                @Marker.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarker;
                 @FireAuto.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
                 @FireAuto.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
                 @FireAuto.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
@@ -726,9 +755,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Laser.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
                 @Laser.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
                 @Laser.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
-                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
-                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
-                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Inspect.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
                 @Inspect.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
                 @Inspect.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
@@ -763,6 +789,12 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Turn.started += instance.OnTurn;
                 @Turn.performed += instance.OnTurn;
                 @Turn.canceled += instance.OnTurn;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
+                @Marker.started += instance.OnMarker;
+                @Marker.performed += instance.OnMarker;
+                @Marker.canceled += instance.OnMarker;
                 @FireAuto.started += instance.OnFireAuto;
                 @FireAuto.performed += instance.OnFireAuto;
                 @FireAuto.canceled += instance.OnFireAuto;
@@ -787,9 +819,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Laser.started += instance.OnLaser;
                 @Laser.performed += instance.OnLaser;
                 @Laser.canceled += instance.OnLaser;
-                @Interact.started += instance.OnInteract;
-                @Interact.performed += instance.OnInteract;
-                @Interact.canceled += instance.OnInteract;
                 @Inspect.started += instance.OnInspect;
                 @Inspect.performed += instance.OnInspect;
                 @Inspect.canceled += instance.OnInspect;
@@ -863,6 +892,8 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnTurn(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
+        void OnMarker(InputAction.CallbackContext context);
         void OnFireAuto(InputAction.CallbackContext context);
         void OnFireTap(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
@@ -871,7 +902,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnFreeVision(InputAction.CallbackContext context);
         void OnFlashlight(InputAction.CallbackContext context);
         void OnLaser(InputAction.CallbackContext context);
-        void OnInteract(InputAction.CallbackContext context);
         void OnInspect(InputAction.CallbackContext context);
         void OnCustom(InputAction.CallbackContext context);
         void OnEquipPrimary(InputAction.CallbackContext context);

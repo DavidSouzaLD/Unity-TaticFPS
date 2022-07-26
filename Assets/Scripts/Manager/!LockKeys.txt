@@ -2,6 +2,10 @@
 CURSOR_LOCKED - Returns whether the cursor is locked / Retorna se o cursor está bloqueado
 
 // Player
+PLAYER_ALL
+PLAYER_HABILITIES
+PLAYER_MARKER
+PLAYER_CAMERA
 PLAYER_MOVEMENT - Returns if the player can move / Retorna se o jogador pode se mover
 PLAYER_RUN - Returns if the player can run / Retorna se o jogador pode correr
 PLAYER_JUMP - Returns if the player can jump / Retorna se o jogador pode pular

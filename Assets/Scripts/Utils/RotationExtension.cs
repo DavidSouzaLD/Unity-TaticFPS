@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class Rotation
+public static class RotationExtension
 {
     public enum Axis { X, Y, Z }
 

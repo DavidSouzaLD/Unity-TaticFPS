@@ -81,6 +81,14 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public static bool Marker
+    {
+        get
+        {
+            return Instance._haveMap ? Instance.Map.Player.Marker.ReadValue<float>() != 0 : false;
+        }
+    }
+
     public static bool FireAuto
     {
         get

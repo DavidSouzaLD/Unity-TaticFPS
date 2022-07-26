@@ -318,6 +318,7 @@ public class Player : MonoBehaviour
     private void LateUpdate()
     {
         // Locking
+        LockManager.Lock("LADDER", "PLAYER_MARKER", isLadder);
         LockManager.Lock("LADDER", "PLAYER_RUN", isLadder);
         LockManager.Lock("LADDER", "PLAYER_CROUCH", isLadder);
         LockManager.Lock("LADDER", "PLAYER_JUMP", isLadder);
@@ -330,7 +331,7 @@ public class Player : MonoBehaviour
     {
         isGrounded = GroundColliders.Length > 0;
 
-        if (!LockManager.IsLocked("PLAYER_MOVEMENT"))
+        if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_MOVEMENT"))
         {
             if (!isLadder)
             {
@@ -355,7 +356,7 @@ public class Player : MonoBehaviour
             }
 
             // Air animation
-            if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
+            if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_BASIC_ANIM"))
             {
                 basicAnimator.SetBool("AIR", !isGrounded);
             }
@@ -373,7 +374,7 @@ public class Player : MonoBehaviour
 
     private void CrouchUpdate()
     {
-        bool _canCrouch = !LockManager.IsLocked("PLAYER_CROUCH") && InputManager.Crouch;
+        bool _canCrouch = !LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_CROUCH") && InputManager.Crouch;
 
         if (_canCrouch)
         {
@@ -389,7 +390,7 @@ public class Player : MonoBehaviour
 
     private void JumpUpdate()
     {
-        bool jump = !LockManager.IsLocked("PLAYER_JUMP") && InputManager.Jump && isGrounded && jumpFixTimer <= 0;
+        bool jump = !LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_JUMP") && InputManager.Jump && isGrounded && jumpFixTimer <= 0;
 
         if (jump)
         {
@@ -407,7 +408,7 @@ public class Player : MonoBehaviour
 
     private void TurnUpdate()
     {
-        bool _canTurn = !LockManager.IsLocked("PLAYER_TURN");
+        bool _canTurn = !LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_TURN");
 
         if (_canTurn)
         {
@@ -471,7 +472,7 @@ public class Player : MonoBehaviour
 
             if (isGrounded)
             {
-                if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
+                if (!LockManager.IsLocked("PLAYER_ALL") && !LockManager.IsLocked("PLAYER_BASIC_ANIM"))
                 {
                     if (CurrentSpeed == walkAcceleration)
                     {
@@ -507,7 +508,7 @@ public class Player : MonoBehaviour
 
     private void AnimatorUpdate()
     {
-        if (LockManager.IsLocked("PLAYER_MOVEMENT") || LockManager.IsLocked("PLAYER_BASIC_ANIM"))
+        if (LockManager.IsLocked("PLAYER_ALL") || LockManager.IsLocked("PLAYER_MOVEMENT") || LockManager.IsLocked("PLAYER_BASIC_ANIM"))
         {
             basicAnimator.SetBool("WALK", false);
             basicAnimator.SetBool("RUN", false);
