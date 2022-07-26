@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
     {
         get
         {
-            return (!isLadder ? (!InputManager.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) : limitLadderVelocity) + additionalVelocity.magnitude;
+            return (!isLadder ? (!isCrouched ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) : limitLadderVelocity) + additionalVelocity.magnitude;
         }
     }
 
@@ -352,7 +352,7 @@ public class Player : MonoBehaviour
 
     private void CrouchUpdate()
     {
-        bool _canCrouch = InputManager.Crouch;
+        bool _canCrouch = InputManager.Crouch && !isRunning && !isLadder && isGrounded;
 
         if (_canCrouch)
         {
@@ -368,7 +368,7 @@ public class Player : MonoBehaviour
 
     private void JumpUpdate()
     {
-        bool jump = InputManager.Jump && isGrounded && jumpFixTimer <= 0;
+        bool jump = InputManager.Jump && isGrounded && !isLadder && jumpFixTimer <= 0;
 
         if (jump)
         {
@@ -386,7 +386,9 @@ public class Player : MonoBehaviour
 
     private void TurnUpdate()
     {
-        if (InputManager.Turn != 0)
+        bool canTurn = InputManager.Turn != 0 && !isRunning && isGrounded;
+
+        if (canTurn)
         {
             isTurning = true;
 
