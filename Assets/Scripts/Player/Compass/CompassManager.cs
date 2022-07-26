@@ -6,44 +6,21 @@ using TMPro;
 public class CompassManager : MonoBehaviour
 {
     private static CompassManager Instance;
-
-    [System.Serializable]
-    public class Marker
-    {
-        [Header("Components")]
-        public string markerName;
-        public Color markerColor;
-        public Vector3 position;
-
-
-        [HideInInspector] public Transform transform;
-        [HideInInspector] public RectTransform rectTransform;
-        [HideInInspector] public TextMeshProUGUI markerText;
-        [HideInInspector] public Image image;
-
-        public float yPosition => rectTransform.anchoredPosition.y;
-        public float xPosition => rectTransform.anchoredPosition.x;
-
-        public Marker(string _markerName, RectTransform _rect, Image _image, Color _color, Vector3 _position, TextMeshProUGUI _markerText, Transform _tranform)
-        {
-            markerName = _markerName;
-            rectTransform = _rect;
-            image = _image;
-            markerColor = _color;
-            position = _position;
-            markerText = _markerText;
-            transform = _tranform;
-        }
-    }
-
     public RawImage texture;
-    public Color test;
     public GameObject markerPrefab;
     public float markerHeight;
     public List<Marker> markers = new List<Marker>();
 
     private float halfSize = 600;
     private Player Player;
+
+    public static List<Marker> GetMarkers
+    {
+        get
+        {
+            return Instance.markers;
+        }
+    }
 
     private void Awake()
     {
@@ -60,12 +37,6 @@ public class CompassManager : MonoBehaviour
     private void Start()
     {
         Player = FindManager.Find("Player", this).GetComponent<Player>();
-        InvokeRepeating("test3", 1f, 1f);
-    }
-
-    void test3()
-    {
-        test = ColorExtension.GetRandomColor();
     }
 
     private void Update()
@@ -153,5 +124,34 @@ public class CompassManager : MonoBehaviour
                 return;
             }
         }
+    }
+}
+
+[System.Serializable]
+public class Marker
+{
+    [Header("Components")]
+    public string markerName;
+    public Color markerColor;
+    public Vector3 position;
+
+
+    [HideInInspector] public Transform transform;
+    [HideInInspector] public RectTransform rectTransform;
+    [HideInInspector] public TextMeshProUGUI markerText;
+    [HideInInspector] public Image image;
+
+    public float yPosition => rectTransform.anchoredPosition.y;
+    public float xPosition => rectTransform.anchoredPosition.x;
+
+    public Marker(string _markerName, RectTransform _rect, Image _image, Color _color, Vector3 _position, TextMeshProUGUI _markerText, Transform _tranform)
+    {
+        markerName = _markerName;
+        rectTransform = _rect;
+        image = _image;
+        markerColor = _color;
+        position = _position;
+        markerText = _markerText;
+        transform = _tranform;
     }
 }

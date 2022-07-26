@@ -4,6 +4,11 @@ public class WeaponEvents : MonoBehaviour
 {
     protected Weapon Weapon;
 
+    private void OnDisable()
+    {
+        Weapon.GetAnimator.Play("NONE", -1, 0f);
+    }
+
     /// <summary>
     /// Sets the event weapon.
     /// </summary>
@@ -18,6 +23,7 @@ public class WeaponEvents : MonoBehaviour
     public void StartAnimation()
     {
         Weapon.isReloading = true;
+        LockManager.Lock("RELOAD", "WEAPON_CHANGE", true);
     }
 
     /// <summary>
@@ -51,5 +57,6 @@ public class WeaponEvents : MonoBehaviour
     {
         Weapon.CalculateReload();
         Weapon.isReloading = false;
+        LockManager.Lock("RELOAD", "WEAPON_CHANGE", false);
     }
 }

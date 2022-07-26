@@ -34,7 +34,7 @@ public class AttachmentRuntime : MonoBehaviour
         switch (attachmentType)
         {
             case AttachmentType.Sight:
-                Weapon.ResetAimSensitivityScale();
+                Weapon.MaxAimSensitivityScale();
                 Weapon.ResetAimPosition();
                 Weapon.ResetMuzzlePoint();
                 break;

@@ -8,6 +8,8 @@ public class Weapon : MonoBehaviour
 
     [Header("Settings")]
 
+    public float drawTime = 1f;
+
     /// <summary>
     /// Defines what types of objects can be hit by the layer-based shot.
     /// </summary>
@@ -143,6 +145,7 @@ public class Weapon : MonoBehaviour
     private Vector3 defaultAimPos;
 
     // Privates
+    private float timerDraw;
     private float firerateTimer; // Fire rate counter.
     private float aimSensitivityScale; // Scales and multiplies the total current sensitivity. (0 to 1) 
     private Vector3 startAimPos; // Initial position of the aim root.
@@ -165,12 +168,28 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns weapon animator.
+    /// </summary>
+    public Animator GetAnimator
+    {
+        get
+        {
+            return Animator;
+        }
+    }
+
     public void SetAimSensitivityScale(float scale) => aimSensitivityScale = scale;
     public void SetMuzzlePoint(Transform muzzle) => muzzlePoint = muzzle;
     public void SetAimPosition(Vector3 aimPos) => aimPosition = aimPos;
-    public void ResetAimSensitivityScale() => aimSensitivityScale = 1f;
+    public void MaxAimSensitivityScale() => aimSensitivityScale = 1f;
     public void ResetMuzzlePoint() => muzzlePoint = defaultMuzzlePoint;
     public void ResetAimPosition() => aimPosition = defaultAimPos;
+
+    private void OnEnable()
+    {
+        timerDraw = drawTime;
+    }
 
     private void Start()
     {
@@ -189,6 +208,7 @@ public class Weapon : MonoBehaviour
         // Aim
         startAimPos = transform.localPosition;
         startAimRot = transform.localRotation;
+        MaxAimSensitivityScale();
 
         // Recoil
         recoilRoot = FindManager.Find("WeaponRecoil", this);
@@ -207,8 +227,17 @@ public class Weapon : MonoBehaviour
         Fire();
         Reload();
         Aim();
-        Inspect();
         Recoil();
+
+        if (timerDraw > 0)
+        {
+            LockManager.Lock("TIME_DRAW", "WEAPON_ALL", true);
+            timerDraw -= Time.deltaTime;
+        }
+        else if (timerDraw <= 0)
+        {
+            LockManager.Lock("TIME_DRAW", "WEAPON_ALL", false);
+        }
     }
 
     private void Fire()
@@ -279,6 +308,7 @@ public class Weapon : MonoBehaviour
             isAim = true;
 
             LockManager.Lock("AIM", "PLAYER_BASIC_ANIM", true);
+            LockManager.Lock("AIM", "WEAPON_CHANGE", true);
             PlayerCamera.SetSensitivityScale(aimSensitivityScale);
             WeaponManager.SwayAccuracy(aimSwayScale);
 
@@ -289,6 +319,7 @@ public class Weapon : MonoBehaviour
         {
             isAim = false;
             LockManager.Lock("AIM", "PLAYER_BASIC_ANIM", false);
+            LockManager.Lock("AIM", "WEAPON_CHANGE", false);
             PlayerCamera.MaxSensitivityScale();
         }
 
@@ -309,17 +340,6 @@ public class Weapon : MonoBehaviour
         {
             recoilRoot.localPosition = Vector3.Lerp(recoilRoot.localPosition, startRecoilPos, recoilResetSpeed * Time.deltaTime);
             recoilRoot.localRotation = Quaternion.Slerp(recoilRoot.localRotation, startRecoilRot, recoilResetSpeed * Time.deltaTime);
-        }
-    }
-
-    private void Inspect()
-    {
-        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_INSPECT");
-        bool canInspect = stateLock && InputManager.Inspect && !isReloading && !isAim;
-
-        if (canInspect)
-        {
-            PlayAnimation("INSPECT");
         }
     }
 
@@ -451,7 +471,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void PlayAnimation(string eventName, bool stop = false)
+    public void PlayAnimation(string eventName)
     {
         string toUpper = eventName.ToUpper();
         Animator.Play(toUpper);

@@ -131,7 +131,6 @@ public class PlayerCamera : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Instance.isCursorLocked = false;
         }
 
         // Recoil

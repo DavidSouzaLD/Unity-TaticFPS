@@ -15,6 +15,7 @@ PLAYER_BASIC_ANIM - Returns if the player can play basic animator / Retorna se o
 
 // Weapon
 WEAPON_ALL
+WEAPON_CHANGE
 WEAPON_FIRE
 WEAPON_RELOAD
 WEAPON_AIM
