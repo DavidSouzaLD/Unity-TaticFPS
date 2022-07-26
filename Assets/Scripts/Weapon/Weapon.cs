@@ -23,6 +23,9 @@ public class Weapon : MonoBehaviour
     /// </summary>
     [SerializeField] private Transform muzzlePoint;
 
+    /// <summary>
+    /// Time needed for next shot.
+    /// </summary>
     [SerializeField] private float firerate = 1f;
 
     [Header("Data")]
