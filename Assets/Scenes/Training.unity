@@ -2220,7 +2220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f7413ad320d3d489727e70fb1f9f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawTime: 0.5
   hittableLayers:
     serializedVersion: 2
     m_Bits: 9
@@ -2255,7 +2254,6 @@ MonoBehaviour:
   endReloadSound: {fileID: 0}
   isReloading: 0
   isAim: 0
-  isInspect: 0
 --- !u!4 &817999476754837426
 Transform:
   m_ObjectHideFlags: 0
@@ -6442,7 +6440,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a38e38308af6a47a09fe205acd79b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCursorLocked: 1
   cameraSmooth: 20
   sensitivity: {x: 0.15, y: 0.15}
   clampVertical: {x: -90, y: 90}
@@ -10073,7 +10070,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6926302669991476641
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12134,7 +12131,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f7413ad320d3d489727e70fb1f9f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawTime: 0.5
   hittableLayers:
     serializedVersion: 2
     m_Bits: 9
@@ -12169,7 +12165,6 @@ MonoBehaviour:
   endReloadSound: {fileID: 8300000, guid: 487d9cf01e17e0448a56cd385cb81f3f, type: 3}
   isReloading: 0
   isAim: 0
-  isInspect: 0
 --- !u!114 &6926302670653492071
 MonoBehaviour:
   m_ObjectHideFlags: 0

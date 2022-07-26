@@ -7,13 +7,9 @@ using UnityEngine.Rendering;
 public class PlayerCamera : MonoBehaviour
 {
     public static PlayerCamera Instance;
+    public static bool isCursorLocked = true;
 
     [Header("Camera")]
-
-    /// <summary>
-    /// Lock the cursor on the screen.
-    /// </summary>
-    [SerializeField] private bool isCursorLocked = true;
 
     /// <summary>
     /// Smoothing camera movement.
@@ -58,10 +54,6 @@ public class PlayerCamera : MonoBehaviour
     private Transform PlayerTransform;
     private Volume Volume;
     private Camera Camera;
-
-    public static bool IsCursorLocked() => Instance.isCursorLocked;
-    public static void SetSensitivityScale(float scale) => Instance.sensitivityScale = Mathf.Clamp(scale, 0, 1);
-    public static void MaxSensitivityScale() => Instance.sensitivityScale = 1f;
 
     private void Awake()
     {
@@ -133,13 +125,13 @@ public class PlayerCamera : MonoBehaviour
         Instance.targetRotation += new Vector3(-_recoil.x, Random.Range(-_recoil.y, _recoil.y), Random.Range(-_recoil.z, _recoil.z));
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Apply shake to camera.
     /// </summary>
     public static void ApplyShake()
     {
 
-    }
+    }*/
 
     /// <summary>
     /// Apply values in PostProcessing [BASE/NIGHTVISION/CUSTOM].
@@ -199,13 +191,13 @@ public class PlayerCamera : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            Instance.isCursorLocked = true;
+            isCursorLocked = true;
         }
         else
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Instance.isCursorLocked = false;
+            isCursorLocked = false;
         }
     }
 
@@ -215,5 +207,15 @@ public class PlayerCamera : MonoBehaviour
     public static Vector3 WorldToScreen(Vector3 _position)
     {
         return Instance.Camera.WorldToScreenPoint(_position);
+    }
+
+    public static void SetSensitivityScale(float scale)
+    {
+        Instance.sensitivityScale = Mathf.Clamp(scale, 0, 1);
+    }
+
+    public static void MaxSensitivityScale()
+    {
+        Instance.sensitivityScale = 1f;
     }
 }

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 511859640205260499}
   - component: {fileID: 5492173213197728115}
-  - component: {fileID: 8299451386104657884}
   - component: {fileID: 3346716749364080519}
   - component: {fileID: 511859640205260500}
   - component: {fileID: 5543315046605347093}
@@ -48,19 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be42b943994ab79488c45119b7bc0a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8299451386104657884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511859640205260501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 960911db1249bf44a8eef2f7af37fb2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  states: []
 --- !u!114 &3346716749364080519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,6 +83,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66e046539117f841b0dbb7756663ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsReloading: 0
+  IsAiming: 0
+  currentWeapon: {fileID: 0}
   tracerPrefab: {fileID: 277832011086963584, guid: 45f08e636d92d7c41944788b82864f09,
     type: 3}
   swayMultiplier: {x: 1, y: 0.5}

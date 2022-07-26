@@ -123,27 +123,6 @@ public class Player : MonoBehaviour
     [SerializeField] private bool disableGizmos;
 
     /// <summary>
-    /// Player states.
-    /// </summary>
-    [HideInInspector]
-    public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isLadder, isAim;
-    public static bool isRunning => InputManager.Run && isWalking && InputManager.MoveAxis.y > 0;
-
-    // Private
-    private Transform weaponTurn;
-    private Transform cameraTurn;
-    private float jumpFixTimer = 0f;
-    private float startCapsuleHeight;
-    private Vector3 startCameraTurnPos;
-    private Vector3 additionalVelocity;
-    private Vector3 additionalDirection;
-    private Quaternion startTurnRot;
-    private Quaternion startTurnCameraRot;
-    private Transform CameraTransform;
-    private Rigidbody Rigidbody;
-    private CapsuleCollider CapsuleCollider;
-
-    /// <summary>
     /// Returns current speed.
     /// </summary>
     public bool UseGravity
@@ -273,6 +252,24 @@ public class Player : MonoBehaviour
     {
         additionalDirection = Vector3.zero;
     }
+
+    // Private
+    private Transform weaponTurn;
+    private Transform cameraTurn;
+    private float jumpFixTimer = 0f;
+    private float startCapsuleHeight;
+    private Vector3 startCameraTurnPos;
+    private Vector3 additionalVelocity;
+    private Vector3 additionalDirection;
+    private Quaternion startTurnRot;
+    private Quaternion startTurnCameraRot;
+    private Transform CameraTransform;
+    private Rigidbody Rigidbody;
+    private CapsuleCollider CapsuleCollider;
+
+    public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isLadder;
+    public static bool isAim => WeaponManager.IsAim;
+    public static bool isRunning => InputManager.Run && isWalking && InputManager.MoveAxis.y > 0;
 
     private void Start()
     {

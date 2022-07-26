@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class WeaponEvents : MonoBehaviour
 {
-    protected Weapon Weapon;
+    protected WeaponBase Weapon;
 
     private void OnDisable()
     {
-        Weapon.GetAnimator.Play("NONE", -1, 0f);
+        Weapon.GetAnimator().Play("NONE", -1, 0f);
     }
 
     /// <summary>
     /// Sets the event weapon.
     /// </summary>
-    public void SetWeapon(Weapon weapon)
+    public void SetWeapon(WeaponBase weapon)
     {
         Weapon = weapon;
     }
