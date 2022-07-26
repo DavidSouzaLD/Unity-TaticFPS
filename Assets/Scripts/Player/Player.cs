@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
     /// </summary>
     [HideInInspector]
     public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isAim;
-    public static bool isRunning => isWalking && !StateLock.IsLocked("PLAYER_RUN") && Input.Run && Input.MoveAxis.y > 0;
+    public static bool isRunning => isWalking && !LockManager.IsLocked("PLAYER_RUN") && InputManager.Run && InputManager.MoveAxis.y > 0;
 
     // Private
     private Transform weaponTurn;
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
     private CapsuleCollider CapsuleCollider;
 
     public float CurrentSpeed { get { return isRunning ? runAcceleration : walkAcceleration; } }
-    public float LimitCurrentSpeed { get { return (!Input.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + additionalVelocity.magnitude; } }
+    public float LimitCurrentSpeed { get { return (!InputManager.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + additionalVelocity.magnitude; } }
     public float SlopeAngle { get { return Vector3.Angle(transform.up, Normal); } }
     public bool Grounded { get { return GroundColliders.Length > 0; } }
     public bool Sloped { get { return SlopeAngle > 0 && SlopeAngle <= maxAngleToSlope; } }
@@ -179,13 +179,13 @@ public class Player : MonoBehaviour
     private void Start()
     {
         // Get necessary components
-        CameraTransform = GetComponentInChildren<PlayerCamera>().transform;
         Rigidbody = GetComponent<Rigidbody>();
         CapsuleCollider = GetComponent<CapsuleCollider>();
 
         // Get transforms
-        weaponTurn = GameObject.Find("WeaponTurn").transform;
-        cameraTurn = GameObject.Find("CameraTurn").transform;
+        CameraTransform = FindManager.Find("Camera", this);
+        weaponTurn = FindManager.Find("WeaponTurn", this);
+        cameraTurn = FindManager.Find("CameraTurn", this);
 
         // Start locking cursor
         PlayerCamera.LockCursor(true);
@@ -201,7 +201,7 @@ public class Player : MonoBehaviour
 
         if (weaponTurn == null || cameraTurn == null)
         {
-            Debug.LogError("(WeaponTurn/CameraTurn) not assigned, solve please.");
+            DebugManager.DebugAssignedError("WeaponTurn/CameraTurn");
         }
     }
 
@@ -220,10 +220,10 @@ public class Player : MonoBehaviour
 
     public void UpdateMove()
     {
-        if (!StateLock.IsLocked("PLAYER_MOVEMENT"))
+        if (!LockManager.IsLocked("PLAYER_MOVEMENT"))
         {
             // Movement
-            Vector2 moveAxis = Input.MoveAxis;
+            Vector2 moveAxis = InputManager.MoveAxis;
             Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
             Vector3 dir2 = Vector3.Cross(transform.right, Normal) * moveAxis.y + Vector3.Cross(-transform.forward, Normal) * moveAxis.x;
             Vector3 direction = !Sloped ? dir1 : dir2;
@@ -249,17 +249,17 @@ public class Player : MonoBehaviour
                 {
                     Rigidbody.AddForce(direction.normalized * CurrentSpeed * 10f, ForceMode.Force);
 
-                    if (!StateLock.IsLocked("PLAYER_BASIC_ANIM"))
+                    if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
                     {
                         if (CurrentSpeed == walkAcceleration)
                         {
-                            StateLock.Lock("PLAYER_TURN", this, false);
+                            LockManager.Lock("PLAYER_TURN", this, false);
                             basicAnimator.SetBool("WALK", true);
                             basicAnimator.SetBool("RUN", false);
                         }
                         else if (CurrentSpeed == runAcceleration)
                         {
-                            StateLock.Lock("PLAYER_TURN", this, true);
+                            LockManager.Lock("PLAYER_TURN", this, true);
                             basicAnimator.SetBool("WALK", false);
                             basicAnimator.SetBool("RUN", true);
                         }
@@ -285,7 +285,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (!StateLock.IsLocked("PLAYER_BASIC_ANIM"))
+        if (!LockManager.IsLocked("PLAYER_BASIC_ANIM"))
         {
             basicAnimator.SetBool("AIR", !isGrounded);
         }
@@ -302,12 +302,12 @@ public class Player : MonoBehaviour
 
     private void CrouchUpdate()
     {
-        bool _canCrouch = !StateLock.IsLocked("PLAYER_CROUCH") && Input.Crouch;
+        bool _canCrouch = !LockManager.IsLocked("PLAYER_CROUCH") && InputManager.Crouch;
 
         if (_canCrouch)
         {
             isCrouched = true;
-            StateLock.Lock("PLAYER_RUN", this, true);
+            LockManager.Lock("PLAYER_RUN", this, true);
 
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, crouchHeight, crouchSpeed * Time.deltaTime);
             CameraTransform.transform.position = Vector3.Lerp(CameraTransform.transform.position,
@@ -316,7 +316,7 @@ public class Player : MonoBehaviour
         else
         {
             isCrouched = false;
-            StateLock.Lock("PLAYER_RUN", this, false);
+            LockManager.Lock("PLAYER_RUN", this, false);
 
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, startCapsuleHeight, crouchSpeed * Time.deltaTime);
             CameraTransform.transform.localPosition = Vector3.Lerp(CameraTransform.transform.localPosition,
@@ -330,7 +330,7 @@ public class Player : MonoBehaviour
 
     private void JumpUpdate()
     {
-        bool jump = !StateLock.IsLocked("PLAYER_JUMP") && Input.Jump && Grounded && jumpFixTimer <= 0;
+        bool jump = !LockManager.IsLocked("PLAYER_JUMP") && InputManager.Jump && Grounded && jumpFixTimer <= 0;
 
         if (jump)
         {
@@ -348,19 +348,19 @@ public class Player : MonoBehaviour
 
     private void TurnUpdate()
     {
-        bool _canTurn = !StateLock.IsLocked("PLAYER_TURN");
+        bool _canTurn = !LockManager.IsLocked("PLAYER_TURN");
 
         if (_canTurn)
         {
             // Right
-            if (Input.Turn != 0 && !isRunning)
+            if (InputManager.Turn != 0 && !isRunning)
             {
                 isTurning = true;
-                StateLock.Lock("PLAYER_BASIC_ANIM", this, true);
-                StateLock.Lock("PLAYER_RUN", this, true);
+                LockManager.Lock("PLAYER_BASIC_ANIM", this, true);
+                LockManager.Lock("PLAYER_RUN", this, true);
 
-                Vector3 targetPos = new Vector3(turnHorizontalAmount * turnCameraScale * Input.Turn, 0f, 0f);
-                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, turnHorizontalAmount * -Input.Turn));
+                Vector3 targetPos = new Vector3(turnHorizontalAmount * turnCameraScale * InputManager.Turn, 0f, 0f);
+                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, turnHorizontalAmount * -InputManager.Turn));
 
                 if (!isAim)
                 { // Weapon
@@ -378,8 +378,8 @@ public class Player : MonoBehaviour
             else if (weaponTurn.localRotation != startTurnRot || cameraTurn.localRotation != startTurnCameraRot || cameraTurn.localPosition != startCameraTurnPos)
             {
                 isTurning = false;
-                StateLock.Lock("PLAYER_BASIC_ANIM", this, false);
-                StateLock.Lock("PLAYER_RUN", this, false);
+                LockManager.Lock("PLAYER_BASIC_ANIM", this, false);
+                LockManager.Lock("PLAYER_RUN", this, false);
 
                 weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
                 cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
@@ -390,8 +390,8 @@ public class Player : MonoBehaviour
         if (!_canTurn)
         {
             isTurning = false;
-            StateLock.Lock("PLAYER_BASIC_ANIM", this, false);
-            StateLock.Lock("PLAYER_RUN", this, false);
+            LockManager.Lock("PLAYER_BASIC_ANIM", this, false);
+            LockManager.Lock("PLAYER_RUN", this, false);
 
             weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
             cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
@@ -401,7 +401,7 @@ public class Player : MonoBehaviour
 
     private void AnimatorUpdate()
     {
-        if (StateLock.IsLocked("PLAYER_MOVEMENT") || StateLock.IsLocked("PLAYER_BASIC_ANIM"))
+        if (LockManager.IsLocked("PLAYER_MOVEMENT") || LockManager.IsLocked("PLAYER_BASIC_ANIM"))
         {
             basicAnimator.SetBool("WALK", false);
             basicAnimator.SetBool("RUN", false);

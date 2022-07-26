@@ -16,7 +16,7 @@ public class Compass : MonoBehaviour
 
     private void Start()
     {
-        Player = GetComponentInParent<Player>();
+        Player = FindManager.Find("Player", this).GetComponent<Player>();
     }
 
     private void Update()

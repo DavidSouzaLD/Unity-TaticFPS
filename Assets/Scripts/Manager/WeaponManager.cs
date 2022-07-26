@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager Instance;
@@ -69,11 +70,6 @@ public class WeaponManager : MonoBehaviour
     [Header("HitMark")]
 
     /// <summary>
-    /// Hit mark prefab
-    /// </summary>
-    [SerializeField] private GameObject hitMark;
-
-    /// <summary>
     /// Hit mark sound
     /// </summary>
     [SerializeField] private AudioClip hitMarkSound;
@@ -100,6 +96,7 @@ public class WeaponManager : MonoBehaviour
     private Transform horizontalSwayRoot; // Root of the horizontal sway.
     private Transform retractRayRoot; // Point to cast retraction raycast.
     private Transform retracRoot; // Object to apply retraction.
+    private GameObject hitMark; // Hit mark prefab
     private Player Player; // Player component for states conditions.
 
     /// <summary>
@@ -163,28 +160,26 @@ public class WeaponManager : MonoBehaviour
 
     private void Start()
     {
-        // Get component
-        Player = GetComponentInParent<Player>();
-
-        // Roots
-        swayRoot = GameObject.Find("Sway").transform;
-        horizontalSwayRoot = GameObject.Find("SwayHorizontal").transform;
-        retracRoot = GameObject.Find("Retract").transform;
-        retractRayRoot = GameObject.Find("Camera").transform;
+        // Get components
+        Player = FindManager.Find("Player", this).GetComponent<Player>();
+        swayRoot = FindManager.Find("Sway", this);
+        horizontalSwayRoot = FindManager.Find("SwayHorizontal", this);
+        retracRoot = FindManager.Find("Retract", this);
+        retractRayRoot = FindManager.Find("Camera", this);
+        hitMark = FindManager.Find("HitMark", this).gameObject;
 
         // Setting start values
         swayInitialPos = swayRoot.localPosition;
         swayInitialRot = swayRoot.localRotation;
         horSwayInitialRot = horizontalSwayRoot.localRotation;
         retractInitialRot = retracRoot.localRotation;
-
-        // Setting maximum accuracy
+        hitMark.SetActive(false);
         MaxAccuracy();
 
         // Error
         if (swayRoot == null || horizontalSwayRoot == null || retracRoot == null)
         {
-            Debug.LogError("(SwayRoot/HorizontalSwayRoot/RetractRoot) not assigned, solve please.");
+            DebugManager.DebugAssignedError("SwayRoot/HorizontalSwayRoot/RetractRoot");
         }
     }
 
@@ -198,10 +193,10 @@ public class WeaponManager : MonoBehaviour
 
     private void Sway()
     {
-        if (StateLock.IsLocked("CURSOR_LOCKED"))
+        if (LockManager.IsLocked("CURSOR_LOCKED"))
         {
-            Vector2 cameraAxis = new Vector2(Input.CameraAxis.x * swayMultiplier.x, Input.CameraAxis.y * swayMultiplier.y) * swayAccuracy;
-            float cameraAxisX = Input.MoveAxis.x * swayMultiplier.x * swayAccuracy;
+            Vector2 cameraAxis = new Vector2(InputManager.CameraAxis.x * swayMultiplier.x, InputManager.CameraAxis.y * swayMultiplier.y) * swayAccuracy;
+            float cameraAxisX = InputManager.MoveAxis.x * swayMultiplier.x * swayAccuracy;
 
             // Basic sway
             if (cameraAxis != Vector2.zero)
@@ -227,14 +222,14 @@ public class WeaponManager : MonoBehaviour
         {
             if (hit.transform)
             {
-                StateLock.Lock("WEAPON_ALL", this, true);
+                LockManager.Lock("WEAPON_ALL", this, true);
                 Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retractInitialRot.y, retractInitialRot.z));
                 retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, targetRot, retractSpeed * Time.deltaTime);
             }
         }
         else
         {
-            StateLock.Lock("WEAPON_ALL", this, false);
+            LockManager.Lock("WEAPON_ALL", this, false);
         }
 
         retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Sway : MonoBehaviour
@@ -23,7 +21,7 @@ public class Sway : MonoBehaviour
 
     private void Update()
     {
-        Vector2 cameraAxis = new Vector2(Input.CameraAxis.x * sensitivityX, Input.CameraAxis.y * sensitivityY);
+        Vector2 cameraAxis = new Vector2(InputManager.CameraAxis.x * sensitivityX, InputManager.CameraAxis.y * sensitivityY);
 
         if (cameraAxis != Vector2.zero)
         {

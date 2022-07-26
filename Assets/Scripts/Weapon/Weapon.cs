@@ -191,14 +191,14 @@ public class Weapon : MonoBehaviour
         startAimRot = transform.localRotation;
 
         // Recoil
-        recoilRoot = GameObject.Find("WeaponRecoil").transform;
+        recoilRoot = FindManager.Find("WeaponRecoil", this);
         startRecoilPos = recoilRoot.localPosition;
         startRecoilRot = recoilRoot.localRotation;
 
         // Error
         if (recoilRoot == null)
         {
-            Debug.LogError("RecoilRoot not assigned, solve please.");
+            DebugManager.DebugAssignedError("RecoilRoot");
         }
     }
 
@@ -213,7 +213,7 @@ public class Weapon : MonoBehaviour
 
     private void Fire()
     {
-        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_FIRE") && StateLock.IsLocked("CURSOR_LOCKED");
+        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_FIRE") && LockManager.IsLocked("CURSOR_LOCKED");
         bool canFire = stateLock && !Player.isRunning && !isReloading;
 
         if (canFire)
@@ -223,7 +223,7 @@ public class Weapon : MonoBehaviour
             {
                 case FireMode.Semi:
 
-                    if (Input.FireTap)
+                    if (InputManager.FireTap)
                     {
                         CalculateFire();
                     }
@@ -232,7 +232,7 @@ public class Weapon : MonoBehaviour
 
                 case FireMode.Auto:
 
-                    if (Input.FireAuto)
+                    if (InputManager.FireAuto)
                     {
                         CalculateFire();
                     }
@@ -252,8 +252,8 @@ public class Weapon : MonoBehaviour
     }
     private void Reload()
     {
-        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_RELOAD");
-        bool canReload = stateLock && Input.Reload && PlayerCamera.IsCursorLocked() && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
+        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_RELOAD");
+        bool canReload = stateLock && InputManager.Reload && PlayerCamera.IsCursorLocked() && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
 
         if (canReload)
         {
@@ -261,7 +261,7 @@ public class Weapon : MonoBehaviour
         }
 
         // Lock state
-        StateLock.Lock("PLAYER_RUN", this, isReloading);
+        LockManager.Lock("PLAYER_RUN", this, isReloading);
 
         // Animation no-bullet
         Animator.SetBool("NO_BULLET", !HaveBullets);
@@ -269,8 +269,8 @@ public class Weapon : MonoBehaviour
 
     private void Aim()
     {
-        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_AIM");
-        bool canAim = stateLock && Input.Aim && PlayerCamera.IsCursorLocked() && !isReloading && !Player.isRunning;
+        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_AIM");
+        bool canAim = stateLock && InputManager.Aim && PlayerCamera.IsCursorLocked() && !isReloading && !Player.isRunning;
 
         Player.isAim = isAim;
 
@@ -278,7 +278,7 @@ public class Weapon : MonoBehaviour
         {
             isAim = true;
 
-            StateLock.Lock("PLAYER_BASIC_ANIM", this, true);
+            LockManager.Lock("PLAYER_BASIC_ANIM", this, true);
             PlayerCamera.SetSensitivityScale(aimSensitivityScale);
             WeaponManager.SwayAccuracy(aimSwayScale);
 
@@ -288,11 +288,11 @@ public class Weapon : MonoBehaviour
         else
         {
             isAim = false;
-            StateLock.Lock("PLAYER_BASIC_ANIM", this, false);
+            LockManager.Lock("PLAYER_BASIC_ANIM", this, false);
             PlayerCamera.MaxSensitivityScale();
         }
 
-        bool canResetAim = (!Input.Aim || Input.Run) && (transform.localPosition != startAimPos || transform.localRotation != startAimRot);
+        bool canResetAim = (!InputManager.Aim || InputManager.Run) && (transform.localPosition != startAimPos || transform.localRotation != startAimRot);
 
         if (canResetAim)
         {
@@ -314,8 +314,8 @@ public class Weapon : MonoBehaviour
 
     private void Inspect()
     {
-        bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_INSPECT");
-        bool canInspect = stateLock && Input.Inspect && !isReloading && !isAim;
+        bool stateLock = !LockManager.IsLocked("WEAPON_ALL") && !LockManager.IsLocked("WEAPON_INSPECT");
+        bool canInspect = stateLock && InputManager.Inspect && !isReloading && !isAim;
 
         if (canInspect)
         {

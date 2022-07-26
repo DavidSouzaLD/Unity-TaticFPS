@@ -71,19 +71,19 @@ public class PlayerCamera : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
     }
 
     private void Start()
     {
         // Components
-        PlayerTransform = GetComponentInParent<Player>().transform;
         Volume = GetComponent<Volume>();
         Camera = GetComponent<Camera>();
 
         // Get transforms
-        cameraRecoilRoot = GameObject.Find("CameraRecoil").transform;
+        PlayerTransform = FindManager.Find("Player", this);
+        cameraRecoilRoot = FindManager.Find("CameraRecoil", this);
 
         // Starting values
         characterTargetRot = PlayerTransform.localRotation;
@@ -93,7 +93,7 @@ public class PlayerCamera : MonoBehaviour
 
         if (cameraRecoilRoot == null)
         {
-            Debug.LogError("(CameraRecoilRoot) not assigned, solve please.");
+            DebugManager.DebugAssignedError("CameraRecoilRoot");
         }
     }
 
@@ -102,11 +102,11 @@ public class PlayerCamera : MonoBehaviour
         // Camera
         if (Camera)
         {
-            StateLock.Lock("CURSOR_LOCKED", this, isCursorLocked);
+            LockManager.Lock("CURSOR_LOCKED", this, isCursorLocked);
 
             if (isCursorLocked)
             {
-                Vector2 cameraAxis = Input.CameraAxis;
+                Vector2 cameraAxis = InputManager.CameraAxis;
 
                 cameraRot.x = (-cameraAxis.y * sensitivity.y) * sensitivityScale;
                 cameraRot.y = (cameraAxis.x * sensitivity.x) * sensitivityScale;

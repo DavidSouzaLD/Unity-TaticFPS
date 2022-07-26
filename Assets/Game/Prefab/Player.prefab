@@ -7006,7 +7006,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1277732422604894768}
   - component: {fileID: 1277732422604894771}
-  - component: {fileID: 1277732422604894774}
   - component: {fileID: 1277732422604894770}
   - component: {fileID: 1277732422604894773}
   m_Layer: 6
@@ -7068,47 +7067,6 @@ MonoBehaviour:
   turnSpeed: 8
   basicAnimator: {fileID: 1277732423125041561}
   disableGizmos: 1
---- !u!114 &1277732422604894774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277732422604894772}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e66e046539117f841b0dbb7756663ca7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tracerPrefab: {fileID: 277832011086963584, guid: 45f08e636d92d7c41944788b82864f09,
-    type: 3}
-  swayMultiplier: {x: 1, y: 0.5}
-  swayAmount: 0.1
-  swaySmooth: 0.1
-  swayResetSpeed: 5
-  horizontalSwayScale: 1
-  retractLayers:
-    serializedVersion: 2
-    m_Bits: 9
-  retractRayDistance: 1
-  retractAngle: -20
-  retractSpeed: 6
-  hitMark: {fileID: 7091990453232243327}
-  hitMarkSound: {fileID: 8300000, guid: 9094de9e22d4dc64e95f530286fab45f, type: 3}
-  hitMarkTime: 0.1
-  Impacts:
-  - name: Concrete
-    prefab: {fileID: 4406149976551598978, guid: cee8326c1cb9ec84a910152dfc716243,
-      type: 3}
-  - name: Wood
-    prefab: {fileID: 4406149976551598978, guid: 3e6ba8af2a2f32b4ab481b05fb29d12d,
-      type: 3}
-  - name: Grass
-    prefab: {fileID: 4406149976551598978, guid: 9ae3a08ae8381b64cb4d3747d9b333c3,
-      type: 3}
-  - name: Metal
-    prefab: {fileID: 4406149976551598978, guid: 58f9539fb96e83b4b9959ef51f4ab1b1,
-      type: 3}
 --- !u!54 &1277732422604894770
 Rigidbody:
   m_ObjectHideFlags: 0

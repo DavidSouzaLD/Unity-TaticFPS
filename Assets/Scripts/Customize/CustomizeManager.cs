@@ -46,13 +46,13 @@ public class CustomizeManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
     }
 
     private void Start()
     {
-        Camera = Camera.main;
+        Camera = FindManager.Find("Camera", this).GetComponent<Camera>();
         targetRot = rotationTransform.localRotation;
         startRotationRot = rotationTransform.localRotation;
     }
@@ -60,7 +60,7 @@ public class CustomizeManager : MonoBehaviour
     private void Update()
     {
         CameraRoot.LookAt(new Vector3(WeaponsRoot.position.x, 0));
-        CameraRoot.position += new Vector3(0f, 0f, Input.Scroll * zoomSpeed * Time.deltaTime);
+        CameraRoot.position += new Vector3(0f, 0f, InputManager.Scroll * zoomSpeed * Time.deltaTime);
 
         CameraRoot.position = new Vector3(
             CameraRoot.position.x,
@@ -68,10 +68,10 @@ public class CustomizeManager : MonoBehaviour
             Mathf.Clamp(CameraRoot.position.z, minZoom, maxZoom)
         );
 
-        if (Input.CustomizeRotation)
+        if (InputManager.CustomizeRotation)
         {
-            float rotX = Input.CameraAxis.x * rotationSpeed * Mathf.Deg2Rad;
-            float rotY = Input.CameraAxis.y * rotationSpeed * Mathf.Deg2Rad;
+            float rotX = InputManager.CameraAxis.x * rotationSpeed * Mathf.Deg2Rad;
+            float rotY = InputManager.CameraAxis.y * rotationSpeed * Mathf.Deg2Rad;
 
             rotationTransform.Rotate(Vector3.up, -rotX);
             //rotationTransform.Rotate(Vector3.right, -rotX);

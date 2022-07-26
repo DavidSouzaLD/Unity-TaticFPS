@@ -37,12 +37,12 @@ public class AttachmentScreenPoint : MonoBehaviour, IPointerEnterHandler, IPoint
     {
         // Attachmnet settings
         attachmentName = gameObject.name + "Point";
-        attachmentTransform = GameObject.Find(attachmentName).transform;
-        attachmentGroup = attachmentTransform.GetComponent<AttachmentGroup>();
+        attachmentTransform = FindManager.Find(attachmentName, this);
+        attachmentGroup = FindManager.Find(attachmentName, this).GetComponent<AttachmentGroup>();
         attachmentText = GetComponentInChildren<TextMeshProUGUI>();
 
         // Get components
-        Camera = Camera.main;
+        Camera = FindManager.Find("Camera", this).GetComponent<Camera>();
         RectTransform = GetComponent<RectTransform>();
         Image = GetComponent<Image>();
         Button = GetComponent<Button>();

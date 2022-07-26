@@ -11,7 +11,7 @@ public class CompassMarker : MonoBehaviour
     public float yPosition => rectTransform.anchoredPosition.y;
     public float xPosition => rectTransform.anchoredPosition.x;
 
-    void Start()
+    private void Start()
     {
         image = GetComponent<Image>();
         image.sprite = sprite;

@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class Input : MonoBehaviour
+[DisallowMultipleComponent]
+public class InputManager : MonoBehaviour
 {
-    private static Input Instance;
+    private static InputManager Instance;
     private InputMap Map;
     private bool _haveMap => Map != null;
 
@@ -16,7 +17,7 @@ public class Input : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
     }
 

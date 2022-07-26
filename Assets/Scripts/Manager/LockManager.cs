@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class StateLock : MonoBehaviour
+public class LockManager : MonoBehaviour
 {
     /// <summary>
     /// Global public instance.
     /// </summary>
-    public static StateLock Instance;
+    public static LockManager Instance;
 
     /// <summary>
     /// Maximum number of objects on the waiting list.
@@ -80,7 +80,7 @@ public class StateLock : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
     }
 
