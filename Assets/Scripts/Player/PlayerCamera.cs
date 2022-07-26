@@ -8,43 +8,70 @@ public class PlayerCamera : MonoBehaviour
 {
     public static PlayerCamera Instance;
 
-    [Header("[Camera Settings]")]
-    public bool cursorLocked;
-    public float cameraSmooth = 20f;
-    public Vector2 sensitivity = new Vector2(0.15f, 0.15f);
-    public Vector2 clampVertical = new Vector2(-90f, 90f);
-    public VolumeProfile[] profiles;
-
-    [Header("[Recoil Settings]")]
-    public Transform recoilTransform;
-    public float snappiness;
-    public float resetSpeed;
-    Vector3 currentRotation;
-    Vector3 targetRotation;
-
-    // Private
-    private Vector2 _cameraRot = Vector2.zero;
-    private Quaternion _characterTargetRot, _cameraTargetRot;
-    private Transform PlayerTransform;
-    private Volume Volume;
-    public static Camera Camera;
+    [Header("Camera")]
 
     /// <summary>
-    /// Returns whether the cursor is locked or not
+    /// Lock the cursor on the screen.
     /// </summary>
-    public static bool CursorLocked
-    {
-        get
-        {
-            return Instance.cursorLocked;
-        }
-    }
+    [SerializeField] private bool isCursorLocked = true;
+
+    /// <summary>
+    /// Smoothing camera movement.
+    /// </summary>
+    [SerializeField] private float cameraSmooth = 20f;
+
+    /// <summary>
+    /// Mouse/Gamepad sensitivity for camera.
+    /// </summary>
+    [SerializeField] private Vector2 sensitivity = new Vector2(0.15f, 0.15f);
+
+    /// <summary>
+    /// Axis limitation for camera.
+    /// </summary>
+    [SerializeField] private Vector2 clampVertical = new Vector2(-90f, 90f);
+
+    /// <summary>
+    /// Post processing profiles to activate via script.
+    /// </summary>
+    [SerializeField] private VolumeProfile[] profiles;
+
+    [Header("Recoil")]
+
+    /// <summary>
+    /// Speed at which recoil is applied.
+    /// </summary>
+    [SerializeField] private float recoilSpeed = 8f;
+
+    /// <summary>
+    /// Speed with which the recoil returns to its initial position.
+    /// </summary>
+    [SerializeField] private float resetSpeed = 5f;
+
+    // Private
+    private float sensitivityScale;
+    private Vector2 cameraRot;
+    private Vector3 currentRotation;
+    private Vector3 targetRotation;
+    private Quaternion characterTargetRot;
+    private Quaternion cameraTargetRot;
+    private Transform cameraRecoilRoot;
+    private Transform PlayerTransform;
+    private Volume Volume;
+    private Camera Camera;
+
+    public static bool IsCursorLocked() => Instance.isCursorLocked;
+    public static void SetSensitivityScale(float scale) => Instance.sensitivityScale = Mathf.Clamp(scale, 0, 1);
+    public static void MaxSensitivityScale() => Instance.sensitivityScale = 1f;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -55,62 +82,72 @@ public class PlayerCamera : MonoBehaviour
         Volume = GetComponent<Volume>();
         Camera = GetComponent<Camera>();
 
+        // Get transforms
+        cameraRecoilRoot = GameObject.Find("CameraRecoil").transform;
+
         // Starting values
-        _characterTargetRot = PlayerTransform.localRotation;
-        _cameraTargetRot = Camera.transform.localRotation;
+        characterTargetRot = PlayerTransform.localRotation;
+        cameraTargetRot = Camera.transform.localRotation;
+
+        MaxSensitivityScale();
+
+        if (cameraRecoilRoot == null)
+        {
+            Debug.LogError("(CameraRecoilRoot) not assigned, solve please.");
+        }
     }
 
-    /// <summary>
-    /// Update camera movement
-    /// </summary>
     private void Update()
     {
         // Camera
         if (Camera)
         {
-            StateLock.Lock("CURSOR_LOCKED", this, cursorLocked);
+            StateLock.Lock("CURSOR_LOCKED", this, isCursorLocked);
 
-            if (cursorLocked)
+            if (isCursorLocked)
             {
                 Vector2 cameraAxis = Input.CameraAxis;
 
-                _cameraRot.x = -cameraAxis.y * sensitivity.y;
-                _cameraRot.y = cameraAxis.x * sensitivity.x;
+                cameraRot.x = (-cameraAxis.y * sensitivity.y) * sensitivityScale;
+                cameraRot.y = (cameraAxis.x * sensitivity.x) * sensitivityScale;
 
-                _characterTargetRot *= Quaternion.Euler(0f, _cameraRot.y, 0f);
-                _cameraTargetRot *= Quaternion.Euler(_cameraRot.x, 0f, 0f);
+                characterTargetRot *= Quaternion.Euler(0f, cameraRot.y, 0f);
+                cameraTargetRot *= Quaternion.Euler(cameraRot.x, 0f, 0f);
 
-                _cameraTargetRot = Rotation.Clamp(_cameraTargetRot, clampVertical.x, clampVertical.y, Rotation.Axis.X);
+                cameraTargetRot = Rotation.Clamp(cameraTargetRot, clampVertical.x, clampVertical.y, Rotation.Axis.X);
 
-                PlayerTransform.localRotation = Quaternion.Slerp(PlayerTransform.localRotation, _characterTargetRot, cameraSmooth * Time.deltaTime);
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, _cameraTargetRot, cameraSmooth * Time.deltaTime);
+                PlayerTransform.localRotation = Quaternion.Slerp(PlayerTransform.localRotation, characterTargetRot, cameraSmooth * Time.deltaTime);
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, cameraTargetRot, cameraSmooth * Time.deltaTime);
             }
         }
 
         // Recoil
-        if (recoilTransform)
+        if (cameraRecoilRoot)
         {
             targetRotation = Vector3.Lerp(targetRotation, Vector3.zero, resetSpeed * Time.deltaTime);
-            currentRotation = Vector3.Slerp(currentRotation, targetRotation, snappiness * Time.deltaTime);
-            recoilTransform.localRotation = Quaternion.Euler(currentRotation);
+            currentRotation = Vector3.Slerp(currentRotation, targetRotation, recoilSpeed * Time.deltaTime);
+            cameraRecoilRoot.localRotation = Quaternion.Euler(currentRotation);
         }
     }
 
     /// <summary>
-    /// Apply recoil to camera
+    /// Apply recoil to camera.
     /// </summary>
     public static void ApplyRecoil(Vector3 _recoil)
     {
         Instance.targetRotation += new Vector3(-_recoil.x, Random.Range(-_recoil.y, _recoil.y), Random.Range(-_recoil.z, _recoil.z));
     }
 
+    /// <summary>
+    /// Apply shake to camera.
+    /// </summary>
     public static void ApplyShake()
     {
 
     }
 
     /// <summary>
-    /// Apply values in PostProcessing [BASE/NIGHTVISION/CUSTOM]
+    /// Apply values in PostProcessing [BASE/NIGHTVISION/CUSTOM].
     /// </summary>
     public static void ApplyVolume(string _volumeName)
     {
@@ -133,7 +170,7 @@ public class PlayerCamera : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the current volume value
+    /// Returns the current volume value.
     /// </summary>
     public static string GetVolume()
     {
@@ -158,7 +195,7 @@ public class PlayerCamera : MonoBehaviour
     }
 
     /// <summary>
-    /// Lock the cursor
+    /// Lock the cursor.
     /// </summary>
     public static void LockCursor(bool value)
     {
@@ -167,18 +204,21 @@ public class PlayerCamera : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            Instance.cursorLocked = true;
+            Instance.isCursorLocked = true;
         }
         else
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Instance.cursorLocked = false;
+            Instance.isCursorLocked = false;
         }
     }
 
+    /// <summary>
+    /// Returns the point in the UI based on the submitted position.
+    /// </summary>
     public static Vector3 WorldToScreen(Vector3 _position)
     {
-        return Camera.WorldToScreenPoint(_position);
+        return Instance.Camera.WorldToScreenPoint(_position);
     }
 }

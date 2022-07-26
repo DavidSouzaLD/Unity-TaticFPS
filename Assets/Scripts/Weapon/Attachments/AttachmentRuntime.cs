@@ -5,9 +5,10 @@ public class AttachmentRuntime : MonoBehaviour
     public enum AttachmentType { Muzzle, Sight }
     public AttachmentType attachmentType = AttachmentType.Sight;
 
-    // Sight
+    [Header("Sight")]
     [SerializeField] private Vector3 aimPosition;
     [SerializeField] private Transform newMuzzlePoint;
+    [SerializeField, Range(0f, 1f)] private float sensitivityScale;
 
     private Weapon Weapon;
 
@@ -21,8 +22,9 @@ public class AttachmentRuntime : MonoBehaviour
         switch (attachmentType)
         {
             case AttachmentType.Sight:
-                Weapon.SetMuzzlePoint(newMuzzlePoint);
+                Weapon.SetAimSensitivityScale(sensitivityScale);
                 Weapon.SetAimPosition(aimPosition);
+                Weapon.SetMuzzlePoint(newMuzzlePoint);
                 break;
         }
     }
@@ -32,8 +34,9 @@ public class AttachmentRuntime : MonoBehaviour
         switch (attachmentType)
         {
             case AttachmentType.Sight:
-                Weapon.ResetMuzzlePoint();
+                Weapon.ResetAimSensitivityScale();
                 Weapon.ResetAimPosition();
+                Weapon.ResetMuzzlePoint();
                 break;
         }
     }

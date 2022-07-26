@@ -141,6 +141,7 @@ public class Weapon : MonoBehaviour
 
     // Privates
     private float firerateTimer; // Fire rate counter.
+    private float aimSensitivityScale; // Scales and multiplies the total current sensitivity. (0 to 1) 
     private Vector3 startAimPos; // Initial position of the aim root.
     private Vector3 startRecoilPos; // Initial position of the recoil root.
     private Quaternion startAimRot; // Initial rotation of the aim root.
@@ -161,8 +162,10 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    public void SetAimSensitivityScale(float scale) => aimSensitivityScale = scale;
     public void SetMuzzlePoint(Transform muzzle) => muzzlePoint = muzzle;
     public void SetAimPosition(Vector3 aimPos) => aimPosition = aimPos;
+    public void ResetAimSensitivityScale() => aimSensitivityScale = 1f;
     public void ResetMuzzlePoint() => muzzlePoint = defaultMuzzlePoint;
     public void ResetAimPosition() => aimPosition = defaultAimPos;
 
@@ -247,7 +250,7 @@ public class Weapon : MonoBehaviour
     private void Reload()
     {
         bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_RELOAD");
-        bool canReload = stateLock && Input.Reload && PlayerCamera.CursorLocked && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
+        bool canReload = stateLock && Input.Reload && PlayerCamera.IsCursorLocked() && !Player.isRunning && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
 
         if (canReload)
         {
@@ -264,16 +267,18 @@ public class Weapon : MonoBehaviour
     private void Aim()
     {
         bool stateLock = !StateLock.IsLocked("WEAPON_ALL") && !StateLock.IsLocked("WEAPON_AIM");
-        bool canAim = stateLock && Input.Aim && PlayerCamera.CursorLocked && !isReloading && !Player.isRunning;
+        bool canAim = stateLock && Input.Aim && PlayerCamera.IsCursorLocked() && !isReloading && !Player.isRunning;
 
         Player.isAim = isAim;
 
         if (canAim)
         {
             isAim = true;
-            StateLock.Lock("PLAYER_BASIC_ANIM", this, true);
 
+            StateLock.Lock("PLAYER_BASIC_ANIM", this, true);
+            PlayerCamera.SetSensitivityScale(aimSensitivityScale);
             WeaponManager.SwayAccuracy(aimSwayScale);
+
             transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, aimSpeed * Time.deltaTime);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, aimRotation, aimSpeed * Time.deltaTime);
         }
@@ -281,6 +286,7 @@ public class Weapon : MonoBehaviour
         {
             isAim = false;
             StateLock.Lock("PLAYER_BASIC_ANIM", this, false);
+            PlayerCamera.MaxSensitivityScale();
         }
 
         bool canResetAim = (!Input.Aim || Input.Run) && (transform.localPosition != startAimPos || transform.localRotation != startAimRot);
@@ -348,7 +354,7 @@ public class Weapon : MonoBehaviour
                     if (hit.transform)
                     {
                         float distance = (muzzlePoint.position - hit.point).sqrMagnitude;
-                        float time = hit.distance / bulletVelocity;
+                        float time = distance / bulletVelocity;
                         StartCoroutine(CalculateDelay(time, hit));
                         break;
                     }

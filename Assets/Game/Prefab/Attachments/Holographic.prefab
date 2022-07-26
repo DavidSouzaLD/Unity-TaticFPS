@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 15b2e3551d9bf874ea2ce146dcb47f4a, type: 2}
+  - {fileID: 2100000, guid: 685b5aeba391f0542b5fb557fa281b41, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -164,8 +164,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attachmentType: 1
-  aimPosition: {x: 0, y: 0, z: 0}
+  aimPosition: {x: -0.0725, y: 0.0555, z: -0.15}
   newMuzzlePoint: {fileID: 5024036046303135343}
+  sensitivityScale: 1
 --- !u!33 &5194831732043027083
 MeshFilter:
   m_ObjectHideFlags: 0

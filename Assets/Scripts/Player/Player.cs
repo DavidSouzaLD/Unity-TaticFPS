@@ -1,76 +1,145 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
 public class Player : MonoBehaviour
 {
-    #region Inspector
-    [SerializeField] private bool disableGizmos;
+    [Header("Movement")]
 
-    [Header("[Movement Settings]")]
+    /// <summary>
+    /// Acceleration walking.
+    /// </summary>
     [SerializeField] private float walkAcceleration = 10f;
+
+    /// <summary>
+    /// Acceleration running.
+    /// </summary>
     [SerializeField] private float runAcceleration = 15f;
-    Vector3 _additionalVelocity;
 
-    [Header("[Limit Settings]")]
-    [SerializeField] private float limitWalkVelocity = 5f;
-    [SerializeField] private float limitRunVelocity = 7f;
-    [SerializeField] private float limitCrouchVelocity = 2f;
-
-    [Header("[Jump Settings]")]
-    [SerializeField] private float jumpForce = 25f;
-    float _jumpFixTimer = 0f;
-
-    [Header("[Crouch Settings]")]
-    [SerializeField] private float crouchHeight = 0.6f;
-    [SerializeField] private float crouchSpeed = 5f;
-    float _startCapsuleHeight;
-    float _startCameraTransformHeight;
-
-    [Header("[Drag Settings]")]
-    [SerializeField] private float initialDrag = 0.5f;
-    [SerializeField] private float drag = 5f;
-
-    [Header("[Slope Settings]")]
+    /// <summary>
+    /// Maximum angle for climbing steps and curved surfaces.
+    /// </summary>
     [SerializeField] private float maxAngleToSlope = 65f;
 
-    [Header("[Ground Settings]")]
+    [Header("Limit")]
+
+    /// <summary>
+    /// Movement speed limit.
+    /// </summary>
+    [SerializeField] private float limitWalkVelocity = 3f;
+
+    /// <summary>
+    /// Running speed limit.
+    /// </summary>
+    [SerializeField] private float limitRunVelocity = 4.5f;
+
+    /// <summary>
+    /// Squat speed limit.
+    /// </summary>
+    [SerializeField] private float limitCrouchVelocity = 1.5f;
+
+    [Header("Jump")]
+
+    /// <summary>
+    /// Force applied to the jump.
+    /// </summary>
+    [SerializeField] private float jumpForce = 25f;
+
+    [Header("Crouch")]
+
+    /// <summary>
+    /// Height of crouch.
+    /// </summary>
+    [SerializeField] private float crouchHeight = 1.5f;
+
+    /// <summary>
+    /// Speed for apply crouch movement.
+    /// </summary>
+    [SerializeField] private float crouchSpeed = 5f;
+
+    [Header("Friction")]
+
+    /// <summary>
+    /// Friction that is applied when standing still.
+    /// </summary>
+    [SerializeField] private float idleFriction = 5f;
+
+    /// <summary>
+    /// Friction that is applied when moving.
+    /// </summary>
+    [SerializeField] private float moveFriction = 0.5f;
+
+    [Header("Ground")]
+
+    /// <summary>
+    /// Layer mask for objects that are walkable.
+    /// </summary>
     [SerializeField] private LayerMask groundableMask;
-    [SerializeField] private float groundHeightOffset = 0f;
+
+    /// <summary>
+    /// Offset of ground height check.
+    /// </summary>
+    [SerializeField] private float groundHeightOffset = -0.35f;
+
+    /// <summary>
+    /// Ground radius override a capsule collider size.
+    /// </summary>
     [SerializeField] private float groundRadiusOverride = 0f;
 
-    [Header("[Turn Settings]")]
-    [SerializeField] private Transform weaponTurnTransform;
-    [SerializeField] private Transform cameraTurnTransform;
-    [SerializeField] private float horizontalTurnAmount;
-    [SerializeField] private float cameraTurnTransformScale;
-    [SerializeField] private float turnSpeed;
-    Vector3 cameraTurnTransformStartPos;
-    Quaternion startTurnRot, cameraTurnTransformStartRot;
+    [Header("Turn")]
 
-    [Header("[Animators Settings]")]
+    /// <summary>
+    /// Horizontal movement amount.
+    /// </summary>
+    [SerializeField] private float turnHorizontalAmount = 15f;
+
+    /// <summary>
+    /// Turn scale on camera.
+    /// </summary>
+    [SerializeField] private float turnCameraScale = 0.02f;
+
+    /// <summary>
+    /// Turn change speed.
+    /// </summary>
+    [SerializeField] private float turnSpeed = 8f;
+
+    [Header("Animators")]
+
+    /// <summary>
+    /// Animator of basics animations.
+    /// </summary>
     [SerializeField] private Animator basicAnimator;
-    [SerializeField] private Animator turnAnimator;
 
-    #endregion
+    [Space]
 
-    #region Public Components/Info
+    /// <summary>
+    /// Disable all gizmos of player.
+    /// </summary>
+    [SerializeField] private bool disableGizmos;
 
+    /// <summary>
+    /// Player states.
+    /// </summary>
     [HideInInspector]
     public static bool isWalking, isCrouched, isJumping, isGrounded, isTurning, isAim;
     public static bool isRunning => isWalking && !StateLock.IsLocked("PLAYER_RUN") && Input.Run && Input.MoveAxis.y > 0;
 
-    // Components
-    [HideInInspector] public Transform CameraTransform;
-    [HideInInspector] public Rigidbody Rigidbody;
-    [HideInInspector] public CapsuleCollider CapsuleCollider;
+    // Private
+    private Transform weaponTurn;
+    private Transform cameraTurn;
+    private float jumpFixTimer = 0f;
+    private float startCapsuleHeight;
+    private float startCameraHeight;
+    private Vector3 startCameraTurnPos;
+    private Vector3 additionalVelocity;
+    private Quaternion startTurnRot;
+    private Quaternion startTurnCameraRot;
+    private Transform CameraTransform;
+    private Rigidbody Rigidbody;
+    private CapsuleCollider CapsuleCollider;
 
-    #endregion
-
-    #region Public Variables
     public float CurrentSpeed { get { return isRunning ? runAcceleration : walkAcceleration; } }
-    public float LimitCurrentSpeed { get { return (!Input.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + _additionalVelocity.magnitude; } }
+    public float LimitCurrentSpeed { get { return (!Input.Crouch ? (!isRunning ? limitWalkVelocity : limitRunVelocity) : limitCrouchVelocity) + additionalVelocity.magnitude; } }
     public float SlopeAngle { get { return Vector3.Angle(transform.up, Normal); } }
     public bool Grounded { get { return GroundColliders.Length > 0; } }
     public bool Sloped { get { return SlopeAngle > 0 && SlopeAngle <= maxAngleToSlope; } }
@@ -107,8 +176,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    #endregion
-
     private void Start()
     {
         // Get necessary components
@@ -116,17 +183,26 @@ public class Player : MonoBehaviour
         Rigidbody = GetComponent<Rigidbody>();
         CapsuleCollider = GetComponent<CapsuleCollider>();
 
+        // Get transforms
+        weaponTurn = GameObject.Find("WeaponTurn").transform;
+        cameraTurn = GameObject.Find("CameraTurn").transform;
+
         // Start locking cursor
         PlayerCamera.LockCursor(true);
 
         // Starting values
-        _startCameraTransformHeight = CameraTransform.transform.localPosition.y;
-        _startCapsuleHeight = CapsuleCollider.height;
+        startCameraHeight = CameraTransform.transform.localPosition.y;
+        startCapsuleHeight = CapsuleCollider.height;
 
         // Turn
-        startTurnRot = weaponTurnTransform.localRotation;
-        cameraTurnTransformStartPos = cameraTurnTransform.localPosition;
-        cameraTurnTransformStartRot = cameraTurnTransform.localRotation;
+        startTurnRot = weaponTurn.localRotation;
+        startCameraTurnPos = cameraTurn.localPosition;
+        startTurnCameraRot = cameraTurn.localRotation;
+
+        if (weaponTurn == null || cameraTurn == null)
+        {
+            Debug.LogError("(WeaponTurn/CameraTurn) not assigned, solve please.");
+        }
     }
 
     private void FixedUpdate()
@@ -164,9 +240,9 @@ public class Player : MonoBehaviour
             {
                 isWalking = true;
 
-                if (Rigidbody.drag != initialDrag)
+                if (Rigidbody.drag != moveFriction)
                 {
-                    Rigidbody.drag = initialDrag;
+                    Rigidbody.drag = moveFriction;
                 }
 
                 if (Grounded)
@@ -177,11 +253,13 @@ public class Player : MonoBehaviour
                     {
                         if (CurrentSpeed == walkAcceleration)
                         {
+                            StateLock.Lock("PLAYER_TURN", this, false);
                             basicAnimator.SetBool("WALK", true);
                             basicAnimator.SetBool("RUN", false);
                         }
                         else if (CurrentSpeed == runAcceleration)
                         {
+                            StateLock.Lock("PLAYER_TURN", this, true);
                             basicAnimator.SetBool("WALK", false);
                             basicAnimator.SetBool("RUN", true);
                         }
@@ -198,13 +276,18 @@ public class Player : MonoBehaviour
 
                 if (Grounded)
                 {
-                    Rigidbody.drag = drag;
+                    Rigidbody.drag = idleFriction;
                 }
                 else
                 {
-                    Rigidbody.drag = initialDrag;
+                    Rigidbody.drag = moveFriction;
                 }
             }
+        }
+
+        if (!StateLock.IsLocked("PLAYER_BASIC_ANIM"))
+        {
+            basicAnimator.SetBool("AIR", !isGrounded);
         }
 
         // Limit Velocity
@@ -235,11 +318,11 @@ public class Player : MonoBehaviour
             isCrouched = false;
             StateLock.Lock("PLAYER_RUN", this, false);
 
-            CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, _startCapsuleHeight, crouchSpeed * Time.deltaTime);
+            CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, startCapsuleHeight, crouchSpeed * Time.deltaTime);
             CameraTransform.transform.localPosition = Vector3.Lerp(CameraTransform.transform.localPosition,
             new Vector3(
                 CameraTransform.transform.localPosition.x,
-                _startCameraTransformHeight,
+                startCameraHeight,
                 CameraTransform.transform.localPosition.z
             ), crouchSpeed * Time.deltaTime);
         }
@@ -247,57 +330,72 @@ public class Player : MonoBehaviour
 
     private void JumpUpdate()
     {
-        bool jump = !StateLock.IsLocked("PLAYER_JUMP") && Input.Jump && Grounded && _jumpFixTimer <= 0;
+        bool jump = !StateLock.IsLocked("PLAYER_JUMP") && Input.Jump && Grounded && jumpFixTimer <= 0;
 
         if (jump)
         {
             isJumping = true;
             Rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-            _jumpFixTimer = 0.15f;
+            jumpFixTimer = 0.15f;
         }
 
-        if (_jumpFixTimer > 0)
+        if (jumpFixTimer > 0)
         {
             isJumping = false;
-            _jumpFixTimer -= Time.deltaTime;
+            jumpFixTimer -= Time.deltaTime;
         }
     }
 
     private void TurnUpdate()
     {
-        bool _canTurn = !StateLock.IsLocked("PLAYER_TURN") && !isRunning;
+        bool _canTurn = !StateLock.IsLocked("PLAYER_TURN");
 
         if (_canTurn)
         {
             // Right
-            if (Input.Turn != 0)
+            if (Input.Turn != 0 && !isRunning)
             {
                 isTurning = true;
+                StateLock.Lock("PLAYER_BASIC_ANIM", this, true);
+                StateLock.Lock("PLAYER_RUN", this, true);
 
-                Vector3 targetPos = new Vector3(horizontalTurnAmount * cameraTurnTransformScale * Input.Turn, 0f, 0f);
-                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, horizontalTurnAmount * -Input.Turn));
+                Vector3 targetPos = new Vector3(turnHorizontalAmount * turnCameraScale * Input.Turn, 0f, 0f);
+                Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, turnHorizontalAmount * -Input.Turn));
 
                 if (!isAim)
                 { // Weapon
-                    weaponTurnTransform.localRotation = Quaternion.Slerp(weaponTurnTransform.localRotation, targetRot, turnSpeed * Time.deltaTime);
-                    cameraTurnTransform.localRotation = Quaternion.Slerp(cameraTurnTransform.localRotation, cameraTurnTransformStartRot, turnSpeed * Time.deltaTime);
-                    cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, cameraTurnTransformStartPos, turnSpeed * Time.deltaTime);
+                    weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
+                    cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
+                    cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, startCameraTurnPos, turnSpeed * Time.deltaTime);
                 }
                 else
                 { // CameraTransform
-                    cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, targetPos, turnSpeed * Time.deltaTime);
-                    cameraTurnTransform.localRotation = Quaternion.Slerp(cameraTurnTransform.localRotation, targetRot, turnSpeed * Time.deltaTime);
-                    weaponTurnTransform.localRotation = Quaternion.Slerp(weaponTurnTransform.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+                    cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, targetPos, turnSpeed * Time.deltaTime);
+                    cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, targetRot, turnSpeed * Time.deltaTime);
+                    weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
                 }
             }
-            else if (weaponTurnTransform.localRotation != startTurnRot || cameraTurnTransform.localRotation != cameraTurnTransformStartRot || cameraTurnTransform.localPosition != cameraTurnTransformStartPos)
+            else if (weaponTurn.localRotation != startTurnRot || cameraTurn.localRotation != startTurnCameraRot || cameraTurn.localPosition != startCameraTurnPos)
             {
                 isTurning = false;
+                StateLock.Lock("PLAYER_BASIC_ANIM", this, false);
+                StateLock.Lock("PLAYER_RUN", this, false);
 
-                weaponTurnTransform.localRotation = Quaternion.Slerp(weaponTurnTransform.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
-                cameraTurnTransform.localRotation = Quaternion.Slerp(cameraTurnTransform.localRotation, cameraTurnTransformStartRot, turnSpeed * Time.deltaTime);
-                cameraTurnTransform.localPosition = Vector3.Lerp(cameraTurnTransform.localPosition, cameraTurnTransformStartPos, turnSpeed * Time.deltaTime);
+                weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+                cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
+                cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, startCameraTurnPos, turnSpeed * Time.deltaTime);
             }
+        }
+
+        if (!_canTurn)
+        {
+            isTurning = false;
+            StateLock.Lock("PLAYER_BASIC_ANIM", this, false);
+            StateLock.Lock("PLAYER_RUN", this, false);
+
+            weaponTurn.localRotation = Quaternion.Slerp(weaponTurn.localRotation, startTurnRot, turnSpeed * Time.deltaTime);
+            cameraTurn.localRotation = Quaternion.Slerp(cameraTurn.localRotation, startTurnCameraRot, turnSpeed * Time.deltaTime);
+            cameraTurn.localPosition = Vector3.Lerp(cameraTurn.localPosition, startCameraTurnPos, turnSpeed * Time.deltaTime);
         }
     }
 
