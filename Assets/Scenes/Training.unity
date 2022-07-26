@@ -2161,7 +2161,7 @@ MonoBehaviour:
   currentBullets: 30
   extraBullets: 120
   bulletHitForce: 500
-  bulletVelocity: 10000
+  bulletVelocity: 200
   bulletsPerFire: 1
   bulletGravityScale: 2
   maxBulletDistance: 1500

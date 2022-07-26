@@ -357,7 +357,7 @@ public class Weapon : MonoBehaviour
                     if (hit.transform)
                     {
                         float distance = (muzzlePoint.position - hit.point).sqrMagnitude;
-                        float time = distance / bulletVelocity;
+                        float time = distance / (bulletVelocity * 1000f);
                         StartCoroutine(CalculateDelay(time, hit));
                         break;
                     }
