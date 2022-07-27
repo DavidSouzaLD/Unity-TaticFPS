@@ -20,8 +20,6 @@ public class Weapon : MonoBehaviour
     public float bulletHitForce = 100f;
     public float bulletVelocity = 25f;
     public int bulletsPerFire = 1;
-
-    [SerializeField, Range(0, 20)]
     public float bulletGravityScale = 1;
     public float maxBulletDistance;
 
@@ -40,7 +38,7 @@ public class Weapon : MonoBehaviour
     [Header("Sounds")]
     public AudioClip[] fireSounds;
     public AudioClip noBulletSound;
-    public AudioClip startReloadSound;
+    public AudioClip initialReloadSound;
     public AudioClip middleReloadSound;
     public AudioClip endReloadSound;
 
@@ -51,14 +49,14 @@ public class Weapon : MonoBehaviour
     // Privates
     [HideInInspector] public float firerateTimer;
     [HideInInspector] public float aimSensitivityScale;
-    [HideInInspector] public Vector3 startAimPos;
-    [HideInInspector] public Vector3 startRecoilPos;
-    [HideInInspector] public Quaternion startAimRot;
-    [HideInInspector] public Quaternion startRecoilRot;
+    [HideInInspector] public Vector3 initialAimPos;
+    [HideInInspector] public Vector3 initialRecoilPos;
+    [HideInInspector] public Quaternion initialAimRot;
+    [HideInInspector] public Quaternion initialRecoilRot;
     [HideInInspector] public Transform recoilRoot;
-    [HideInInspector] public WeaponEvents Events;
     [HideInInspector] public Animator Animator;
     [HideInInspector] public AudioSource Source;
+    [HideInInspector] public WeaponEvents Events;
     [HideInInspector] public WeaponState States;
     [HideInInspector] public WeaponFunctions Functions;
 
@@ -159,22 +157,21 @@ public class Weapon : MonoBehaviour
             PlayerCamera.MaxSensitivityScale();
         }
 
-        bool resetConditions = (!InputManager.Aim || InputManager.Run) && (transform.localPosition != startAimPos || transform.localRotation != startAimRot);
+        bool resetConditions = (!InputManager.Aim || InputManager.Run) && (transform.localPosition != initialAimPos || transform.localRotation != initialAimRot);
 
         if (resetConditions)
         {
             WeaponManager.MaxAccuracy();
-            transform.localPosition = Vector3.Lerp(transform.localPosition, startAimPos, aimSpeed * Time.deltaTime);
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, startAimRot, aimSpeed * Time.deltaTime);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, initialAimPos, aimSpeed * Time.deltaTime);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, initialAimRot, aimSpeed * Time.deltaTime);
         }
     }
     private void Recoil()
     {
-        // Reset recoil
-        if (recoilRoot.localPosition != startRecoilPos || recoilRoot.localRotation != startRecoilRot)
+        if (recoilRoot.localPosition != initialRecoilPos || recoilRoot.localRotation != initialRecoilRot)
         {
-            recoilRoot.localPosition = Vector3.Lerp(recoilRoot.localPosition, startRecoilPos, recoilResetSpeed * Time.deltaTime);
-            recoilRoot.localRotation = Quaternion.Slerp(recoilRoot.localRotation, startRecoilRot, recoilResetSpeed * Time.deltaTime);
+            recoilRoot.localPosition = Vector3.Lerp(recoilRoot.localPosition, initialRecoilPos, recoilResetSpeed * Time.deltaTime);
+            recoilRoot.localRotation = Quaternion.Slerp(recoilRoot.localRotation, initialRecoilRot, recoilResetSpeed * Time.deltaTime);
         }
     }
 

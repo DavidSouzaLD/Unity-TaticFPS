@@ -28,14 +28,14 @@ public class WeaponFunctions
         Weapon.defaultAimPos = Weapon.aimPosition;
 
         // Aim
-        Weapon.startAimPos = transform.localPosition;
-        Weapon.startAimRot = transform.localRotation;
+        Weapon.initialAimPos = transform.localPosition;
+        Weapon.initialAimRot = transform.localRotation;
         MaxAimSensitivityScale();
 
         // Recoil
         Weapon.recoilRoot = FindManager.Find("WeaponRecoil");
-        Weapon.startRecoilPos = Weapon.recoilRoot.localPosition;
-        Weapon.startRecoilRot = Weapon.recoilRoot.localRotation;
+        Weapon.initialRecoilPos = Weapon.recoilRoot.localPosition;
+        Weapon.initialRecoilRot = Weapon.recoilRoot.localRotation;
     }
 
     public Animator GetAnimator()
@@ -88,28 +88,28 @@ public class WeaponFunctions
     {
         if (clip == null)
         {
-            string toLower = eventName.ToLower();
+            string toLower = eventName.ToUpper();
             AudioClip selectedSound = null;
 
             switch (toLower)
             {
-                case "fire":
+                case "FIRE":
                     selectedSound = Weapon.fireSounds[Random.Range(0, Weapon.fireSounds.Length)];
                     break;
 
-                case "no_bullets":
+                case "NO_BULLETS":
                     selectedSound = Weapon.noBulletSound;
                     break;
 
-                case "start_reload":
-                    selectedSound = Weapon.startReloadSound;
+                case "START_RELOAD":
+                    selectedSound = Weapon.initialReloadSound;
                     break;
 
-                case "middle_reload":
+                case "MIDDLE_RELOAD":
                     selectedSound = Weapon.middleReloadSound;
                     break;
 
-                case "end_reload":
+                case "END_RELOAD":
                     selectedSound = Weapon.endReloadSound;
                     break;
             }
