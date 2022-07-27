@@ -1,177 +1,64 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
-    public class States
-    {
-        public class State
-        {
-            [HideInInspector]
-            public string name;
-            public bool value;
-
-            public State(string _name, bool _value = false)
-            {
-                name = _name;
-                value = _value;
-            }
-        }
-
-        private List<State> myStates;
-
-        public void InitStates()
-        {
-            myStates = new List<State>()
-            {
-                new State("Walking"),
-                new State("Running"),
-                new State("Crouching"),
-                new State("Jumping"),
-                new State("Grounded"),
-                new State("Covering"),
-                new State("Climbing"),
-                new State("Sloping"),
-                new State("Aiming"),
-            };
-        }
-
-        public void SetState(string stateName, bool value)
-        {
-            for (int i = 0; i < myStates.Count; i++)
-            {
-                if (myStates[i].name.ToUpper().Equals(stateName.ToUpper()))
-                {
-                    if (myStates[i].value != value)
-                    {
-                        myStates[i].value = value;
-                    }
-                    return;
-                }
-            }
-            Debug.LogError("(PlayerController) State not finded! + " + stateName);
-        }
-
-        public bool GetState(string stateName)
-        {
-            for (int i = 0; i < myStates.Count; i++)
-            {
-                if (myStates[i].name.ToUpper().Equals(stateName.ToUpper()))
-                {
-                    return myStates[i].value;
-                }
-            }
-            return false;
-        }
-    }
+    private static PlayerController Instance;
 
     [Header("Movement")]
-    [SerializeField] private float walkingSpeed = 10f;
-    [SerializeField] private float runningSpeed = 15f;
-    [SerializeField] private float maxAngleSlope = 65f;
+    public LayerMask walkableMask;
+    public float walkingSpeed = 10f;
+    public float runningSpeed = 15f;
+    public float maxAngleSlope = 65f;
     [Space]
-    [SerializeField] private float maxWalkingSpeed = 3f;
-    [SerializeField] private float maxRunningSpeed = 4.5f;
-    [SerializeField] private float maxCrouchingSpeed = 1.5f;
-    [SerializeField] private float maxClimbingSpeed = 1f;
+    public float maxWalkingSpeed = 3f;
+    public float maxRunningSpeed = 4.5f;
+    public float maxCrouchingSpeed = 1.5f;
     [Space]
-    [SerializeField] private float jumpingForce = 50f;
+    public float jumpingForce = 50f;
+    public float gravityScale = 2f;
 
     [Header("Friction")]
-    [SerializeField] private float initialFriction = 5f;
-    [SerializeField] private float movingFriction = 0.5f;
+    public float initialFriction = 5f;
+    public float movingFriction = 0.5f;
 
     [Header("Crouch")]
-    [SerializeField] private float crouchHeight = 1.5f;
-    [SerializeField] private float crouchSpeed = 5f;
-
-    [Header("Ground")]
-    [SerializeField] private LayerMask walkableMask;
-    [SerializeField] private float groundCheckHeight = -0.35f;
-    [SerializeField] private float groundCheckRadius = 0.01f;
+    public float crouchHeight = 1.5f;
+    public float crouchSpeed = 5f;
 
     [Header("Cover")]
-    [SerializeField] private float coverAmount = 15f;
-    [SerializeField] private float coverCamScale = 0.01f;
-    [SerializeField] private float coverSpeed = 8f;
+    public float coverAmount = 15f;
+    public float coverCamScale = 0.01f;
+    public float coverSpeed = 8f;
+
+    [Header("Ground Area")]
+    public float groundAreaHeight = -0.35f;
+    public float groundAreaRadius = 0.3f;
 
     [Header("Components")]
-    [SerializeField] private Animator Animator;
-    [SerializeField] private Rigidbody Rigidbody;
-    [SerializeField] private CapsuleCollider CapsuleCollider;
+    public Animator Animator;
+    public Rigidbody Rigidbody;
+    public CapsuleCollider CapsuleCollider;
 
-    public static Vector3 CapsuleTop
-    {
-        get
-        {
-            return (Instance.transform.position - Instance.CapsuleCollider.center) + (Instance.transform.up * ((Instance.CapsuleCollider.height / 2f) + Instance.groundCheckHeight));
-        }
-    }
+    [HideInInspector] public float jumpCountdown;
+    [HideInInspector] public float initialCapsuleHeight;
+    [HideInInspector] public Vector3 additionalVelocity;
+    [HideInInspector] public Vector3 additionalDirection;
+    [HideInInspector] public Vector3 initialCoverCamPos;
+    [HideInInspector] public Quaternion initialCoverRot;
+    [HideInInspector] public Quaternion initialCoverCamRot;
+    [HideInInspector] public Transform cameraRoot;
+    [HideInInspector] public Transform coverWeaponRoot;
+    [HideInInspector] public Transform coverCamRoot;
+    [HideInInspector] public PlayerState States;
+    [HideInInspector] public PlayerFunctions Functions;
 
-    public static Vector3 CapsuleBottom
-    {
-        get
-        {
-            return (Instance.transform.position + Instance.CapsuleCollider.center) - (Instance.transform.up * ((Instance.CapsuleCollider.height / 2f) + Instance.groundCheckHeight));
-        }
-    }
-
-    public static bool UseGravity
-    {
-        set
-        {
-            Instance.Rigidbody.useGravity = value;
-        }
-    }
-
-    public static Collider[] GetColliders()
-    {
-        float radius = Instance.CapsuleCollider.radius + Instance.groundCheckRadius;
-        Collider[] hits = Physics.OverlapSphere(CapsuleBottom, radius, Instance.walkableMask);
-        return hits;
-    }
-
-    public static Vector3 GetNormal()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(CapsuleBottom, -Instance.transform.up, out hit, (Instance.CapsuleCollider.height / 2f) * 1.5f, Instance.walkableMask))
-        {
-            Debug.DrawRay(hit.point, hit.normal, Color.yellow);
-            return hit.normal;
-        }
-        return Vector3.one;
-    }
-
-    public static Transform GetTransform() => Instance.transform;
-    public static Vector2 GetForwardXZ() => new Vector2(Instance.transform.forward.x, Instance.transform.forward.z);
-    public static float GetLocalYRotation() => Instance.transform.localEulerAngles.y;
-    public static float GetSlopeAngle() => Vector3.Angle(Instance.transform.up, GetNormal());
-    public static void SetState(string stateName, bool value) => PlayerState.SetState(stateName, value);
-    public static bool GetState(string stateName) => PlayerState.GetState(stateName);
-    public static void SetAdditionalDirection(Vector3 direction) => Instance.additionalDirection = direction;
-    public static void ResetAdditionalDirection() => Instance.additionalDirection = Vector3.zero;
-
-    private float jumpCountdown;
-    private float initialCapsuleHeight;
-    private Vector3 additionalVelocity;
-    private Vector3 additionalDirection;
-    private Vector3 initialCoverCamPos;
-    private Quaternion initialCoverRot;
-    private Quaternion initialCoverCamRot;
-    private Transform cameraRoot;
-    private Transform coverWeaponRoot;
-    private Transform coverCamRoot;
-    private static States PlayerState;
-    private static PlayerController Instance;
+    public static PlayerState GetStates { get { return Instance.States; } }
+    public static PlayerFunctions GetFunctions { get { return Instance.Functions; } }
 
     private void Awake()
     {
-        // Create states
-        PlayerState = new States();
-        PlayerState.InitStates();
-
         // Create instance
         if (Instance == null)
         {
@@ -181,35 +68,15 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(this);
         }
+
+        // Player settings
+        States = new PlayerState();
+        Functions = new PlayerFunctions(this, States);
     }
 
     private void Start()
     {
-        // Components
-        Rigidbody = GetComponent<Rigidbody>();
-        CapsuleCollider = GetComponent<CapsuleCollider>();
-
-        // Transforms
-        cameraRoot = FindManager.Find("Camera");
-        coverWeaponRoot = FindManager.Find("WeaponCover");
-        coverCamRoot = FindManager.Find("CameraCover");
-
-        // Jump
-        jumpCountdown = 0.3f;
-
-        // Cover
-        initialCoverRot = coverWeaponRoot.localRotation;
-        initialCoverCamPos = coverCamRoot.localPosition;
-        initialCoverCamRot = coverCamRoot.localRotation;
-
-        // Others
-        initialCapsuleHeight = CapsuleCollider.height;
-        PlayerCamera.LockCursor(true);
-    }
-
-    private void FixedUpdate()
-    {
-        PhysicsUpdate();
+        Functions.Start();
     }
 
     private void Update()
@@ -220,64 +87,78 @@ public class PlayerController : MonoBehaviour
         StateUpdate();
     }
 
-    private void PhysicsUpdate()
+    private void FixedUpdate()
     {
         // Moving
-        if (!GetState("Climbing"))
+        bool conditions = true;
+
+        if (conditions)
         {
-            if (GetState("Grounded"))
+            if (States.GetState("GroundArea"))
             {
                 Vector2 moveAxis = InputManager.MoveAxis;
                 Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
-                Vector3 dir2 = Vector3.Cross(transform.right, GetNormal()) * moveAxis.y + Vector3.Cross(-transform.forward, GetNormal()) * moveAxis.x;
-                Vector3 direction = (!GetState("Sloping") ? dir1 : dir2);
+                Vector3 dir2 = Vector3.Cross(transform.right, Functions.GetNormal()) * moveAxis.y + Vector3.Cross(-transform.forward, Functions.GetNormal()) * moveAxis.x;
+                Vector3 direction = (!States.GetState("Sloping") ? dir1 : dir2);
                 Move(direction);
             }
         }
-        else
+
+        // Additional gravity
+        if (Rigidbody.velocity.y < 0)
         {
-            // Climbing ladder
-            Vector2 moveAxis = InputManager.MoveAxis;
-            Vector3 direction = cameraRoot.forward * moveAxis.y + cameraRoot.right * moveAxis.x;
-            Move(direction);
+            Rigidbody.AddForce(transform.up * Physics.gravity.y * gravityScale * Time.deltaTime);
         }
 
         // Limit Velocity
-        float limitedSpeed = (!GetState("Climbing") ? (!GetState("Crouching") ? (!GetState("Running") ? maxWalkingSpeed : maxRunningSpeed) : maxCrouchingSpeed) : maxClimbingSpeed) + additionalVelocity.magnitude;
-        Vector3 flatVel = new Vector3(Rigidbody.velocity.x, !GetState("Climbing") ? 0f : Rigidbody.velocity.y, Rigidbody.velocity.z);
+        float limitedSpeed = (!States.GetState("Crouching") ? (!States.GetState("Running") ? maxWalkingSpeed : maxRunningSpeed) : maxCrouchingSpeed) + additionalVelocity.magnitude;
+        Vector3 flatVel = new Vector3(Rigidbody.velocity.x, 0f, Rigidbody.velocity.z);
 
         if (flatVel.magnitude > limitedSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * limitedSpeed;
-            Rigidbody.velocity = new Vector3(limitedVel.x, !GetState("Climbing") ? Rigidbody.velocity.y : limitedVel.y, limitedVel.z);
+            Rigidbody.velocity = new Vector3(limitedVel.x, Rigidbody.velocity.y, limitedVel.z);
         }
     }
 
     private void JumpUpdate()
     {
-        bool conditions = InputManager.Jump && GetState("Grounded") && !GetState("Climbing") && jumpCountdown <= 0;
+        bool conditions = InputManager.Jump && States.GetState("GroundCollision") && jumpCountdown <= 0;
 
         if (conditions)
         {
-            PlayerState.SetState("Jumping", true);
+            States.SetState("Jumping", true);
             Rigidbody.AddForce(transform.up * jumpingForce, ForceMode.Impulse);
             jumpCountdown = 0.3f;
         }
 
         if (jumpCountdown > 0)
         {
-            PlayerState.SetState("Jumping", false);
+            States.SetState("Jumping", false);
             jumpCountdown -= Time.deltaTime;
         }
 
         // Air animation
-        Animator.SetBool("Air", !GetState("Grounded"));
+        Animator.SetBool("Air", !States.GetState("GroundArea"));
+
+        // Removing drag in air
+        if (!States.GetState("Walking"))
+        {
+            if (States.GetState("GroundCollision"))
+            {
+                Rigidbody.drag = initialFriction;
+            }
+            else
+            {
+                Rigidbody.drag = movingFriction;
+            }
+        }
     }
 
     private void CrouchUpdate()
     {
-        bool conditions = InputManager.Crouch && !GetState("Running") && !GetState("Climbing") && GetState("Grounded");
-        PlayerState.SetState("Crouching", conditions);
+        bool conditions = InputManager.Crouch && !States.GetState("Running");
+        States.SetState("Crouching", conditions);
 
         if (conditions)
         {
@@ -287,19 +168,22 @@ public class PlayerController : MonoBehaviour
         {
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, initialCapsuleHeight, crouchSpeed * Time.deltaTime);
         }
+
+        // Set camera in top capsule
+        cameraRoot.position = Vector3.Lerp(cameraRoot.position, Functions.CapsuleTop, crouchSpeed * Time.deltaTime);
     }
 
     private void CoverUpdate()
     {
-        bool conditions = InputManager.Cover != 0 && !GetState("Running");
-        PlayerState.SetState("Covering", conditions);
+        bool conditions = InputManager.Cover != 0 && !States.GetState("Running");
+        States.SetState("Covering", conditions);
 
         if (conditions)
         {
             Vector3 targetPos = new Vector3(coverAmount * coverCamScale * InputManager.Cover, 0f, 0f);
             Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, coverAmount * -InputManager.Cover));
 
-            if (!GetState("Aiming"))
+            if (!States.GetState("Aiming"))
             {
                 // Weapon
                 coverWeaponRoot.localRotation = Quaternion.Slerp(coverWeaponRoot.localRotation, targetRot, coverSpeed * Time.deltaTime);
@@ -324,10 +208,14 @@ public class PlayerController : MonoBehaviour
 
     private void StateUpdate()
     {
-        PlayerState.SetState("Grounded", GetColliders().Length > 0);
-        PlayerState.SetState("Running", GetState("Walking") && InputManager.Run && InputManager.MoveAxis.y > 0);
-        PlayerState.SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= maxAngleSlope);
-        PlayerState.SetState("Aiming", WeaponManager.IsAim);
+        // Setting
+        States.SetState("GroundArea", Functions.GetColliders().Length > 0);
+        States.SetState("Running", States.GetState("Walking") && InputManager.Run && InputManager.MoveAxis.y > 0);
+        States.SetState("Sloping", Functions.GetSlopeAngle() > 0 && Functions.GetSlopeAngle() <= maxAngleSlope);
+        States.SetState("Aiming", WeaponManager.IsAim);
+
+        // Getting
+        Rigidbody.useGravity = States.GetState("Graviting");
     }
 
     private void Move(Vector3 direction)
@@ -337,8 +225,8 @@ public class PlayerController : MonoBehaviour
 
         if (direction != Vector3.zero)
         {
-            float currentSpeed = !GetState("Running") ? walkingSpeed : runningSpeed;
-            PlayerState.SetState("Walking", true);
+            float currentSpeed = !States.GetState("Running") ? walkingSpeed : runningSpeed;
+            States.SetState("Walking", true);
 
             Rigidbody.AddForce(direction.normalized * currentSpeed * 10f, ForceMode.Force);
 
@@ -347,45 +235,52 @@ public class PlayerController : MonoBehaviour
                 Rigidbody.drag = movingFriction;
             }
 
-            if (GetState("Grounded"))
+            if (States.GetState("GroundArea"))
             {
-                Animator.SetBool("Walking", GetState("Walking"));
-                Animator.SetBool("Running", GetState("Running"));
+                Animator.SetBool("Walking", States.GetState("Walking"));
+                Animator.SetBool("Running", States.GetState("Running"));
             }
         }
         else
         {
-            PlayerState.SetState("Walking", false);
+            States.SetState("Walking", false);
 
             // Reset animations
             Animator.SetBool("WALK", false);
             Animator.SetBool("RUN", false);
+        }
+    }
 
-            if (GetState("Grounded"))
-            {
-                Rigidbody.drag = initialFriction;
-            }
-            else
-            {
-                Rigidbody.drag = movingFriction;
-            }
+    private void OnCollisionEnter(Collision other)
+    {
+        if ((walkableMask.value & (1 << other.transform.gameObject.layer)) > 0)
+        {
+            States.SetState("GroundCollision", true);
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if ((walkableMask.value & (1 << other.transform.gameObject.layer)) > 0)
+        {
+            States.SetState("GroundCollision", false);
         }
     }
 
     private void OnDrawGizmos()
     {
         // Ground check
-        if (PlayerState != null)
+        if (States != null)
         {
             if (CapsuleCollider)
             {
-                float radius = CapsuleCollider.radius + groundCheckRadius;
-                Gizmos.color = GetState("Grounded") ? Color.green : Color.red;
-                Gizmos.DrawWireSphere(CapsuleBottom, radius);
+                float radius = CapsuleCollider.radius + groundAreaRadius;
+                Gizmos.color = States.GetState("GroundArea") ? Color.green : Color.red;
+                Gizmos.DrawWireSphere(Functions.CapsuleBottom, radius);
 
                 // Normal check
                 Gizmos.color = Color.magenta;
-                Gizmos.DrawRay(CapsuleBottom, -transform.up * (CapsuleCollider.height / 2f) * 1.5f);
+                Gizmos.DrawRay(Functions.CapsuleBottom, -transform.up * (CapsuleCollider.height / 2f) * 1.5f);
             }
             else
             {

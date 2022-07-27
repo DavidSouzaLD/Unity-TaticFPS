@@ -18,18 +18,18 @@ public class Ladder : MonoBehaviour
         {
             if (!changeControl)
             {
-                PlayerController.SetAdditionalDirection(ladderDirection);
-                PlayerController.SetState("Climbing", true);
-                PlayerController.UseGravity = false;
+                PlayerController.GetFunctions.SetAdditionalDirection(ladderDirection);
+                PlayerController.GetStates.SetState("Climbing", true);
+                PlayerController.GetStates.SetState("Graviting", false);
                 changeControl = true;
             }
         }
 
         if (inLadder == false && changeControl)
         {
-            PlayerController.ResetAdditionalDirection();
-            PlayerController.SetState("Climbing", false);
-            PlayerController.UseGravity = true;
+            PlayerController.GetFunctions.ResetAdditionalDirection();
+            PlayerController.GetStates.SetState("Climbing", true);
+            PlayerController.GetStates.SetState("Graviting", true);
 
             changeControl = false;
             inLadder = false;
@@ -51,9 +51,9 @@ public class Ladder : MonoBehaviour
         {
             inLadder = false;
 
-            PlayerController.ResetAdditionalDirection();
-            PlayerController.SetState("Climbing", false);
-            PlayerController.UseGravity = true;
+            PlayerController.GetFunctions.ResetAdditionalDirection();
+            PlayerController.GetStates.SetState("Climbing", true);
+            PlayerController.GetStates.SetState("Graviting", true);
 
             playerEnter = false;
         }
