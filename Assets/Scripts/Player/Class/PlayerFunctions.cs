@@ -63,6 +63,16 @@ public class PlayerFunctions
         return hits;
     }
 
+    public Transform GetTransform()
+    {
+        return Controller.transform;
+    }
+
+    public Vector2 GetForwardXZ()
+    {
+        return new Vector2(Controller.transform.forward.x, Controller.transform.forward.z);
+    }
+
     public Vector3 GetNormal()
     {
         RaycastHit hit;
@@ -74,16 +84,15 @@ public class PlayerFunctions
         return Vector3.one;
     }
 
-    public Transform GetTransform()
+    public Vector3 GetCoveringPos()
     {
-        return Controller.transform;
+        return new Vector3(Controller.coverAmount * Controller.coverCamScale * InputManager.Cover, 0f, 0f);
     }
 
-    public Vector2 GetForwardXZ()
+    public Quaternion GetCoveringRot()
     {
-        return new Vector2(Controller.transform.forward.x, Controller.transform.forward.z);
+        return Quaternion.Euler(new Vector3(0f, 0f, Controller.coverAmount * -InputManager.Cover));
     }
-
     public float GetLocalYRotation()
     {
         return Controller.transform.localEulerAngles.y; ;

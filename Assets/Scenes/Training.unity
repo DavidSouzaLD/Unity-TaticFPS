@@ -2368,7 +2368,7 @@ PrefabInstance:
     - target: {fileID: 511859640205260499, guid: 81eacfb3a945eb44d9d70bf5dbc9a9fa,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 511859640205260499, guid: 81eacfb3a945eb44d9d70bf5dbc9a9fa,
         type: 3}
@@ -5502,7 +5502,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6926302669595749728}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5796,7 +5796,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6926302669785693080}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7357,7 +7357,7 @@ MonoBehaviour:
   crouchHeight: 1.5
   crouchSpeed: 5
   coverAmount: 15
-  coverCamScale: 0.01
+  coverCamScale: 0.03
   coverSpeed: 8
   groundAreaHeight: -0.35
   groundAreaRadius: 0.3

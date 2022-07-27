@@ -55,6 +55,14 @@ public class PlayerCamera : MonoBehaviour
     private Volume Volume;
     private Camera Camera;
 
+    public static Camera GetCamera
+    {
+        get
+        {
+            return Instance.Camera;
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -82,11 +90,6 @@ public class PlayerCamera : MonoBehaviour
         cameraTargetRot = Camera.transform.localRotation;
 
         MaxSensitivityScale();
-
-        if (cameraRecoilRoot == null)
-        {
-            DebugManager.DebugAssignedError("CameraRecoilRoot");
-        }
     }
 
     private void Update()

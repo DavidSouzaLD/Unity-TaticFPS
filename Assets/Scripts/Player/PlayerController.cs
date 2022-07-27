@@ -170,7 +170,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Set camera in top capsule
-        cameraRoot.position = Vector3.Lerp(cameraRoot.position, Functions.CapsuleTop, crouchSpeed * Time.deltaTime);
+        coverCamRoot.position = Vector3.Lerp(coverCamRoot.position, Functions.CapsuleTop, crouchSpeed * Time.deltaTime);
     }
 
     private void CoverUpdate()
@@ -180,29 +180,29 @@ public class PlayerController : MonoBehaviour
 
         if (conditions)
         {
-            Vector3 targetPos = new Vector3(coverAmount * coverCamScale * InputManager.Cover, 0f, 0f);
-            Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, coverAmount * -InputManager.Cover));
+            Vector3 targetPos = Functions.GetCoveringPos();
+            Quaternion targetRot = Functions.GetCoveringRot();
 
             if (!States.GetState("Aiming"))
             {
                 // Weapon
                 coverWeaponRoot.localRotation = Quaternion.Slerp(coverWeaponRoot.localRotation, targetRot, coverSpeed * Time.deltaTime);
-                coverCamRoot.localPosition = Vector3.Lerp(coverCamRoot.localPosition, initialCoverCamPos, coverSpeed * Time.deltaTime);
                 coverCamRoot.localRotation = Quaternion.Slerp(coverCamRoot.localRotation, initialCoverCamRot, coverSpeed * Time.deltaTime);
+                coverCamRoot.localPosition = Vector3.Lerp(coverCamRoot.localPosition, initialCoverCamPos, coverSpeed * Time.deltaTime);
             }
             else
             {
-                // CameraTransform
+                // Camera
                 coverWeaponRoot.localRotation = Quaternion.Slerp(coverWeaponRoot.localRotation, initialCoverRot, coverSpeed * Time.deltaTime);
-                coverCamRoot.localPosition = Vector3.Lerp(coverCamRoot.localPosition, targetPos, coverSpeed * Time.deltaTime);
                 coverCamRoot.localRotation = Quaternion.Slerp(coverCamRoot.localRotation, targetRot, coverSpeed * Time.deltaTime);
+                coverCamRoot.localPosition = Vector3.Lerp(coverCamRoot.localPosition, targetPos, coverSpeed * Time.deltaTime);
             }
         }
         else if (coverWeaponRoot.localRotation != initialCoverRot || coverCamRoot.localRotation != initialCoverCamRot || coverCamRoot.localPosition != initialCoverCamPos)
         {
             coverWeaponRoot.localRotation = Quaternion.Slerp(coverWeaponRoot.localRotation, initialCoverRot, coverSpeed * Time.deltaTime);
-            coverCamRoot.localPosition = Vector3.Lerp(coverCamRoot.localPosition, initialCoverCamPos, coverSpeed * Time.deltaTime);
             coverCamRoot.localRotation = Quaternion.Slerp(coverCamRoot.localRotation, initialCoverCamRot, coverSpeed * Time.deltaTime);
+            coverCamRoot.localPosition = Vector3.Lerp(coverCamRoot.localPosition, initialCoverCamPos, coverSpeed * Time.deltaTime);
         }
     }
 
