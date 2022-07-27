@@ -2,40 +2,40 @@ using UnityEngine;
 
 public class PlayerFunctions
 {
-    private PlayerController Player;
-    private PlayerState PlayerState;
+    private PlayerController Controller;
+    private PlayerState ControllerState;
 
     public PlayerFunctions(PlayerController _playerController, PlayerState _playerState)
     {
-        Player = _playerController;
-        PlayerState = _playerState;
+        Controller = _playerController;
+        ControllerState = _playerState;
     }
 
     public void Start()
     {
         // Setting starts states
-        Player.States.SetState("Graviting", true);
+        Controller.States.SetState("Graviting", true);
 
         // Components
-        Transform transform = Player.transform;
-        Player.Rigidbody = transform.GetComponent<Rigidbody>();
-        Player.CapsuleCollider = transform.GetComponent<CapsuleCollider>();
+        Transform transform = Controller.transform;
+        Controller.Rigidbody = transform.GetComponent<Rigidbody>();
+        Controller.CapsuleCollider = transform.GetComponent<CapsuleCollider>();
 
         // Transforms
-        Player.cameraRoot = FindManager.Find("Camera");
-        Player.coverWeaponRoot = FindManager.Find("WeaponCover");
-        Player.coverCamRoot = FindManager.Find("CameraCover");
+        Controller.cameraRoot = FindManager.Find("Camera");
+        Controller.coverWeaponRoot = FindManager.Find("WeaponCover");
+        Controller.coverCamRoot = FindManager.Find("CameraCover");
 
         // Jump
-        Player.jumpCountdown = 0.3f;
+        Controller.jumpCountdown = 0.3f;
 
         // Cover
-        Player.initialCoverRot = Player.coverWeaponRoot.localRotation;
-        Player.initialCoverCamPos = Player.coverCamRoot.localPosition;
-        Player.initialCoverCamRot = Player.coverCamRoot.localRotation;
+        Controller.initialCoverRot = Controller.coverWeaponRoot.localRotation;
+        Controller.initialCoverCamPos = Controller.coverCamRoot.localPosition;
+        Controller.initialCoverCamRot = Controller.coverCamRoot.localRotation;
 
         // Others
-        Player.initialCapsuleHeight = Player.CapsuleCollider.height;
+        Controller.initialCapsuleHeight = Controller.CapsuleCollider.height;
         PlayerCamera.LockCursor(true);
     }
 
@@ -43,7 +43,7 @@ public class PlayerFunctions
     {
         get
         {
-            return (Player.transform.position - Player.CapsuleCollider.center) + (Player.transform.up * ((Player.CapsuleCollider.height / 2f) + Player.groundAreaHeight));
+            return (Controller.transform.position - Controller.CapsuleCollider.center) + (Controller.transform.up * ((Controller.CapsuleCollider.height / 2f) + Controller.groundAreaHeight));
         }
     }
 
@@ -51,21 +51,21 @@ public class PlayerFunctions
     {
         get
         {
-            return (Player.transform.position + Player.CapsuleCollider.center) - (Player.transform.up * ((Player.CapsuleCollider.height / 2f) + Player.groundAreaHeight));
+            return (Controller.transform.position + Controller.CapsuleCollider.center) - (Controller.transform.up * ((Controller.CapsuleCollider.height / 2f) + Controller.groundAreaHeight));
         }
     }
 
     public Collider[] GetColliders()
     {
-        float radius = Player.CapsuleCollider.radius + Player.groundAreaRadius;
-        Collider[] hits = Physics.OverlapSphere(CapsuleBottom, radius, Player.walkableMask);
+        float radius = Controller.CapsuleCollider.radius + Controller.groundAreaRadius;
+        Collider[] hits = Physics.OverlapSphere(CapsuleBottom, radius, Controller.walkableMask);
         return hits;
     }
 
     public Vector3 GetNormal()
     {
         RaycastHit hit;
-        if (Physics.Raycast(CapsuleBottom, -Player.transform.up, out hit, (Player.CapsuleCollider.height / 2f) * 1.5f, Player.walkableMask))
+        if (Physics.Raycast(CapsuleBottom, -Controller.transform.up, out hit, (Controller.CapsuleCollider.height / 2f) * 1.5f, Controller.walkableMask))
         {
             Debug.DrawRay(hit.point, hit.normal, Color.yellow);
             return hit.normal;
@@ -75,45 +75,45 @@ public class PlayerFunctions
 
     public Transform GetTransform()
     {
-        return Player.transform;
+        return Controller.transform;
     }
 
     public Vector2 GetForwardXZ()
     {
-        return new Vector2(Player.transform.forward.x, Player.transform.forward.z);
+        return new Vector2(Controller.transform.forward.x, Controller.transform.forward.z);
     }
 
     public float GetLocalYRotation()
     {
-        return Player.transform.localEulerAngles.y; ;
+        return Controller.transform.localEulerAngles.y; ;
     }
 
     public float GetSlopeAngle()
     {
-        return Vector3.Angle(Player.transform.up, GetNormal());
+        return Vector3.Angle(Controller.transform.up, GetNormal());
     }
 
     public bool GetState(string stateName)
     {
-        return PlayerState.GetState(stateName);
+        return ControllerState.GetState(stateName);
     }
 
     public void SetState(string stateName, bool value)
     {
-        PlayerState.SetState(stateName, value);
+        ControllerState.SetState(stateName, value);
     }
 
     public void UseGravity(bool value)
     {
-        Player.Rigidbody.useGravity = value;
+        Controller.Rigidbody.useGravity = value;
     }
     public void SetAdditionalDirection(Vector3 direction)
     {
-        Player.additionalDirection = direction;
+        Controller.additionalDirection = direction;
     }
 
     public void ResetAdditionalDirection()
     {
-        Player.additionalDirection = Vector3.zero;
+        Controller.additionalDirection = Vector3.zero;
     }
 }
