@@ -5,6 +5,50 @@ public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager Instance;
 
+    [System.Serializable]
+    public class Impact
+    {
+        public string name;
+        public GameObject prefab;
+    }
+
+    [Header("Basic")]
+    [SerializeField] private Weapon currentWeapon;
+    [SerializeField] private GameObject tracerPrefab;
+
+    [Header("Sway")]
+    [SerializeField] private Vector2 swayMultiplier;
+    [SerializeField] private float swayAmount = 0.1f;
+    [SerializeField] private float swaySmooth = 0.1f;
+    [SerializeField] private float swayResetSpeed;
+    [SerializeField] private float swayHorizontalScale = 1f;
+
+    [Header("Retract")]
+    [SerializeField] private LayerMask rectractMask;
+    [SerializeField] private float retractRayDistance;
+    [SerializeField] private float retractAngle;
+    [SerializeField] private float retractSpeed;
+
+    [Header("HitMark")]
+    [SerializeField] private AudioClip hitMarkSound;
+    [SerializeField] private float hitMarkTime;
+
+    [Header("Impact")]
+    [SerializeField] private Impact[] impacts;
+
+    // Private
+    private float swayAccuracy;
+    private float timerHitMark;
+    private Vector3 swayInitialPos;
+    private Quaternion swayInitialRot;
+    private Quaternion horSwayInitialRot;
+    private Quaternion retractInitialRot;
+    private Transform swayRoot;
+    private Transform horizontalSwayRoot;
+    private Transform retractRayRoot;
+    private Transform retracRoot;
+    private GameObject hitMark;
+
     public static bool IsAim
     {
         get
@@ -29,49 +73,43 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    [System.Serializable]
-    public class Impact
+    public static Impact GetImpactWithTag(string tag)
     {
-        public string name;
-        public GameObject prefab;
+        foreach (Impact imp in Instance.impacts)
+        {
+            if (imp.name == tag)
+            {
+                return imp;
+            }
+        }
+
+        return null;
     }
 
-    [Header("Basic")]
-    [SerializeField] private Weapon currentWeapon;
-    [SerializeField] private GameObject tracerPrefab;
+    public static GameObject GetTracerPrefab()
+    {
+        return Instance.tracerPrefab;
+    }
 
-    [Header("Sway")]
-    [SerializeField] private Vector2 swayMultiplier;
-    [SerializeField] private float swayAmount = 0.1f;
-    [SerializeField] private float swaySmooth = 0.1f;
-    [SerializeField] private float swayResetSpeed;
-    [SerializeField] private float horizontalSwayScale = 1f;
+    public static AudioClip GetHitMarkSound()
+    {
+        return Instance.hitMarkSound;
+    }
 
-    [Header("Retract")]
-    [SerializeField] private LayerMask retractLayers;
-    [SerializeField] private float retractRayDistance;
-    [SerializeField] private float retractAngle;
-    [SerializeField] private float retractSpeed;
+    public static void SwayAccuracy(float value = 0f)
+    {
+        Instance.swayAccuracy = Mathf.Clamp(value, 0f, 1f);
+    }
 
-    [Header("HitMark")]
-    [SerializeField] private AudioClip hitMarkSound;
-    [SerializeField] private float hitMarkTime;
+    public static void MaxAccuracy()
+    {
+        SwayAccuracy(1f);
+    }
 
-    [Header("Impact")]
-    [SerializeField] private Impact[] Impacts;
-
-    // Private
-    private float swayAccuracy;
-    private float timerHitMark;
-    private Vector3 swayInitialPos;
-    private Quaternion swayInitialRot;
-    private Quaternion horSwayInitialRot;
-    private Quaternion retractInitialRot;
-    private Transform swayRoot;
-    private Transform horizontalSwayRoot;
-    private Transform retractRayRoot;
-    private Transform retracRoot;
-    private GameObject hitMark;
+    public static void SetCurrentWeapon(Weapon weapon)
+    {
+        Instance.currentWeapon = weapon;
+    }
 
     private void Awake()
     {
@@ -94,19 +132,21 @@ public class WeaponManager : MonoBehaviour
         swayInitialRot = swayRoot.localRotation;
         horSwayInitialRot = horizontalSwayRoot.localRotation;
         retractInitialRot = retracRoot.localRotation;
+
+        // Others
         hitMark.SetActive(false);
         MaxAccuracy();
-
-        // Error
-        if (swayRoot == null || horizontalSwayRoot == null || retracRoot == null)
-        {
-            DebugManager.DebugAssignedError("SwayRoot/HorizontalSwayRoot/RetractRoot");
-        }
     }
 
     private void Update()
     {
-        // Sway
+        SwayUpdate();
+        RetractUpdate();
+        HitmarkUpdate();
+    }
+
+    private void SwayUpdate()
+    {
         Vector2 cameraAxis = new Vector2(InputManager.CameraAxis.x * swayMultiplier.x, InputManager.CameraAxis.y * swayMultiplier.y) * swayAccuracy;
         float cameraAxisX = InputManager.MoveAxis.x * swayMultiplier.x * swayAccuracy;
 
@@ -118,7 +158,7 @@ public class WeaponManager : MonoBehaviour
 
         if (cameraAxisX != 0f)
         {
-            horizontalSwayRoot.localRotation = Quaternion.Slerp(horizontalSwayRoot.localRotation, Quaternion.Euler(horizontalSwayRoot.localRotation.x, horizontalSwayRoot.localRotation.y, -cameraAxisX * swayAmount * horizontalSwayScale), swaySmooth * horizontalSwayScale * Time.deltaTime);
+            horizontalSwayRoot.localRotation = Quaternion.Slerp(horizontalSwayRoot.localRotation, Quaternion.Euler(horizontalSwayRoot.localRotation.x, horizontalSwayRoot.localRotation.y, -cameraAxisX * swayAmount * swayHorizontalScale), swaySmooth * swayHorizontalScale * Time.deltaTime);
         }
 
         if (horizontalSwayRoot.localRotation != horSwayInitialRot || swayAccuracy != 1f)
@@ -131,12 +171,14 @@ public class WeaponManager : MonoBehaviour
             swayRoot.localPosition = Vector3.Lerp(swayRoot.localPosition, swayInitialPos, swayResetSpeed * Time.deltaTime);
             swayRoot.localRotation = Quaternion.Slerp(swayRoot.localRotation, swayInitialRot, swayResetSpeed * Time.deltaTime);
         }
+    }
 
-        // Retract
+    private void RetractUpdate()
+    {
         RaycastHit hit;
         Debug.DrawRay(retractRayRoot.position, retractRayRoot.forward * retractRayDistance, Color.red);
 
-        if (Physics.Raycast(retractRayRoot.position, retractRayRoot.forward, out hit, retractRayDistance, retractLayers))
+        if (Physics.Raycast(retractRayRoot.position, retractRayRoot.forward, out hit, retractRayDistance, rectractMask))
         {
             if (hit.transform)
             {
@@ -146,9 +188,10 @@ public class WeaponManager : MonoBehaviour
         }
 
         retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);
+    }
 
-
-        // Hitmark
+    private void HitmarkUpdate()
+    {
         if (timerHitMark > 0)
         {
             if (timerHitMark - Time.deltaTime <= 0)
@@ -168,43 +211,5 @@ public class WeaponManager : MonoBehaviour
             Instance.hitMark.SetActive(true);
             Instance.timerHitMark = Instance.hitMarkTime;
         }
-    }
-
-    public static Impact GetImpactWithTag(string tag)
-    {
-        foreach (Impact imp in Instance.Impacts)
-        {
-            if (imp.name == tag)
-            {
-                return imp;
-            }
-        }
-
-        return null;
-    }
-
-    public static AudioClip GetHitMarkSound()
-    {
-        return Instance.hitMarkSound;
-    }
-
-    public static GameObject GetTracerPrefab()
-    {
-        return Instance.tracerPrefab;
-    }
-
-    public static void SwayAccuracy(float value = 0f)
-    {
-        Instance.swayAccuracy = Mathf.Clamp(value, 0f, 1f);
-    }
-
-    public static void MaxAccuracy()
-    {
-        SwayAccuracy(1f);
-    }
-
-    public static void SetCurrentWeapon(Weapon weapon)
-    {
-        Instance.currentWeapon = weapon;
     }
 }

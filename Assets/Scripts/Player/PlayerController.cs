@@ -29,8 +29,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Cover")]
     public float coverAmount = 15f;
-    public float coverCamScale = 0.01f;
-    public float coverSpeed = 8f;
+    public float coverCamScale = 0.02f;
+    public float coverSpeed = 6f;
 
     [Header("Ground Area")]
     public float groundAreaHeight = -0.35f;
@@ -235,10 +235,18 @@ public class PlayerController : MonoBehaviour
                 Rigidbody.drag = movingFriction;
             }
 
-            if (States.GetState("GroundArea"))
+            if (!WeaponManager.IsAim)
             {
-                Animator.SetBool("Walking", States.GetState("Walking"));
-                Animator.SetBool("Running", States.GetState("Running"));
+                if (States.GetState("GroundArea"))
+                {
+                    Animator.SetBool("Walking", States.GetState("Walking"));
+                    Animator.SetBool("Running", States.GetState("Running"));
+                }
+            }
+            else
+            {
+                Animator.SetBool("Walking", false);
+                Animator.SetBool("Running", false);
             }
         }
         else

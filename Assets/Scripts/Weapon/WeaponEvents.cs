@@ -52,6 +52,7 @@ public class WeaponEvents : MonoBehaviour
     /// </summary>
     public void Cocking()
     {
+        Weapon.Animator.SetBool("NoBullet", false);
         Weapon.Functions.PlaySound("END_RELOAD");
     }
 

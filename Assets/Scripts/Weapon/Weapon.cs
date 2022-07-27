@@ -97,33 +97,27 @@ public class Weapon : MonoBehaviour
     {
         bool conditions = (weaponMode == WeaponMode.Combat) && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading");
 
-        if (conditions)
+        if (InputManager.WeaponFireTap)
         {
-            switch (fireMode)
+            if (conditions)
             {
-                case FireMode.Semi:
-
-                    if (InputManager.WeaponFireTap)
-                    {
+                switch (fireMode)
+                {
+                    case FireMode.Semi:
                         Functions.CalculateFire();
-                    }
+                        break;
 
-                    break;
-
-                case FireMode.Auto:
-
-                    if (InputManager.WeaponFireAuto)
-                    {
+                    case FireMode.Auto:
                         Functions.CalculateFire();
-                    }
-
-                    break;
+                        break;
+                }
             }
+            Animator.SetBool("NoBullet", !Functions.HaveBullets());
+        }
 
-            if (firerateTimer >= 0)
-            {
-                firerateTimer -= Time.deltaTime;
-            }
+        if (firerateTimer >= 0)
+        {
+            firerateTimer -= Time.deltaTime;
         }
     }
 
@@ -133,11 +127,9 @@ public class Weapon : MonoBehaviour
 
         if (conditions)
         {
+            // Animation no-bullet
             Functions.PlayAnimation("Reload");
         }
-
-        // Animation no-bullet
-        Animator.SetBool("NoBullet", !Functions.HaveBullets());
     }
 
     private void Aim()

@@ -4,12 +4,12 @@ using UnityEngine;
 public class FindManager : MonoBehaviour
 {
     private static FindManager Instance;
-    private Transform Player;
+    private Transform playerTransform;
     private Transform[] transforms;
 
     private void Awake()
     {
-        Player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         if (Instance == null)
         {
@@ -20,13 +20,9 @@ public class FindManager : MonoBehaviour
             Destroy(this);
         }
 
-        if (Player == null)
+        if (playerTransform != null)
         {
-            DebugManager.DebugAssignedError("Player");
-        }
-        else
-        {
-            transforms = Player.GetComponentsInChildren<Transform>();
+            transforms = playerTransform.GetComponentsInChildren<Transform>();
         }
     }
 
@@ -34,9 +30,9 @@ public class FindManager : MonoBehaviour
     {
         for (int i = 0; i < Instance.transforms.Length; i++)
         {
-            if (name == "Player")
+            if (name == "playerTransform")
             {
-                return Instance.Player;
+                return Instance.playerTransform;
             }
 
             if (Instance.transforms[i].name == name)
