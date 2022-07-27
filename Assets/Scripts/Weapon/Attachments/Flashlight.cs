@@ -14,7 +14,7 @@ public class Flashlight : MonoBehaviour
     private void Update()
     {
         // Night vision
-        if (InputManager.Flashlight)
+        if (InputManager.WeaponHandguard)
         {
             flashlightMode = !flashlightMode;
             lightObject.SetActive(flashlightMode);

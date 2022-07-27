@@ -89,35 +89,43 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public static bool FireAuto
+    public static bool WeaponFireAuto
     {
         get
         {
-            return Instance._haveMap ? Instance.Map.Player.FireAuto.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.WeaponFireAuto.ReadValue<float>() != 0 : false;
         }
     }
 
-    public static bool FireTap
+    public static bool WeaponFireTap
     {
         get
         {
-            return Instance._haveMap ? Instance.Map.Player.FireTap.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.WeaponFireTap.ReadValue<float>() != 0 : false;
         }
     }
 
-    public static bool Aim
+    public static bool WeaponAim
     {
         get
         {
-            return Instance._haveMap ? Instance.Map.Player.Aim.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.WeaponAim.ReadValue<float>() != 0 : false;
         }
     }
 
-    public static bool Reload
+    public static bool WeaponReload
     {
         get
         {
-            return Instance._haveMap ? Instance.Map.Player.Reload.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.WeaponReload.ReadValue<float>() != 0 : false;
+        }
+    }
+
+    public static bool WeaponSafety
+    {
+        get
+        {
+            return Instance._haveMap ? Instance.Map.Player.WeaponSafety.ReadValue<float>() != 0 : false;
         }
     }
 
@@ -129,27 +137,11 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public static bool FreeVision
+    public static bool WeaponHandguard
     {
         get
         {
-            return Instance._haveMap ? Instance.Map.Player.FreeVision.ReadValue<float>() != 0 : false;
-        }
-    }
-
-    public static bool Flashlight
-    {
-        get
-        {
-            return Instance._haveMap ? Instance.Map.Player.Flashlight.ReadValue<float>() != 0 : false;
-        }
-    }
-
-    public static bool Laser
-    {
-        get
-        {
-            return Instance._haveMap ? Instance.Map.Player.Laser.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.WeaponHanguard.ReadValue<float>() != 0 : false;
         }
     }
 

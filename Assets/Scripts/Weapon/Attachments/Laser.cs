@@ -54,7 +54,7 @@ public class Laser : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (InputManager.Laser)
+        if (InputManager.WeaponHandguard)
         {
             laserMode = !laserMode;
             LineRenderer.enabled = laserMode;

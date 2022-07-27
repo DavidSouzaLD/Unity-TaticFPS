@@ -6,8 +6,7 @@ public class WeaponState : StateBase
     {
         states = new List<State>()
             {
-                new State("Safe"),
-                new State("Combat"),
+                new State("Safety"),
                 new State("Aiming"),
                 new State("Reloading"),
                 new State("Firing"),

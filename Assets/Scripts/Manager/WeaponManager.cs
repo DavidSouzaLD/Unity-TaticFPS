@@ -21,6 +21,14 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
+    public static bool IsSafety
+    {
+        get
+        {
+            return Instance.currentWeapon.States.GetState("Safety");
+        }
+    }
+
     [System.Serializable]
     public class Impact
     {

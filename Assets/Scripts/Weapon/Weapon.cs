@@ -3,10 +3,12 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     private static Weapon Instance;
+    public enum WeaponMode { Safety, Combat }
     public enum FireMode { Semi, Auto }
 
     [Header("Settings")]
     public LayerMask hittableMask;
+    public WeaponMode weaponMode;
     public FireMode fireMode;
     public Transform muzzlePoint;
     public float firerate = 1f;
@@ -88,11 +90,12 @@ public class Weapon : MonoBehaviour
         Reload();
         Aim();
         Recoil();
+        Mode();
     }
 
     private void Fire()
     {
-        bool conditions = !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading");
+        bool conditions = (weaponMode == WeaponMode.Combat) && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading");
 
         if (conditions)
         {
@@ -100,7 +103,7 @@ public class Weapon : MonoBehaviour
             {
                 case FireMode.Semi:
 
-                    if (InputManager.FireTap)
+                    if (InputManager.WeaponFireTap)
                     {
                         Functions.CalculateFire();
                     }
@@ -109,7 +112,7 @@ public class Weapon : MonoBehaviour
 
                 case FireMode.Auto:
 
-                    if (InputManager.FireAuto)
+                    if (InputManager.WeaponFireAuto)
                     {
                         Functions.CalculateFire();
                     }
@@ -126,20 +129,20 @@ public class Weapon : MonoBehaviour
 
     private void Reload()
     {
-        bool conditions = InputManager.Reload && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && extraBullets > 0 && currentBullets < bulletsPerMagazine && !States.GetState("Reloading");
+        bool conditions = (weaponMode == WeaponMode.Combat) && !States.GetState("Reloading") && !PlayerController.GetStates.GetState("Running") && InputManager.WeaponReload && PlayerCamera.isCursorLocked && extraBullets > 0 && currentBullets < bulletsPerMagazine;
 
         if (conditions)
         {
-            Functions.PlayAnimation("RELOAD");
+            Functions.PlayAnimation("Reload");
         }
 
         // Animation no-bullet
-        Animator.SetBool("NO_BULLET", !Functions.HaveBullets());
+        Animator.SetBool("NoBullet", !Functions.HaveBullets());
     }
 
     private void Aim()
     {
-        bool conditions = InputManager.Aim && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading");
+        bool conditions = (weaponMode == WeaponMode.Combat) && InputManager.WeaponAim && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading");
 
         if (conditions)
         {
@@ -157,7 +160,7 @@ public class Weapon : MonoBehaviour
             PlayerCamera.MaxSensitivityScale();
         }
 
-        bool resetConditions = (!InputManager.Aim || InputManager.Run) && (transform.localPosition != initialAimPos || transform.localRotation != initialAimRot);
+        bool resetConditions = (!InputManager.WeaponAim || InputManager.Run) && (transform.localPosition != initialAimPos || transform.localRotation != initialAimRot) || (weaponMode == WeaponMode.Safety);
 
         if (resetConditions)
         {
@@ -172,6 +175,22 @@ public class Weapon : MonoBehaviour
         {
             recoilRoot.localPosition = Vector3.Lerp(recoilRoot.localPosition, initialRecoilPos, recoilResetSpeed * Time.deltaTime);
             recoilRoot.localRotation = Quaternion.Slerp(recoilRoot.localRotation, initialRecoilRot, recoilResetSpeed * Time.deltaTime);
+        }
+    }
+
+    private void Mode()
+    {
+        bool conditions = !States.GetState("Reloading") && !States.GetState("Aiming") && !States.GetState("Firing");
+
+        if (InputManager.WeaponSafety)
+        {
+            switch (weaponMode)
+            {
+                case WeaponMode.Safety: weaponMode = WeaponMode.Combat; break;
+                case WeaponMode.Combat: weaponMode = WeaponMode.Safety; break;
+            }
+
+            States.SetState("Safety", weaponMode == WeaponMode.Safety);
         }
     }
 

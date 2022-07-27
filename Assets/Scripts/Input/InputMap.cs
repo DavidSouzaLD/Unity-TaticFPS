@@ -82,6 +82,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""NightVision"",
+                    ""type"": ""Button"",
+                    ""id"": ""3958c0d6-5c71-4aa4-8fd9-ea70d93df26d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap(duration=0.005)"",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""225bbfd4-b488-4af1-8a69-04a63452c000"",
@@ -100,7 +109,16 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""FireAuto"",
+                    ""name"": ""WeaponSafety"",
+                    ""type"": ""Button"",
+                    ""id"": ""66cbd9cd-1e92-4aae-9ca9-6b11e797954a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap(duration=0.005)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""WeaponFireAuto"",
                     ""type"": ""Button"",
                     ""id"": ""3aa5d608-5d84-4bef-85dd-1bb961fcb3a0"",
                     ""expectedControlType"": ""Button"",
@@ -109,7 +127,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""FireTap"",
+                    ""name"": ""WeaponFireTap"",
                     ""type"": ""Button"",
                     ""id"": ""5d4a9dad-8b31-4975-a669-2e458815707c"",
                     ""expectedControlType"": ""Button"",
@@ -118,7 +136,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Aim"",
+                    ""name"": ""WeaponAim"",
                     ""type"": ""Button"",
                     ""id"": ""13bd2753-bd88-4f28-84b0-f527c4a4ff27"",
                     ""expectedControlType"": ""Button"",
@@ -127,7 +145,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Reload"",
+                    ""name"": ""WeaponReload"",
                     ""type"": ""Button"",
                     ""id"": ""a5c1b9a2-fc54-443e-b278-2f6f7627e82b"",
                     ""expectedControlType"": ""Button"",
@@ -136,36 +154,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""NightVision"",
-                    ""type"": ""Button"",
-                    ""id"": ""3958c0d6-5c71-4aa4-8fd9-ea70d93df26d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap(duration=0.005)"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""FreeVision"",
-                    ""type"": ""Button"",
-                    ""id"": ""f5d6d683-ac12-4e97-8e0c-d7c109a4cbde"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Flashlight"",
+                    ""name"": ""WeaponHanguard"",
                     ""type"": ""Button"",
                     ""id"": ""472f1a35-4de5-482a-8257-75611aaa3d73"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap(duration=0.005)"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Laser"",
-                    ""type"": ""Button"",
-                    ""id"": ""e224c223-efea-4d55-b2bb-1dad95351a64"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Tap(duration=0.005)"",
@@ -286,7 +277,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""FireAuto"",
+                    ""action"": ""WeaponFireAuto"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -297,7 +288,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""FireTap"",
+                    ""action"": ""WeaponFireTap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -319,18 +310,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Reload"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5c79b050-20b0-4e9b-ac27-dcfcd9f4baa6"",
-                    ""path"": ""<Keyboard>/n"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NightVision"",
+                    ""action"": ""WeaponReload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -341,7 +321,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Flashlight"",
+                    ""action"": ""WeaponHanguard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -352,18 +332,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Aim"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""406093db-521c-4c9d-af6b-d06660b5577d"",
-                    ""path"": ""<Keyboard>/v"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Laser"",
+                    ""action"": ""WeaponAim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -424,17 +393,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""55f0a67e-5333-4d3b-8bfc-a0ab9c7b213d"",
-                    ""path"": ""<Keyboard>/leftAlt"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""FreeVision"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9b802726-8e5d-4718-9b6d-0a01fc3c47b0"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -452,6 +410,28 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Marker"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""23846b3d-7482-4928-9a3a-f8d3ad9a71c7"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponSafety"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5c79b050-20b0-4e9b-ac27-dcfcd9f4baa6"",
+                    ""path"": ""<Keyboard>/n"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NightVision"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -536,16 +516,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Cover = m_Player.FindAction("Cover", throwIfNotFound: true);
+        m_Player_NightVision = m_Player.FindAction("NightVision", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Marker = m_Player.FindAction("Marker", throwIfNotFound: true);
-        m_Player_FireAuto = m_Player.FindAction("FireAuto", throwIfNotFound: true);
-        m_Player_FireTap = m_Player.FindAction("FireTap", throwIfNotFound: true);
-        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
-        m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
-        m_Player_NightVision = m_Player.FindAction("NightVision", throwIfNotFound: true);
-        m_Player_FreeVision = m_Player.FindAction("FreeVision", throwIfNotFound: true);
-        m_Player_Flashlight = m_Player.FindAction("Flashlight", throwIfNotFound: true);
-        m_Player_Laser = m_Player.FindAction("Laser", throwIfNotFound: true);
+        m_Player_WeaponSafety = m_Player.FindAction("WeaponSafety", throwIfNotFound: true);
+        m_Player_WeaponFireAuto = m_Player.FindAction("WeaponFireAuto", throwIfNotFound: true);
+        m_Player_WeaponFireTap = m_Player.FindAction("WeaponFireTap", throwIfNotFound: true);
+        m_Player_WeaponAim = m_Player.FindAction("WeaponAim", throwIfNotFound: true);
+        m_Player_WeaponReload = m_Player.FindAction("WeaponReload", throwIfNotFound: true);
+        m_Player_WeaponHanguard = m_Player.FindAction("WeaponHanguard", throwIfNotFound: true);
         m_Player_EquipPrimary = m_Player.FindAction("EquipPrimary", throwIfNotFound: true);
         m_Player_EquipSecondary = m_Player.FindAction("EquipSecondary", throwIfNotFound: true);
         // Customize
@@ -618,16 +597,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Cover;
+    private readonly InputAction m_Player_NightVision;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Marker;
-    private readonly InputAction m_Player_FireAuto;
-    private readonly InputAction m_Player_FireTap;
-    private readonly InputAction m_Player_Aim;
-    private readonly InputAction m_Player_Reload;
-    private readonly InputAction m_Player_NightVision;
-    private readonly InputAction m_Player_FreeVision;
-    private readonly InputAction m_Player_Flashlight;
-    private readonly InputAction m_Player_Laser;
+    private readonly InputAction m_Player_WeaponSafety;
+    private readonly InputAction m_Player_WeaponFireAuto;
+    private readonly InputAction m_Player_WeaponFireTap;
+    private readonly InputAction m_Player_WeaponAim;
+    private readonly InputAction m_Player_WeaponReload;
+    private readonly InputAction m_Player_WeaponHanguard;
     private readonly InputAction m_Player_EquipPrimary;
     private readonly InputAction m_Player_EquipSecondary;
     public struct PlayerActions
@@ -640,16 +618,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @Run => m_Wrapper.m_Player_Run;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @Cover => m_Wrapper.m_Player_Cover;
+        public InputAction @NightVision => m_Wrapper.m_Player_NightVision;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Marker => m_Wrapper.m_Player_Marker;
-        public InputAction @FireAuto => m_Wrapper.m_Player_FireAuto;
-        public InputAction @FireTap => m_Wrapper.m_Player_FireTap;
-        public InputAction @Aim => m_Wrapper.m_Player_Aim;
-        public InputAction @Reload => m_Wrapper.m_Player_Reload;
-        public InputAction @NightVision => m_Wrapper.m_Player_NightVision;
-        public InputAction @FreeVision => m_Wrapper.m_Player_FreeVision;
-        public InputAction @Flashlight => m_Wrapper.m_Player_Flashlight;
-        public InputAction @Laser => m_Wrapper.m_Player_Laser;
+        public InputAction @WeaponSafety => m_Wrapper.m_Player_WeaponSafety;
+        public InputAction @WeaponFireAuto => m_Wrapper.m_Player_WeaponFireAuto;
+        public InputAction @WeaponFireTap => m_Wrapper.m_Player_WeaponFireTap;
+        public InputAction @WeaponAim => m_Wrapper.m_Player_WeaponAim;
+        public InputAction @WeaponReload => m_Wrapper.m_Player_WeaponReload;
+        public InputAction @WeaponHanguard => m_Wrapper.m_Player_WeaponHanguard;
         public InputAction @EquipPrimary => m_Wrapper.m_Player_EquipPrimary;
         public InputAction @EquipSecondary => m_Wrapper.m_Player_EquipSecondary;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -679,36 +656,33 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Cover.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCover;
                 @Cover.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCover;
                 @Cover.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCover;
+                @NightVision.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
+                @NightVision.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
+                @NightVision.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Marker.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarker;
                 @Marker.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarker;
                 @Marker.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarker;
-                @FireAuto.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
-                @FireAuto.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
-                @FireAuto.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireAuto;
-                @FireTap.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireTap;
-                @FireTap.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireTap;
-                @FireTap.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFireTap;
-                @Aim.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
-                @Aim.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
-                @Aim.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
-                @Reload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
-                @Reload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
-                @Reload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
-                @NightVision.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
-                @NightVision.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
-                @NightVision.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnNightVision;
-                @FreeVision.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeVision;
-                @FreeVision.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeVision;
-                @FreeVision.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeVision;
-                @Flashlight.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlight;
-                @Flashlight.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlight;
-                @Flashlight.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlight;
-                @Laser.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
-                @Laser.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
-                @Laser.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
+                @WeaponSafety.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponSafety;
+                @WeaponSafety.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponSafety;
+                @WeaponSafety.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponSafety;
+                @WeaponFireAuto.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponFireAuto;
+                @WeaponFireAuto.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponFireAuto;
+                @WeaponFireAuto.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponFireAuto;
+                @WeaponFireTap.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponFireTap;
+                @WeaponFireTap.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponFireTap;
+                @WeaponFireTap.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponFireTap;
+                @WeaponAim.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponAim;
+                @WeaponAim.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponAim;
+                @WeaponAim.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponAim;
+                @WeaponReload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponReload;
+                @WeaponReload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponReload;
+                @WeaponReload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponReload;
+                @WeaponHanguard.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponHanguard;
+                @WeaponHanguard.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponHanguard;
+                @WeaponHanguard.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponHanguard;
                 @EquipPrimary.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
                 @EquipPrimary.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
                 @EquipPrimary.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
@@ -737,36 +711,33 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Cover.started += instance.OnCover;
                 @Cover.performed += instance.OnCover;
                 @Cover.canceled += instance.OnCover;
+                @NightVision.started += instance.OnNightVision;
+                @NightVision.performed += instance.OnNightVision;
+                @NightVision.canceled += instance.OnNightVision;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
                 @Marker.started += instance.OnMarker;
                 @Marker.performed += instance.OnMarker;
                 @Marker.canceled += instance.OnMarker;
-                @FireAuto.started += instance.OnFireAuto;
-                @FireAuto.performed += instance.OnFireAuto;
-                @FireAuto.canceled += instance.OnFireAuto;
-                @FireTap.started += instance.OnFireTap;
-                @FireTap.performed += instance.OnFireTap;
-                @FireTap.canceled += instance.OnFireTap;
-                @Aim.started += instance.OnAim;
-                @Aim.performed += instance.OnAim;
-                @Aim.canceled += instance.OnAim;
-                @Reload.started += instance.OnReload;
-                @Reload.performed += instance.OnReload;
-                @Reload.canceled += instance.OnReload;
-                @NightVision.started += instance.OnNightVision;
-                @NightVision.performed += instance.OnNightVision;
-                @NightVision.canceled += instance.OnNightVision;
-                @FreeVision.started += instance.OnFreeVision;
-                @FreeVision.performed += instance.OnFreeVision;
-                @FreeVision.canceled += instance.OnFreeVision;
-                @Flashlight.started += instance.OnFlashlight;
-                @Flashlight.performed += instance.OnFlashlight;
-                @Flashlight.canceled += instance.OnFlashlight;
-                @Laser.started += instance.OnLaser;
-                @Laser.performed += instance.OnLaser;
-                @Laser.canceled += instance.OnLaser;
+                @WeaponSafety.started += instance.OnWeaponSafety;
+                @WeaponSafety.performed += instance.OnWeaponSafety;
+                @WeaponSafety.canceled += instance.OnWeaponSafety;
+                @WeaponFireAuto.started += instance.OnWeaponFireAuto;
+                @WeaponFireAuto.performed += instance.OnWeaponFireAuto;
+                @WeaponFireAuto.canceled += instance.OnWeaponFireAuto;
+                @WeaponFireTap.started += instance.OnWeaponFireTap;
+                @WeaponFireTap.performed += instance.OnWeaponFireTap;
+                @WeaponFireTap.canceled += instance.OnWeaponFireTap;
+                @WeaponAim.started += instance.OnWeaponAim;
+                @WeaponAim.performed += instance.OnWeaponAim;
+                @WeaponAim.canceled += instance.OnWeaponAim;
+                @WeaponReload.started += instance.OnWeaponReload;
+                @WeaponReload.performed += instance.OnWeaponReload;
+                @WeaponReload.canceled += instance.OnWeaponReload;
+                @WeaponHanguard.started += instance.OnWeaponHanguard;
+                @WeaponHanguard.performed += instance.OnWeaponHanguard;
+                @WeaponHanguard.canceled += instance.OnWeaponHanguard;
                 @EquipPrimary.started += instance.OnEquipPrimary;
                 @EquipPrimary.performed += instance.OnEquipPrimary;
                 @EquipPrimary.canceled += instance.OnEquipPrimary;
@@ -834,16 +805,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnCover(InputAction.CallbackContext context);
+        void OnNightVision(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnMarker(InputAction.CallbackContext context);
-        void OnFireAuto(InputAction.CallbackContext context);
-        void OnFireTap(InputAction.CallbackContext context);
-        void OnAim(InputAction.CallbackContext context);
-        void OnReload(InputAction.CallbackContext context);
-        void OnNightVision(InputAction.CallbackContext context);
-        void OnFreeVision(InputAction.CallbackContext context);
-        void OnFlashlight(InputAction.CallbackContext context);
-        void OnLaser(InputAction.CallbackContext context);
+        void OnWeaponSafety(InputAction.CallbackContext context);
+        void OnWeaponFireAuto(InputAction.CallbackContext context);
+        void OnWeaponFireTap(InputAction.CallbackContext context);
+        void OnWeaponAim(InputAction.CallbackContext context);
+        void OnWeaponReload(InputAction.CallbackContext context);
+        void OnWeaponHanguard(InputAction.CallbackContext context);
         void OnEquipPrimary(InputAction.CallbackContext context);
         void OnEquipSecondary(InputAction.CallbackContext context);
     }

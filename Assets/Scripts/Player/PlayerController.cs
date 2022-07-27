@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
 
     private void CoverUpdate()
     {
-        bool conditions = InputManager.Cover != 0 && !States.GetState("Running");
+        bool conditions = !WeaponManager.IsSafety && !States.GetState("Running") && InputManager.Cover != 0;
         States.SetState("Covering", conditions);
 
         if (conditions)
@@ -210,7 +210,7 @@ public class PlayerController : MonoBehaviour
     {
         // Setting
         States.SetState("GroundArea", Functions.GetColliders().Length > 0);
-        States.SetState("Running", States.GetState("Walking") && InputManager.Run && InputManager.MoveAxis.y > 0);
+        States.SetState("Running", InputManager.Run && States.GetState("Walking"));
         States.SetState("Sloping", Functions.GetSlopeAngle() > 0 && Functions.GetSlopeAngle() <= maxAngleSlope);
         States.SetState("Aiming", WeaponManager.IsAim);
 

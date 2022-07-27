@@ -60,6 +60,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "NightVision",
+                    "type": "Button",
+                    "id": "3958c0d6-5c71-4aa4-8fd9-ea70d93df26d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap(duration=0.005)",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Interact",
                     "type": "Button",
                     "id": "225bbfd4-b488-4af1-8a69-04a63452c000",
@@ -78,7 +87,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "FireAuto",
+                    "name": "WeaponSafety",
+                    "type": "Button",
+                    "id": "66cbd9cd-1e92-4aae-9ca9-6b11e797954a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap(duration=0.005)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "WeaponFireAuto",
                     "type": "Button",
                     "id": "3aa5d608-5d84-4bef-85dd-1bb961fcb3a0",
                     "expectedControlType": "Button",
@@ -87,7 +105,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "FireTap",
+                    "name": "WeaponFireTap",
                     "type": "Button",
                     "id": "5d4a9dad-8b31-4975-a669-2e458815707c",
                     "expectedControlType": "Button",
@@ -96,7 +114,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Aim",
+                    "name": "WeaponAim",
                     "type": "Button",
                     "id": "13bd2753-bd88-4f28-84b0-f527c4a4ff27",
                     "expectedControlType": "Button",
@@ -105,7 +123,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Reload",
+                    "name": "WeaponReload",
                     "type": "Button",
                     "id": "a5c1b9a2-fc54-443e-b278-2f6f7627e82b",
                     "expectedControlType": "Button",
@@ -114,36 +132,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "NightVision",
-                    "type": "Button",
-                    "id": "3958c0d6-5c71-4aa4-8fd9-ea70d93df26d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap(duration=0.005)",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "FreeVision",
-                    "type": "Button",
-                    "id": "f5d6d683-ac12-4e97-8e0c-d7c109a4cbde",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Flashlight",
+                    "name": "WeaponHanguard",
                     "type": "Button",
                     "id": "472f1a35-4de5-482a-8257-75611aaa3d73",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap(duration=0.005)",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Laser",
-                    "type": "Button",
-                    "id": "e224c223-efea-4d55-b2bb-1dad95351a64",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Tap(duration=0.005)",
@@ -264,7 +255,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "FireAuto",
+                    "action": "WeaponFireAuto",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -275,7 +266,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "FireTap",
+                    "action": "WeaponFireTap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -297,18 +288,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Reload",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5c79b050-20b0-4e9b-ac27-dcfcd9f4baa6",
-                    "path": "<Keyboard>/n",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "NightVision",
+                    "action": "WeaponReload",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -319,7 +299,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Flashlight",
+                    "action": "WeaponHanguard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -330,18 +310,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "406093db-521c-4c9d-af6b-d06660b5577d",
-                    "path": "<Keyboard>/v",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Laser",
+                    "action": "WeaponAim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -402,17 +371,6 @@
                 },
                 {
                     "name": "",
-                    "id": "55f0a67e-5333-4d3b-8bfc-a0ab9c7b213d",
-                    "path": "<Keyboard>/leftAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "FreeVision",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "9b802726-8e5d-4718-9b6d-0a01fc3c47b0",
                     "path": "<Keyboard>/f",
                     "interactions": "",
@@ -430,6 +388,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Marker",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23846b3d-7482-4928-9a3a-f8d3ad9a71c7",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WeaponSafety",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5c79b050-20b0-4e9b-ac27-dcfcd9f4baa6",
+                    "path": "<Keyboard>/n",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NightVision",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

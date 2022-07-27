@@ -9,6 +9,12 @@ public class WeaponEvents : MonoBehaviour
         Weapon.Functions.GetAnimator().Play("NONE", -1, 0f);
     }
 
+    private void LateUpdate()
+    {
+        // Active safe animation
+        Weapon.Functions.GetAnimator().SetBool("Safety", Weapon.weaponMode == Weapon.WeaponMode.Safety);
+    }
+
     /// <summary>
     /// Sets the event weapon.
     /// </summary>

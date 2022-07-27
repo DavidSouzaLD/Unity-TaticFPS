@@ -78,10 +78,14 @@ public class WeaponFunctions
         Weapon.aimPosition = Weapon.defaultAimPos;
     }
 
+    public void ChangeWeaponMode(Weapon.WeaponMode weaponMode)
+    {
+        Weapon.weaponMode = weaponMode;
+    }
+
     public void PlayAnimation(string eventName)
     {
-        string toUpper = eventName.ToUpper();
-        Weapon.Animator.Play(toUpper);
+        Weapon.Animator.Play(eventName);
     }
 
     public void PlaySound(string eventName, AudioClip clip = null, float volume = 1f)
@@ -129,6 +133,8 @@ public class WeaponFunctions
     {
         if (Weapon.currentBullets >= Weapon.bulletsPerFire && Weapon.firerateTimer <= 0)
         {
+            Weapon.States.SetState("Firing", true);
+
             // Tracer
             List<Vector3> positions = new List<Vector3>();
             LineRenderer tracer = GameObject.Instantiate(WeaponManager.GetTracerPrefab(), Weapon.muzzlePoint.position, Quaternion.identity).GetComponent<LineRenderer>();
@@ -172,11 +178,13 @@ public class WeaponFunctions
             tracerScript.pos = positions;
 
             ApplyRecoil();
-            PlayAnimation("FIRE");
+            PlayAnimation("Fire");
             PlaySound("FIRE");
 
             Weapon.currentBullets -= Weapon.bulletsPerFire;
             Weapon.firerateTimer = Weapon.firerate;
+
+            Weapon.States.SetState("Firing", false);
         }
     }
 
