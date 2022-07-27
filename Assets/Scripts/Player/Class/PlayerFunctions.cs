@@ -13,11 +13,12 @@ public class PlayerFunctions
 
     public void Start()
     {
+        Transform transform = Controller.transform;
+
         // Setting starts states
         Controller.States.SetState("Graviting", true);
 
         // Components
-        Transform transform = Controller.transform;
         Controller.Rigidbody = transform.GetComponent<Rigidbody>();
         Controller.CapsuleCollider = transform.GetComponent<CapsuleCollider>();
 

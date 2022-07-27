@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class WeaponEvents : MonoBehaviour
 {
-    protected WeaponBase Weapon;
+    protected Weapon Weapon;
 
     private void OnDisable()
     {
-        Weapon.GetAnimator().Play("NONE", -1, 0f);
+        Weapon.Functions.GetAnimator().Play("NONE", -1, 0f);
     }
 
     /// <summary>
     /// Sets the event weapon.
     /// </summary>
-    public void SetWeapon(WeaponBase weapon)
+    public void SetWeapon(Weapon weapon)
     {
         Weapon = weapon;
     }
@@ -22,7 +22,7 @@ public class WeaponEvents : MonoBehaviour
     /// </summary>
     public void StartAnimation()
     {
-        Weapon.isReloading = true;
+        Weapon.States.SetState("Reloading", true);
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class WeaponEvents : MonoBehaviour
     /// </summary>
     public void RemoveMagazine()
     {
-        Weapon.PlaySound("START_RELOAD");
+        Weapon.Functions.PlaySound("START_RELOAD");
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class WeaponEvents : MonoBehaviour
     /// </summary>
     public void PutMagazine()
     {
-        Weapon.PlaySound("MIDDLE_RELOAD");
+        Weapon.Functions.PlaySound("MIDDLE_RELOAD");
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class WeaponEvents : MonoBehaviour
     /// </summary>
     public void Cocking()
     {
-        Weapon.PlaySound("END_RELOAD");
+        Weapon.Functions.PlaySound("END_RELOAD");
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public class WeaponEvents : MonoBehaviour
     /// </summary>
     public void EndAnimation()
     {
-        Weapon.CalculateReload();
-        Weapon.isReloading = false;
+        Weapon.Functions.CalculateReload();
+        Weapon.States.SetState("Reloading", false);
     }
 }

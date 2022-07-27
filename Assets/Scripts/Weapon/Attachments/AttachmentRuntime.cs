@@ -22,9 +22,9 @@ public class AttachmentRuntime : MonoBehaviour
         switch (attachmentType)
         {
             case AttachmentType.Sight:
-                Weapon.SetAimSensitivityScale(sensitivityScale);
-                Weapon.SetAimPosition(aimPosition);
-                Weapon.SetMuzzlePoint(newMuzzlePoint);
+                Weapon.Functions.SetAimSensitivityScale(sensitivityScale);
+                Weapon.Functions.SetAimPosition(aimPosition);
+                Weapon.Functions.SetMuzzlePoint(newMuzzlePoint);
                 break;
         }
     }
@@ -34,9 +34,9 @@ public class AttachmentRuntime : MonoBehaviour
         switch (attachmentType)
         {
             case AttachmentType.Sight:
-                Weapon.MaxAimSensitivityScale();
-                Weapon.ResetAimPosition();
-                Weapon.ResetMuzzlePoint();
+                Weapon.Functions.MaxAimSensitivityScale();
+                Weapon.Functions.ResetAimPosition();
+                Weapon.Functions.ResetMuzzlePoint();
                 break;
         }
     }

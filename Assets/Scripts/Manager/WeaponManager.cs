@@ -9,7 +9,7 @@ public class WeaponManager : MonoBehaviour
     {
         get
         {
-            return Instance.currentWeapon.isAim;
+            return Instance.currentWeapon.States.GetState("Aiming");
         }
     }
 
@@ -17,7 +17,7 @@ public class WeaponManager : MonoBehaviour
     {
         get
         {
-            return Instance.currentWeapon.isReloading;
+            return Instance.currentWeapon.States.GetState("Reloading");
         }
     }
 
@@ -29,7 +29,7 @@ public class WeaponManager : MonoBehaviour
     }
 
     [Header("Basic")]
-    [SerializeField] private WeaponBase currentWeapon;
+    [SerializeField] private Weapon currentWeapon;
     [SerializeField] private GameObject tracerPrefab;
 
     [Header("Sway")]
@@ -195,7 +195,7 @@ public class WeaponManager : MonoBehaviour
         SwayAccuracy(1f);
     }
 
-    public static void SetCurrentWeapon(WeaponBase weapon)
+    public static void SetCurrentWeapon(Weapon weapon)
     {
         Instance.currentWeapon = weapon;
     }
