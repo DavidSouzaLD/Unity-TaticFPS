@@ -10,6 +10,8 @@ public class WeaponState : StateBase
                 new State("Aiming"),
                 new State("Reloading"),
                 new State("Firing"),
+                new State("Drawing"),
+                new State("Hiding"),
             };
     }
 }

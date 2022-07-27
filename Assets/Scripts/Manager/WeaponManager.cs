@@ -4,6 +4,7 @@ using UnityEngine;
 public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager Instance;
+    public static bool haveCurrentWeapon = Instance != null && Instance.currentWeapon != null;
 
     [System.Serializable]
     public class Impact
@@ -53,7 +54,7 @@ public class WeaponManager : MonoBehaviour
     {
         get
         {
-            return Instance.currentWeapon.States.GetState("Aiming");
+            return haveCurrentWeapon ? Instance.currentWeapon.States.GetState("Aiming") : false;
         }
     }
 
@@ -61,7 +62,7 @@ public class WeaponManager : MonoBehaviour
     {
         get
         {
-            return Instance.currentWeapon.States.GetState("Reloading");
+            return haveCurrentWeapon ? Instance.currentWeapon.States.GetState("Reloading") : false;
         }
     }
 
@@ -69,7 +70,7 @@ public class WeaponManager : MonoBehaviour
     {
         get
         {
-            return Instance.currentWeapon.States.GetState("Safety");
+            return haveCurrentWeapon ? Instance.currentWeapon.States.GetState("Safety") : false;
         }
     }
 

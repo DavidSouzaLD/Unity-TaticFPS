@@ -6,6 +6,10 @@ public class Weapon : MonoBehaviour
     public enum WeaponMode { Safety, Combat }
     public enum FireMode { Semi, Auto }
 
+    [Header("Switch")]
+    public float drawTime;
+    public float hideTime;
+
     [Header("Settings")]
     public LayerMask hittableMask;
     public WeaponMode weaponMode;
@@ -49,6 +53,7 @@ public class Weapon : MonoBehaviour
     [HideInInspector] public Vector3 defaultAimPos;
 
     // Privates
+    [HideInInspector] public float drawTimer, hideTimer;
     [HideInInspector] public float firerateTimer;
     [HideInInspector] public float aimSensitivityScale;
     [HideInInspector] public Vector3 initialAimPos;
@@ -86,6 +91,7 @@ public class Weapon : MonoBehaviour
 
     private void Update()
     {
+        SwitchUpdate();
         Fire();
         Reload();
         Aim();
@@ -93,9 +99,25 @@ public class Weapon : MonoBehaviour
         Mode();
     }
 
+    private void SwitchUpdate()
+    {
+        States.SetState("Drawing", drawTimer > 0);
+        States.SetState("Hiding", hideTimer > 0);
+
+        if (drawTimer > 0)
+        {
+            drawTimer -= Time.deltaTime;
+        }
+
+        if (hideTimer > 0)
+        {
+            hideTimer -= Time.deltaTime;
+        }
+    }
+
     private void Fire()
     {
-        bool conditions = (weaponMode == WeaponMode.Combat) && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading");
+        bool conditions = (weaponMode == WeaponMode.Combat) && !PlayerController.GetStates.GetState("Running") && !States.GetState("Drawing") && !States.GetState("Hiding") && !States.GetState("Reloading") && PlayerCamera.isCursorLocked;
 
         if (InputManager.WeaponFireTap)
         {
@@ -123,7 +145,7 @@ public class Weapon : MonoBehaviour
 
     private void Reload()
     {
-        bool conditions = (weaponMode == WeaponMode.Combat) && !States.GetState("Reloading") && !PlayerController.GetStates.GetState("Running") && InputManager.WeaponReload && PlayerCamera.isCursorLocked && extraBullets > 0 && currentBullets < bulletsPerMagazine;
+        bool conditions = (weaponMode == WeaponMode.Combat) && !States.GetState("Reloading") && !PlayerController.GetStates.GetState("Running") && !States.GetState("Drawing") && !States.GetState("Hiding") && InputManager.WeaponReload && PlayerCamera.isCursorLocked && extraBullets > 0 && currentBullets < bulletsPerMagazine;
 
         if (conditions)
         {
@@ -134,7 +156,7 @@ public class Weapon : MonoBehaviour
 
     private void Aim()
     {
-        bool conditions = (weaponMode == WeaponMode.Combat) && InputManager.WeaponAim && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading");
+        bool conditions = (weaponMode == WeaponMode.Combat) && InputManager.WeaponAim && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading") && !States.GetState("Drawing") && !States.GetState("Hiding");
 
         if (conditions)
         {
@@ -172,7 +194,7 @@ public class Weapon : MonoBehaviour
 
     private void Mode()
     {
-        bool conditions = !States.GetState("Reloading") && !States.GetState("Aiming") && !States.GetState("Firing");
+        bool conditions = !States.GetState("Reloading") && !States.GetState("Aiming") && !States.GetState("Firing") && !States.GetState("Drawing") && !States.GetState("Hiding");
 
         if (InputManager.WeaponSafety)
         {
@@ -188,11 +210,17 @@ public class Weapon : MonoBehaviour
 
     private void OnEnable()
     {
+        // Setting switch values
+        drawTimer = drawTime;
+        hideTimer = hideTime;
+
+        // Setting current weapon
         WeaponManager.SetCurrentWeapon(this);
     }
 
     private void OnDisable()
     {
+        // Removing current weapon
         WeaponManager.SetCurrentWeapon(null);
     }
 

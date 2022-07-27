@@ -6966,6 +6966,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f7413ad320d3d489727e70fb1f9f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawTime: 1
+  hideTime: 0.5
   hittableMask:
     serializedVersion: 2
     m_Bits: 9
@@ -7001,6 +7003,8 @@ MonoBehaviour:
   endReloadSound: {fileID: 8300000, guid: 487d9cf01e17e0448a56cd385cb81f3f, type: 3}
   defaultMuzzlePoint: {fileID: 0}
   defaultAimPos: {x: 0, y: 0, z: 0}
+  drawTimer: 0
+  hideTimer: 0
   firerateTimer: 0
   aimSensitivityScale: 0
   initialAimPos: {x: 0, y: 0, z: 0}
