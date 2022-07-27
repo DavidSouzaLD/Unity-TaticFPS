@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     public float crouchSpeed = 5f;
 
     [Header("Cover")]
-    public float coverAmount = 15f;
+    public float coverAmount = 20f;
     public float coverCamScale = 0.02f;
     public float coverSpeed = 6f;
 

@@ -6,7 +6,7 @@ public class WeaponEvents : MonoBehaviour
 
     private void OnDisable()
     {
-        Weapon.Functions.GetAnimator().Play("NONE", -1, 0f);
+        Weapon.Functions.GetAnimator().Play("None", -1, 0f);
     }
 
     private void LateUpdate()
