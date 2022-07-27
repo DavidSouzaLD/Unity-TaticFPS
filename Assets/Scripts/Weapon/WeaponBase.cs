@@ -175,7 +175,7 @@ public class WeaponBase : MonoBehaviour
         MaxAimSensitivityScale();
 
         // Recoil
-        recoilRoot = FindManager.Find("WeaponRecoil", this);
+        recoilRoot = FindManager.Find("WeaponRecoil");
         startRecoilPos = recoilRoot.localPosition;
         startRecoilRot = recoilRoot.localRotation;
 

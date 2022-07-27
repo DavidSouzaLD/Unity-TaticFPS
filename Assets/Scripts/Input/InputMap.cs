@@ -73,7 +73,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Turn"",
+                    ""name"": ""Cover"",
                     ""type"": ""Value"",
                     ""id"": ""0f966f47-4a76-4d61-b397-26829d08400c"",
                     ""expectedControlType"": ""Analog"",
@@ -169,24 +169,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Tap(duration=0.005)"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Inspect"",
-                    ""type"": ""Button"",
-                    ""id"": ""4eb0d930-1f6c-4535-9cd0-4b756c712d7e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap(duration=0.005)"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Custom"",
-                    ""type"": ""Button"",
-                    ""id"": ""f0981c42-8ca3-4a5d-9e1b-2d339dd7af66"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
@@ -414,7 +396,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Turn"",
+                    ""action"": ""Cover"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -425,7 +407,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Turn"",
+                    ""action"": ""Cover"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -436,31 +418,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Turn"",
+                    ""action"": ""Cover"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5ae6b64c-8715-47e4-b1c2-bdad0b24d290"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Custom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""25267f31-b448-4bff-ac73-7cab5917bffb"",
-                    ""path"": ""<Keyboard>/t"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Inspect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -575,7 +535,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
-        m_Player_Turn = m_Player.FindAction("Turn", throwIfNotFound: true);
+        m_Player_Cover = m_Player.FindAction("Cover", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Marker = m_Player.FindAction("Marker", throwIfNotFound: true);
         m_Player_FireAuto = m_Player.FindAction("FireAuto", throwIfNotFound: true);
@@ -586,8 +546,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Player_FreeVision = m_Player.FindAction("FreeVision", throwIfNotFound: true);
         m_Player_Flashlight = m_Player.FindAction("Flashlight", throwIfNotFound: true);
         m_Player_Laser = m_Player.FindAction("Laser", throwIfNotFound: true);
-        m_Player_Inspect = m_Player.FindAction("Inspect", throwIfNotFound: true);
-        m_Player_Custom = m_Player.FindAction("Custom", throwIfNotFound: true);
         m_Player_EquipPrimary = m_Player.FindAction("EquipPrimary", throwIfNotFound: true);
         m_Player_EquipSecondary = m_Player.FindAction("EquipSecondary", throwIfNotFound: true);
         // Customize
@@ -659,7 +617,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_Crouch;
-    private readonly InputAction m_Player_Turn;
+    private readonly InputAction m_Player_Cover;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Marker;
     private readonly InputAction m_Player_FireAuto;
@@ -670,8 +628,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_FreeVision;
     private readonly InputAction m_Player_Flashlight;
     private readonly InputAction m_Player_Laser;
-    private readonly InputAction m_Player_Inspect;
-    private readonly InputAction m_Player_Custom;
     private readonly InputAction m_Player_EquipPrimary;
     private readonly InputAction m_Player_EquipSecondary;
     public struct PlayerActions
@@ -683,7 +639,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Run => m_Wrapper.m_Player_Run;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
-        public InputAction @Turn => m_Wrapper.m_Player_Turn;
+        public InputAction @Cover => m_Wrapper.m_Player_Cover;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Marker => m_Wrapper.m_Player_Marker;
         public InputAction @FireAuto => m_Wrapper.m_Player_FireAuto;
@@ -694,8 +650,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @FreeVision => m_Wrapper.m_Player_FreeVision;
         public InputAction @Flashlight => m_Wrapper.m_Player_Flashlight;
         public InputAction @Laser => m_Wrapper.m_Player_Laser;
-        public InputAction @Inspect => m_Wrapper.m_Player_Inspect;
-        public InputAction @Custom => m_Wrapper.m_Player_Custom;
         public InputAction @EquipPrimary => m_Wrapper.m_Player_EquipPrimary;
         public InputAction @EquipSecondary => m_Wrapper.m_Player_EquipSecondary;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -722,9 +676,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Crouch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
-                @Turn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
-                @Turn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
-                @Turn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurn;
+                @Cover.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCover;
+                @Cover.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCover;
+                @Cover.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCover;
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
@@ -755,12 +709,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Laser.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
                 @Laser.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
                 @Laser.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaser;
-                @Inspect.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
-                @Inspect.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
-                @Inspect.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInspect;
-                @Custom.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCustom;
-                @Custom.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCustom;
-                @Custom.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCustom;
                 @EquipPrimary.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
                 @EquipPrimary.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
                 @EquipPrimary.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEquipPrimary;
@@ -786,9 +734,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
-                @Turn.started += instance.OnTurn;
-                @Turn.performed += instance.OnTurn;
-                @Turn.canceled += instance.OnTurn;
+                @Cover.started += instance.OnCover;
+                @Cover.performed += instance.OnCover;
+                @Cover.canceled += instance.OnCover;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
@@ -819,12 +767,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Laser.started += instance.OnLaser;
                 @Laser.performed += instance.OnLaser;
                 @Laser.canceled += instance.OnLaser;
-                @Inspect.started += instance.OnInspect;
-                @Inspect.performed += instance.OnInspect;
-                @Inspect.canceled += instance.OnInspect;
-                @Custom.started += instance.OnCustom;
-                @Custom.performed += instance.OnCustom;
-                @Custom.canceled += instance.OnCustom;
                 @EquipPrimary.started += instance.OnEquipPrimary;
                 @EquipPrimary.performed += instance.OnEquipPrimary;
                 @EquipPrimary.canceled += instance.OnEquipPrimary;
@@ -891,7 +833,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnTurn(InputAction.CallbackContext context);
+        void OnCover(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnMarker(InputAction.CallbackContext context);
         void OnFireAuto(InputAction.CallbackContext context);
@@ -902,8 +844,6 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnFreeVision(InputAction.CallbackContext context);
         void OnFlashlight(InputAction.CallbackContext context);
         void OnLaser(InputAction.CallbackContext context);
-        void OnInspect(InputAction.CallbackContext context);
-        void OnCustom(InputAction.CallbackContext context);
         void OnEquipPrimary(InputAction.CallbackContext context);
         void OnEquipSecondary(InputAction.CallbackContext context);
     }

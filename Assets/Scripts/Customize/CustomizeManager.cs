@@ -52,7 +52,7 @@ public class CustomizeManager : MonoBehaviour
 
     private void Start()
     {
-        Camera = FindManager.Find("Camera", this).GetComponent<Camera>();
+        Camera = FindManager.Find("Camera").GetComponent<Camera>();
         targetRot = rotationTransform.localRotation;
         startRotationRot = rotationTransform.localRotation;
     }

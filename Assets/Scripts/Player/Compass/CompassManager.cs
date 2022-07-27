@@ -12,7 +12,6 @@ public class CompassManager : MonoBehaviour
     public List<Marker> markers = new List<Marker>();
 
     private float halfSize = 600;
-    private Player Player;
 
     public static List<Marker> GetMarkers
     {
@@ -34,27 +33,22 @@ public class CompassManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        Player = FindManager.Find("Player", this).GetComponent<Player>();
-    }
-
     private void Update()
     {
         if (texture.texture != null)
         {
-            texture.uvRect = new Rect(Player.LocalYRotation / 360f, 0, 1f, 1f);
+            texture.uvRect = new Rect(PlayerController.GetLocalYRotation() / 360f, 0, 1f, 1f);
         }
 
         foreach (Marker obj in markers)
         {
-            var distance = Vector3.Distance(obj.position, Player.transform.position);
-            var angle = CalculateAngle(Player.transform.position, obj.position);
+            var distance = Vector3.Distance(obj.position, PlayerController.GetTransform().position);
+            var angle = CalculateAngle(PlayerController.GetTransform().position, obj.position);
 
             obj.markerText.text = "(" + distance.ToString("0") + ")";
             obj.rectTransform.anchoredPosition = new Vector2(AngleToCompassPos(angle), obj.yPosition);
             TransparentEffect(obj.image, obj.xPosition);
-            ScaleEffect(obj.rectTransform, Player.transform.position, obj.position, 20f);
+            ScaleEffect(obj.rectTransform, PlayerController.GetTransform().position, obj.position, 20f);
         }
     }
 
@@ -67,7 +61,7 @@ public class CompassManager : MonoBehaviour
     {
         Vector2 playerXZ = new Vector2(playerPosition.x, playerPosition.z);
         Vector2 objectXZ = new Vector2(objectPosition.x, objectPosition.z);
-        return Vector2.SignedAngle(objectXZ - playerXZ, Player.ForwardXZ);
+        return Vector2.SignedAngle(objectXZ - playerXZ, PlayerController.GetForwardXZ());
     }
 
     private void TransparentEffect(Image image, float x)

@@ -4,7 +4,7 @@ public class Ladder : MonoBehaviour
 {
     [SerializeField] private bool inLadder;
     [SerializeField] private Vector3 ladderDirection;
-    private Player Player;
+    private bool playerEnter;
     private bool changeControl;
 
     private void Update()
@@ -14,28 +14,22 @@ public class Ladder : MonoBehaviour
             inLadder = !inLadder;
         }
 
-        if (Player != null)
+        if (inLadder)
         {
-            if (inLadder)
+            if (!changeControl)
             {
-                if (!changeControl)
-                {
-                    Player.SetAdditionalDirection(ladderDirection);
-                    Player.isLadder = true;
-                    Player.UseGravity = false;
-                    changeControl = true;
-                }
+                PlayerController.SetAdditionalDirection(ladderDirection);
+                PlayerController.SetState("Climbing", true);
+                PlayerController.UseGravity = false;
+                changeControl = true;
             }
         }
 
         if (inLadder == false && changeControl)
         {
-            if (Player)
-            {
-                Player.ResetAdditionalDirection();
-                Player.isLadder = false;
-                Player.UseGravity = true;
-            }
+            PlayerController.ResetAdditionalDirection();
+            PlayerController.SetState("Climbing", false);
+            PlayerController.UseGravity = true;
 
             changeControl = false;
             inLadder = false;
@@ -46,7 +40,8 @@ public class Ladder : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Player = other.GetComponent<Player>();
+            playerEnter = true;
+            inLadder = true;
         }
     }
 
@@ -55,10 +50,12 @@ public class Ladder : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             inLadder = false;
-            Player.ResetAdditionalDirection();
-            Player.isLadder = false;
-            Player.UseGravity = true;
-            Player = null;
+
+            PlayerController.ResetAdditionalDirection();
+            PlayerController.SetState("Climbing", false);
+            PlayerController.UseGravity = true;
+
+            playerEnter = false;
         }
     }
 

@@ -51,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Turn",
+                    "name": "Cover",
                     "type": "Value",
                     "id": "0f966f47-4a76-4d61-b397-26829d08400c",
                     "expectedControlType": "Analog",
@@ -147,24 +147,6 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Tap(duration=0.005)",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Inspect",
-                    "type": "Button",
-                    "id": "4eb0d930-1f6c-4535-9cd0-4b756c712d7e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap(duration=0.005)",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Custom",
-                    "type": "Button",
-                    "id": "f0981c42-8ca3-4a5d-9e1b-2d339dd7af66",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
@@ -392,7 +374,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Turn",
+                    "action": "Cover",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -403,7 +385,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Turn",
+                    "action": "Cover",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -414,31 +396,9 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Turn",
+                    "action": "Cover",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "5ae6b64c-8715-47e4-b1c2-bdad0b24d290",
-                    "path": "<Keyboard>/c",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Custom",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "25267f31-b448-4bff-ac73-7cab5917bffb",
-                    "path": "<Keyboard>/t",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Inspect",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 },
                 {
                     "name": "",

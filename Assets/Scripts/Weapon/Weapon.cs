@@ -4,7 +4,7 @@ public class Weapon : WeaponBase
 {
     protected override void Fire()
     {
-        bool canFire = !Player.isRunning && PlayerCamera.isCursorLocked && !isReloading;
+        bool canFire = !PlayerController.GetState("Running") && PlayerCamera.isCursorLocked && !isReloading;
 
         if (canFire)
         {
@@ -43,7 +43,7 @@ public class Weapon : WeaponBase
 
     protected override void Reload()
     {
-        bool canReload = InputManager.Reload && !Player.isRunning && PlayerCamera.isCursorLocked && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
+        bool canReload = InputManager.Reload && !PlayerController.GetState("Running") && PlayerCamera.isCursorLocked && extraBullets > 0 && currentBullets < bulletsPerMagazine && !isReloading;
 
         if (canReload)
         {
@@ -56,7 +56,7 @@ public class Weapon : WeaponBase
 
     protected override void Aim()
     {
-        bool canAim = InputManager.Aim && !Player.isRunning && PlayerCamera.isCursorLocked && !isReloading;
+        bool canAim = InputManager.Aim && !PlayerController.GetState("Running") && PlayerCamera.isCursorLocked && !isReloading;
 
         if (canAim)
         {

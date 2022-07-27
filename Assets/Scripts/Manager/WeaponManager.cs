@@ -64,7 +64,6 @@ public class WeaponManager : MonoBehaviour
     private Transform retractRayRoot;
     private Transform retracRoot;
     private GameObject hitMark;
-    private Player playerController;
 
     private void Awake()
     {
@@ -76,12 +75,11 @@ public class WeaponManager : MonoBehaviour
     private void Start()
     {
         // Get components
-        playerController = FindManager.Find("Player", this).GetComponent<Player>();
-        swayRoot = FindManager.Find("Sway", this);
-        horizontalSwayRoot = FindManager.Find("SwayHorizontal", this);
-        retracRoot = FindManager.Find("Retract", this);
-        retractRayRoot = FindManager.Find("Camera", this);
-        hitMark = FindManager.Find("HitMark", this).gameObject;
+        swayRoot = FindManager.Find("Sway");
+        horizontalSwayRoot = FindManager.Find("SwayHorizontal");
+        retracRoot = FindManager.Find("Retract");
+        retractRayRoot = FindManager.Find("Camera");
+        hitMark = FindManager.Find("HitMark").gameObject;
 
         // Setting start values
         swayInitialPos = swayRoot.localPosition;

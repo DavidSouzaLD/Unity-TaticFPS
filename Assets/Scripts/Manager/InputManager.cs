@@ -173,15 +173,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return Instance._haveMap ? Instance.Map.Player.Turn.ReadValue<float>() : 0;
-        }
-    }
-
-    public static bool Inspect
-    {
-        get
-        {
-            return Instance._haveMap ? Instance.Map.Player.Inspect.ReadValue<float>() != 0 : false;
+            return Instance._haveMap ? Instance.Map.Player.Cover.ReadValue<float>() : 0;
         }
     }
 

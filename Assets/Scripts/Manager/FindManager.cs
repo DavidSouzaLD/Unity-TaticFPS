@@ -30,7 +30,7 @@ public class FindManager : MonoBehaviour
         }
     }
 
-    public static Transform Find(string name, Behaviour behaviour)
+    public static Transform Find(string name)
     {
         for (int i = 0; i < Instance.transforms.Length; i++)
         {
@@ -44,8 +44,6 @@ public class FindManager : MonoBehaviour
                 return Instance.transforms[i];
             }
         }
-
-        Debug.LogError(behaviour.name + " not finded Transform in (FindManager).");
         return null;
     }
 }

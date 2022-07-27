@@ -74,8 +74,8 @@ public class PlayerCamera : MonoBehaviour
         Camera = GetComponent<Camera>();
 
         // Get transforms
-        PlayerTransform = FindManager.Find("Player", this);
-        cameraRecoilRoot = FindManager.Find("CameraRecoil", this);
+        PlayerTransform = FindManager.Find("Player");
+        cameraRecoilRoot = FindManager.Find("CameraRecoil");
 
         // Starting values
         characterTargetRot = PlayerTransform.localRotation;
