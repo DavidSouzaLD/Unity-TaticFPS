@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxCrouchingSpeed = 1.5f;
     [SerializeField] private float maxClimbingSpeed = 1f;
     [Space]
-    [SerializeField] private float jumpingForce = 25f;
+    [SerializeField] private float jumpingForce = 50f;
 
     [Header("Friction")]
     [SerializeField] private float initialFriction = 5f;
@@ -90,11 +90,11 @@ public class PlayerController : MonoBehaviour
     [Header("Ground")]
     [SerializeField] private LayerMask walkableMask;
     [SerializeField] private float groundCheckHeight = -0.35f;
-    [SerializeField] private float groundCheckRadius = 0.1f;
+    [SerializeField] private float groundCheckRadius = 0.01f;
 
     [Header("Cover")]
     [SerializeField] private float coverAmount = 15f;
-    [SerializeField] private float coverCamScale = 0.03f;
+    [SerializeField] private float coverCamScale = 0.01f;
     [SerializeField] private float coverSpeed = 8f;
 
     [Header("Components")]
@@ -163,8 +163,8 @@ public class PlayerController : MonoBehaviour
     private Transform cameraRoot;
     private Transform coverWeaponRoot;
     private Transform coverCamRoot;
-    private static PlayerController Instance;
     private static States PlayerState;
+    private static PlayerController Instance;
 
     private void Awake()
     {
@@ -193,6 +193,9 @@ public class PlayerController : MonoBehaviour
         cameraRoot = FindManager.Find("Camera");
         coverWeaponRoot = FindManager.Find("WeaponCover");
         coverCamRoot = FindManager.Find("CameraCover");
+
+        // Jump
+        jumpCountdown = 0.3f;
 
         // Cover
         initialCoverRot = coverWeaponRoot.localRotation;
@@ -258,7 +261,7 @@ public class PlayerController : MonoBehaviour
         {
             PlayerState.SetState("Jumping", true);
             Rigidbody.AddForce(transform.up * jumpingForce, ForceMode.Impulse);
-            jumpCountdown = 0.15f;
+            jumpCountdown = 0.3f;
         }
 
         if (jumpCountdown > 0)
@@ -274,29 +277,27 @@ public class PlayerController : MonoBehaviour
     private void CrouchUpdate()
     {
         bool conditions = InputManager.Crouch && !GetState("Running") && !GetState("Climbing") && GetState("Grounded");
+        PlayerState.SetState("Crouching", conditions);
 
         if (conditions)
         {
-            PlayerState.SetState("Crouching", true);
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, crouchHeight, crouchSpeed * Time.deltaTime);
         }
         else
         {
-            PlayerState.SetState("Crouching", false);
             CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, initialCapsuleHeight, crouchSpeed * Time.deltaTime);
         }
     }
 
     private void CoverUpdate()
     {
-        bool conditions = InputManager.Turn != 0 && !GetState("Running") && GetState("Ground");
+        bool conditions = InputManager.Cover != 0 && !GetState("Running");
+        PlayerState.SetState("Covering", conditions);
 
         if (conditions)
         {
-            PlayerState.SetState("Covering", true);
-
-            Vector3 targetPos = new Vector3(coverAmount * coverCamScale * InputManager.Turn, 0f, 0f);
-            Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, coverAmount * -InputManager.Turn));
+            Vector3 targetPos = new Vector3(coverAmount * coverCamScale * InputManager.Cover, 0f, 0f);
+            Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, coverAmount * -InputManager.Cover));
 
             if (!GetState("Aiming"))
             {
@@ -315,8 +316,6 @@ public class PlayerController : MonoBehaviour
         }
         else if (coverWeaponRoot.localRotation != initialCoverRot || coverCamRoot.localRotation != initialCoverCamRot || coverCamRoot.localPosition != initialCoverCamPos)
         {
-            PlayerState.SetState("Covering", false);
-
             coverWeaponRoot.localRotation = Quaternion.Slerp(coverWeaponRoot.localRotation, initialCoverRot, coverSpeed * Time.deltaTime);
             coverCamRoot.localPosition = Vector3.Lerp(coverCamRoot.localPosition, initialCoverCamPos, coverSpeed * Time.deltaTime);
             coverCamRoot.localRotation = Quaternion.Slerp(coverCamRoot.localRotation, initialCoverCamRot, coverSpeed * Time.deltaTime);
@@ -328,6 +327,7 @@ public class PlayerController : MonoBehaviour
         PlayerState.SetState("Grounded", GetColliders().Length > 0);
         PlayerState.SetState("Running", GetState("Walking") && InputManager.Run && InputManager.MoveAxis.y > 0);
         PlayerState.SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= maxAngleSlope);
+        PlayerState.SetState("Aiming", WeaponManager.IsAim);
     }
 
     private void Move(Vector3 direction)
@@ -349,16 +349,8 @@ public class PlayerController : MonoBehaviour
 
             if (GetState("Grounded"))
             {
-                if (currentSpeed == walkingSpeed)
-                {
-                    Animator.SetBool("Walking", true);
-                    Animator.SetBool("Running", false);
-                }
-                else if (currentSpeed == runningSpeed)
-                {
-                    Animator.SetBool("Waking", false);
-                    Animator.SetBool("Running", true);
-                }
+                Animator.SetBool("Walking", GetState("Walking"));
+                Animator.SetBool("Running", GetState("Running"));
             }
         }
         else

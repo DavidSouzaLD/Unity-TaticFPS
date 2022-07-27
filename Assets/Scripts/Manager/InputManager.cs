@@ -169,7 +169,7 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public static float Turn
+    public static float Cover
     {
         get
         {
