@@ -87,7 +87,7 @@ public class PlayerCamera : MonoBehaviour
         // Camera
         if (Camera)
         {
-            Vector2 camAxis = InputManager.CameraAxis;
+            Vector2 camAxis = PlayerInput.CameraAxis;
 
             camRot.x = (-camAxis.y * sensitivity.y) * sensitivityScale;
             camRot.y = (camAxis.x * sensitivity.x) * sensitivityScale;

@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 511859640205260499}
   - component: {fileID: 5492173213197728115}
   - component: {fileID: 3346716749364080519}
-  - component: {fileID: 511859640205260500}
-  - component: {fileID: 5543315046605347093}
   m_Layer: 0
   m_Name: '[GameManager]'
   m_TagString: Untagged
@@ -59,56 +57,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628e3b6965f945d4fa7f977e35f2e61c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &511859640205260500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511859640205260501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65a2e2869c093e24d84563a7c8b947f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5543315046605347093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511859640205260501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e66e046539117f841b0dbb7756663ca7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentWeapon: {fileID: 0}
-  tracerPrefab: {fileID: 277832011086963584, guid: 45f08e636d92d7c41944788b82864f09,
-    type: 3}
-  swayMultiplier: {x: 1, y: 0.5}
-  swayAmount: 0.1
-  swaySmooth: 0.1
-  swayResetSpeed: 5
-  swayHorizontalScale: 2
-  rectractMask:
-    serializedVersion: 2
-    m_Bits: 8
-  retractRayDistance: 1
-  retractAngle: -20
-  retractSpeed: 6
-  hitMarkSound: {fileID: 8300000, guid: 9094de9e22d4dc64e95f530286fab45f, type: 3}
-  hitMarkTime: 0.1
-  impacts:
-  - name: Concrete
-    prefab: {fileID: 4406149976551598978, guid: cee8326c1cb9ec84a910152dfc716243,
-      type: 3}
-  - name: Grass
-    prefab: {fileID: 4406149976551598978, guid: 9ae3a08ae8381b64cb4d3747d9b333c3,
-      type: 3}
-  - name: Metal
-    prefab: {fileID: 4406149976551598978, guid: 58f9539fb96e83b4b9959ef51f4ab1b1,
-      type: 3}
-  - name: Wood
-    prefab: {fileID: 4406149976551598978, guid: 3e6ba8af2a2f32b4ab481b05fb29d12d,
-      type: 3}

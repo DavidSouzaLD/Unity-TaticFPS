@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
         {
             if (States.GetState("GroundArea"))
             {
-                Vector2 moveAxis = InputManager.MoveAxis;
+                Vector2 moveAxis = PlayerInput.MoveAxis;
                 Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
                 Vector3 dir2 = Vector3.Cross(transform.right, Functions.GetNormal()) * moveAxis.y + Vector3.Cross(-transform.forward, Functions.GetNormal()) * moveAxis.x;
                 Vector3 direction = (!States.GetState("Sloping") ? dir1 : dir2);
@@ -123,7 +124,7 @@ public class PlayerController : MonoBehaviour
 
     private void JumpUpdate()
     {
-        bool conditions = InputManager.Jump && States.GetState("GroundCollision") && jumpCountdown <= 0;
+        bool conditions = PlayerInput.Jump && States.GetState("GroundCollision") && jumpCountdown <= 0;
 
         if (conditions)
         {
@@ -157,7 +158,7 @@ public class PlayerController : MonoBehaviour
 
     private void CrouchUpdate()
     {
-        bool conditions = InputManager.Crouch && !States.GetState("Running");
+        bool conditions = PlayerInput.Crouch && !States.GetState("Running");
         States.SetState("Crouching", conditions);
 
         if (conditions)
@@ -175,7 +176,7 @@ public class PlayerController : MonoBehaviour
 
     private void CoverUpdate()
     {
-        bool conditions = !WeaponManager.IsSafety && !States.GetState("Running") && InputManager.Cover != 0;
+        bool conditions = !WeaponManager.IsSafety && !States.GetState("Running") && PlayerInput.Cover != 0;
         States.SetState("Covering", conditions);
 
         if (conditions)
@@ -210,7 +211,7 @@ public class PlayerController : MonoBehaviour
     {
         // Setting
         States.SetState("GroundArea", Functions.GetColliders().Length > 0);
-        States.SetState("Running", InputManager.Run && States.GetState("Walking"));
+        States.SetState("Running", PlayerInput.Run && States.GetState("Walking"));
         States.SetState("Sloping", Functions.GetSlopeAngle() > 0 && Functions.GetSlopeAngle() <= maxAngleSlope);
         States.SetState("Aiming", WeaponManager.IsAim);
 

@@ -12,7 +12,10 @@ public class WeaponEvents : MonoBehaviour
     private void LateUpdate()
     {
         // Active safe animation
-        Weapon.Functions.GetAnimator().SetBool("Safety", Weapon.weaponMode == Weapon.WeaponMode.Safety);
+        if (Weapon != null)
+        {
+            Weapon.Functions.GetAnimator().SetBool("Safety", Weapon.weaponMode == Weapon.WeaponMode.Safety);
+        }
     }
 
     /// <summary>

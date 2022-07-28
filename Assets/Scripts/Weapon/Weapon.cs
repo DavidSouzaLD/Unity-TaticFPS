@@ -2,13 +2,9 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    private static Weapon Instance;
     public enum WeaponMode { Safety, Combat }
     public enum FireMode { Semi, Auto }
-
-    [Header("Switch")]
-    public float drawTime;
-    public float hideTime;
+    public string weaponName = "Weapon";
 
     [Header("Settings")]
     public LayerMask hittableMask;
@@ -16,6 +12,10 @@ public class Weapon : MonoBehaviour
     public FireMode fireMode;
     public Transform muzzlePoint;
     public float firerate = 1f;
+
+    [Header("Switch")]
+    public float drawTime;
+    public float hideTime;
 
     [Header("Data")]
     public int bulletsPerMagazine = 12;
@@ -55,6 +55,7 @@ public class Weapon : MonoBehaviour
     // Privates
     [HideInInspector] public float drawTimer, hideTimer;
     [HideInInspector] public float firerateTimer;
+    [HideInInspector] public float firingTimer;
     [HideInInspector] public float aimSensitivityScale;
     [HideInInspector] public Vector3 initialAimPos;
     [HideInInspector] public Vector3 initialRecoilPos;
@@ -69,16 +70,6 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        // Create instance
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(this);
-        }
-
         // Weapon settings
         States = new WeaponState();
         Functions = new WeaponFunctions(this);
@@ -117,24 +108,43 @@ public class Weapon : MonoBehaviour
 
     private void Fire()
     {
-        bool conditions = (weaponMode == WeaponMode.Combat) && !PlayerController.GetStates.GetState("Running") && !States.GetState("Drawing") && !States.GetState("Hiding") && !States.GetState("Reloading") && PlayerCamera.isCursorLocked;
+        bool conditions =
+        (weaponMode == WeaponMode.Combat) &&
+        !PlayerController.GetStates.GetState("Running") &&
+        !States.GetState("Drawing") &&
+        !States.GetState("Hiding") &&
+        !States.GetState("Reloading") &&
+        PlayerCamera.isCursorLocked;
 
-        if (InputManager.WeaponFireTap)
+        if (PlayerInput.WeaponFireTap)
         {
             if (conditions)
             {
                 switch (fireMode)
                 {
                     case FireMode.Semi:
+                        firingTimer = firerate * 3f;
                         Functions.CalculateFire();
                         break;
 
                     case FireMode.Auto:
+                        firingTimer = firerate * 3f;
                         Functions.CalculateFire();
                         break;
                 }
             }
             Animator.SetBool("NoBullet", !Functions.HaveBullets());
+        }
+
+        // Is firing
+        if (firingTimer >= 0)
+        {
+            States.SetState("Firing", true);
+            firingTimer -= Time.deltaTime;
+        }
+        else
+        {
+            States.SetState("Firing", false);
         }
 
         if (firerateTimer >= 0)
@@ -145,7 +155,16 @@ public class Weapon : MonoBehaviour
 
     private void Reload()
     {
-        bool conditions = (weaponMode == WeaponMode.Combat) && !States.GetState("Reloading") && !PlayerController.GetStates.GetState("Running") && !States.GetState("Drawing") && !States.GetState("Hiding") && InputManager.WeaponReload && PlayerCamera.isCursorLocked && extraBullets > 0 && currentBullets < bulletsPerMagazine;
+        bool conditions =
+        (weaponMode == WeaponMode.Combat) &&
+        !PlayerController.GetStates.GetState("Running") &&
+        !States.GetState("Reloading") &&
+        !States.GetState("Drawing") &&
+        !States.GetState("Hiding") &&
+        PlayerInput.WeaponReload &&
+        PlayerCamera.isCursorLocked &&
+        extraBullets > 0 &&
+        currentBullets < bulletsPerMagazine;
 
         if (conditions)
         {
@@ -156,14 +175,21 @@ public class Weapon : MonoBehaviour
 
     private void Aim()
     {
-        bool conditions = (weaponMode == WeaponMode.Combat) && InputManager.WeaponAim && !PlayerController.GetStates.GetState("Running") && PlayerCamera.isCursorLocked && !States.GetState("Reloading") && !States.GetState("Drawing") && !States.GetState("Hiding");
+        bool conditions =
+        (weaponMode == WeaponMode.Combat) &&
+        !PlayerController.GetStates.GetState("Running") &&
+        !States.GetState("Reloading") &&
+        !States.GetState("Drawing") &&
+        !States.GetState("Hiding") &&
+        PlayerInput.WeaponAim &&
+        PlayerCamera.isCursorLocked;
 
         if (conditions)
         {
             States.SetState("Aiming", true);
 
             PlayerCamera.SetSensitivityScale(aimSensitivityScale);
-            WeaponManager.SwayAccuracy(aimSwayScale);
+            WeaponManager.Sway.SwayAccuracy(aimSwayScale);
 
             transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, aimSpeed * Time.deltaTime);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, aimRotation, aimSpeed * Time.deltaTime);
@@ -174,11 +200,15 @@ public class Weapon : MonoBehaviour
             PlayerCamera.MaxSensitivityScale();
         }
 
-        bool resetConditions = (!InputManager.WeaponAim || InputManager.Run) && (transform.localPosition != initialAimPos || transform.localRotation != initialAimRot) || (weaponMode == WeaponMode.Safety);
+        bool resetConditions =
+        (!PlayerInput.WeaponAim || PlayerInput.Run) &&
+        (transform.localPosition != initialAimPos ||
+        transform.localRotation != initialAimRot) ||
+        (weaponMode == WeaponMode.Safety);
 
         if (resetConditions)
         {
-            WeaponManager.MaxAccuracy();
+            WeaponManager.Sway.MaxAccuracy();
             transform.localPosition = Vector3.Lerp(transform.localPosition, initialAimPos, aimSpeed * Time.deltaTime);
             transform.localRotation = Quaternion.Slerp(transform.localRotation, initialAimRot, aimSpeed * Time.deltaTime);
         }
@@ -194,9 +224,14 @@ public class Weapon : MonoBehaviour
 
     private void Mode()
     {
-        bool conditions = !States.GetState("Reloading") && !States.GetState("Aiming") && !States.GetState("Firing") && !States.GetState("Drawing") && !States.GetState("Hiding");
+        bool conditions =
+        !States.GetState("Reloading") &&
+        !States.GetState("Aiming") &&
+        !States.GetState("Firing") &&
+        !States.GetState("Drawing") &&
+        !States.GetState("Hiding");
 
-        if (InputManager.WeaponSafety)
+        if (PlayerInput.WeaponSafety)
         {
             switch (weaponMode)
             {
@@ -213,15 +248,6 @@ public class Weapon : MonoBehaviour
         // Setting switch values
         drawTimer = drawTime;
         hideTimer = hideTime;
-
-        // Setting current weapon
-        WeaponManager.SetCurrentWeapon(this);
-    }
-
-    private void OnDisable()
-    {
-        // Removing current weapon
-        WeaponManager.SetCurrentWeapon(null);
     }
 
     private void OnDrawGizmos()

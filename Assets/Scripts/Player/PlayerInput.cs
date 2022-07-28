@@ -1,9 +1,9 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class InputManager : MonoBehaviour
+public class PlayerInput : MonoBehaviour
 {
-    private static InputManager Instance;
+    private static PlayerInput Instance;
     private InputMap Map;
     private bool _haveMap => Map != null;
 

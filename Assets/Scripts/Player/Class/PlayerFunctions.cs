@@ -86,12 +86,12 @@ public class PlayerFunctions
 
     public Vector3 GetCoveringPos()
     {
-        return new Vector3(Controller.coverAmount * Controller.coverCamScale * InputManager.Cover, 0f, 0f);
+        return new Vector3(Controller.coverAmount * Controller.coverCamScale * PlayerInput.Cover, 0f, 0f);
     }
 
     public Quaternion GetCoveringRot()
     {
-        return Quaternion.Euler(new Vector3(0f, 0f, Controller.coverAmount * -InputManager.Cover));
+        return Quaternion.Euler(new Vector3(0f, 0f, Controller.coverAmount * -PlayerInput.Cover));
     }
     public float GetLocalYRotation()
     {

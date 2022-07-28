@@ -43,6 +43,11 @@ public class WeaponFunctions
         return Weapon.Animator;
     }
 
+    public void ResetAnimatorToNone()
+    {
+        Weapon.Animator.Play("None");
+    }
+
     public bool HaveBullets()
     {
         return Weapon.currentBullets > 0;
@@ -133,8 +138,6 @@ public class WeaponFunctions
     {
         if (Weapon.currentBullets >= Weapon.bulletsPerFire && Weapon.firerateTimer <= 0)
         {
-            Weapon.States.SetState("Firing", true);
-
             // Tracer
             List<Vector3> positions = new List<Vector3>();
             LineRenderer tracer = GameObject.Instantiate(WeaponManager.GetTracerPrefab(), Weapon.muzzlePoint.position, Quaternion.identity).GetComponent<LineRenderer>();
@@ -183,8 +186,6 @@ public class WeaponFunctions
 
             Weapon.currentBullets -= Weapon.bulletsPerFire;
             Weapon.firerateTimer = Weapon.firerate;
-
-            Weapon.States.SetState("Firing", false);
         }
     }
 
@@ -202,14 +203,14 @@ public class WeaponFunctions
         // Hitmark in enemy
         if (hit.transform.tag.Equals("Enemy"))
         {
-            WeaponManager.ApplyHitMark(PlayerCamera.WorldToScreen(hit.point));
-            PlaySound("", WeaponManager.GetHitMarkSound(), 0.3f);
+            WeaponManager.Hitmark.ApplyHitMark(PlayerCamera.WorldToScreen(hit.point));
+            PlaySound("", WeaponManager.Hitmark.GetHitMarkSound(), 0.3f);
         }
 
         // Bullet hole
-        if (WeaponManager.GetImpactWithTag(hit.transform.tag) != null)
+        if (WeaponManager.Impacts.GetImpactWithTag(hit.transform.tag) != null)
         {
-            GameObject impact = GameObject.Instantiate(WeaponManager.GetImpactWithTag(hit.transform.tag).prefab, hit.point,
+            GameObject impact = GameObject.Instantiate(WeaponManager.Impacts.GetImpactWithTag(hit.transform.tag).prefab, hit.point,
             Quaternion.LookRotation(hit.normal));
             impact.transform.position += impact.transform.forward * 0.001f;
 

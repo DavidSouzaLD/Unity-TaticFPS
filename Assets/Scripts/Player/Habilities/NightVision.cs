@@ -22,7 +22,7 @@ public class NightVision : MonoBehaviour
     private void Update()
     {
         // Night vision
-        if (InputManager.NightVision)
+        if (PlayerInput.NightVision)
         {
             nightVisionMode = !nightVisionMode;
             NightVisionUpdate();
