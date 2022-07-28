@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cce05cd7e98e5047a6785467f4be8e2, type: 3}
+  m_Name: CharacterControllerPreset
+  m_EditorClassIdentifier: 
+  walkableMask:
+    serializedVersion: 2
+    m_Bits: 8
+  walkingSpeed: 10
+  runningSpeed: 15
+  maxAngleSlope: 65
+  maxWalkingSpeed: 3
+  maxRunningSpeed: 4.5
+  maxCrouchingSpeed: 1.5
+  jumpingForce: 50
+  gravityScale: 2
+  initialFriction: 5
+  movingFriction: 0.5
+  crouchHeight: 1.5
+  crouchSpeed: 5
+  coverAmount: 20
+  coverCamScale: 0.02
+  coverSpeed: 6
+  groundAreaHeight: -0.35
+  groundAreaRadius: 0.3
