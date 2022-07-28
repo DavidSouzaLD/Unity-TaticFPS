@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 253c30a1c6a3ed04d83e95112e12b5b1, type: 3}
+  m_Name: Glock
+  m_EditorClassIdentifier: 
+  weaponMode: 1
+  fireMode: 0
+  firerate: 0.09
+  drawTime: 0.5
+  hideTime: 0.5
+  bulletHitForce: 100
+  bulletVelocity: 150
+  bulletsPerFire: 1
+  bulletGravityScale: 2
+  maxBulletDistance: 100
+  aimSpeed: 8
+  aimSwayScale: 0.2
+  aimPosition: {x: -0.068, y: 0.09, z: 0}
+  aimRotation: {x: 0, y: 0, z: 0, w: 0}
+  recoilResetSpeed: 5
+  recoilForcePos: {x: 0, y: 0, z: -0.1}
+  recoilForceRot: {x: 0, y: 0, z: 0}
+  recoilForceCamera: {x: 5, y: 1, z: 1}
+  fireSounds:
+  - {fileID: 8300000, guid: d1e6bff25518c9b4aa17d4c024a52346, type: 3}
+  - {fileID: 8300000, guid: 2f209a92e149d494ead961bee1953fe9, type: 3}
+  - {fileID: 8300000, guid: 7a35e2f501759f44e9bb1f031ee992f8, type: 3}
+  - {fileID: 8300000, guid: 18401bf73a8020f4cb82498a1668440d, type: 3}
+  - {fileID: 8300000, guid: d464675165109144f91a33ffbd92f3f4, type: 3}
+  noBulletSound: {fileID: 8300000, guid: b6f4cac3255303c4b88398310d196511, type: 3}
+  initialReloadSound: {fileID: 8300000, guid: b6f4cac3255303c4b88398310d196511, type: 3}
+  middleReloadSound: {fileID: 8300000, guid: b80f4e1beae534c4992fd4b2c2092d0f, type: 3}
+  endReloadSound: {fileID: 8300000, guid: 487d9cf01e17e0448a56cd385cb81f3f, type: 3}

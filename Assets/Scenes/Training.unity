@@ -1159,6 +1159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66e046539117f841b0dbb7756663ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hittableMask:
+    serializedVersion: 2
+    m_Bits: 0
   tracerPrefab: {fileID: 277832011086963584, guid: 45f08e636d92d7c41944788b82864f09,
     type: 3}
 --- !u!114 &2103759862
@@ -4046,7 +4049,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc03b0815996b5429f8b113b21d0e86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nightVisionMode: 0
 --- !u!4 &6926302668964436452
 Transform:
   m_ObjectHideFlags: 0
@@ -6092,7 +6094,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6926302669991476641
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7061,57 +7063,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f7413ad320d3d489727e70fb1f9f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: Weapon
-  hittableMask:
-    serializedVersion: 2
-    m_Bits: 9
-  weaponMode: 1
-  fireMode: 0
-  muzzlePoint: {fileID: 6926302669262167328}
-  firerate: 0.09
-  drawTime: 1
-  hideTime: 0.5
+  Preset: {fileID: 11400000, guid: 647667f0faeaadd40834303314b208b9, type: 2}
   bulletsPerMagazine: 12
   currentBullets: 12
   extraBullets: 24
-  bulletHitForce: 100
-  bulletVelocity: 180
-  bulletsPerFire: 1
-  bulletGravityScale: 2
-  maxBulletDistance: 500
-  aimSpeed: 8
-  aimSwayScale: 0.2
-  aimPosition: {x: -0.068, y: 0.089, z: 0}
-  aimRotation: {x: 0, y: 0, z: 0, w: 0}
-  recoilResetSpeed: 5
-  recoilForcePos: {x: 0, y: 0, z: -0.16}
-  recoilForceRot: {x: -1, y: 0, z: 0}
-  recoilForceCamera: {x: 5, y: 1, z: 1}
-  fireSounds:
-  - {fileID: 8300000, guid: d1e6bff25518c9b4aa17d4c024a52346, type: 3}
-  - {fileID: 8300000, guid: 2f209a92e149d494ead961bee1953fe9, type: 3}
-  - {fileID: 8300000, guid: 7a35e2f501759f44e9bb1f031ee992f8, type: 3}
-  - {fileID: 8300000, guid: 18401bf73a8020f4cb82498a1668440d, type: 3}
-  - {fileID: 8300000, guid: d464675165109144f91a33ffbd92f3f4, type: 3}
-  noBulletSound: {fileID: 8300000, guid: b6f4cac3255303c4b88398310d196511, type: 3}
-  initialReloadSound: {fileID: 8300000, guid: b6f4cac3255303c4b88398310d196511, type: 3}
-  middleReloadSound: {fileID: 8300000, guid: b80f4e1beae534c4992fd4b2c2092d0f, type: 3}
-  endReloadSound: {fileID: 8300000, guid: 487d9cf01e17e0448a56cd385cb81f3f, type: 3}
-  defaultMuzzlePoint: {fileID: 0}
-  defaultAimPos: {x: 0, y: 0, z: 0}
-  drawTimer: 0
-  hideTimer: 0
-  firerateTimer: 0
-  firingTimer: 0
-  aimSensitivityScale: 0
-  initialAimPos: {x: 0, y: 0, z: 0}
-  initialRecoilPos: {x: 0, y: 0, z: 0}
-  initialAimRot: {x: 0, y: 0, z: 0, w: 0}
-  initialRecoilRot: {x: 0, y: 0, z: 0, w: 0}
-  recoilRoot: {fileID: 0}
-  Animator: {fileID: 0}
-  Source: {fileID: 0}
-  Events: {fileID: 0}
 --- !u!114 &6926302670653492071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7177,6 +7132,7 @@ MonoBehaviour:
     type: 3}
   markerHeight: -50
   markers: []
+  halfSize: 600
 --- !u!1 &6926302670653492077
 GameObject:
   m_ObjectHideFlags: 0
@@ -7443,39 +7399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5811e10b57173d54fb7a3eecbce7de4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkableMask:
-    serializedVersion: 2
-    m_Bits: 8
-  walkingSpeed: 10
-  runningSpeed: 15
-  maxAngleSlope: 65
-  maxWalkingSpeed: 3
-  maxRunningSpeed: 4.5
-  maxCrouchingSpeed: 1.5
-  jumpingForce: 50
-  gravityScale: 5
-  initialFriction: 5
-  movingFriction: 0.5
-  crouchHeight: 1.5
-  crouchSpeed: 5
-  coverAmount: 20
-  coverCamScale: 0.02
-  coverSpeed: 6
-  groundAreaHeight: -0.35
-  groundAreaRadius: 0.3
-  Animator: {fileID: 6926302670281781217}
-  Rigidbody: {fileID: 6926302670835620938}
-  CapsuleCollider: {fileID: 6926302670835620941}
-  jumpCountdown: 0
-  initialCapsuleHeight: 0
-  additionalVelocity: {x: 0, y: 0, z: 0}
-  additionalDirection: {x: 0, y: 0, z: 0}
-  initialCoverCamPos: {x: 0, y: 0, z: 0}
-  initialCoverRot: {x: 0, y: 0, z: 0, w: 0}
-  initialCoverCamRot: {x: 0, y: 0, z: 0, w: 0}
-  cameraRoot: {fileID: 0}
-  coverWeaponRoot: {fileID: 0}
-  coverCamRoot: {fileID: 0}
+  Preset: {fileID: 11400000, guid: a1438d1c8a58162458d2840318015454, type: 2}
 --- !u!114 &6926302670835620943
 MonoBehaviour:
   m_ObjectHideFlags: 0
