@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapons
 {
     [RequireComponent(typeof(LineRenderer))]
     public class WeaponTracer : MonoBehaviour

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon.Attachments
+namespace Game.Weapons.Attachments
 {
     public class Sight : MonoBehaviour
     {

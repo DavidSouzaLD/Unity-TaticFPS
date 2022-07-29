@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Character;
+using Game.Weapons;
 
-namespace Game.Weapon
+namespace Game.Character
 {
     public class CharacterAnimator : MonoBehaviour
     {

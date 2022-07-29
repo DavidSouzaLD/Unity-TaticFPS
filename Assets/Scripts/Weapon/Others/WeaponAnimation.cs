@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapons
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Animator))]
@@ -14,6 +14,7 @@ namespace Game.Weapon
         private void Awake()
         {
             Animator = GetComponent<Animator>();
+            Animator.keepAnimatorControllerStateOnDisable = true;
         }
 
         /// <summary>
@@ -100,6 +101,15 @@ namespace Game.Weapon
         public void EndAnimation()
         {
             Weapon.SetState("Reloading", false);
+        }
+
+        /// <summary>
+        /// Reset animator to a specific draw anim.
+        /// </summary>
+        public void ExitWeapon()
+        {
+            Animator.Play("Draw");
+            Weapon.gameObject.SetActive(false);
         }
     }
 }

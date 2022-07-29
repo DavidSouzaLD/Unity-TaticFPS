@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Weapon;
+using Game.Weapons;
 using Game.Utilities;
 
 namespace Game.Character

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapons
 {
     [DisallowMultipleComponent]
     public class WeaponSound : MonoBehaviour

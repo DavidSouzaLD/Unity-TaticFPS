@@ -4,7 +4,7 @@ using UnityEngine;
 using Game.Character;
 using Game.Utilities;
 
-namespace Game.Weapon
+namespace Game.Weapons
 {
     public class WeaponState : States
     {
@@ -70,6 +70,11 @@ namespace Game.Weapon
         public void ChangeWeaponMode(WeaponPreset.WeaponMode _mode)
         {
             Preset.weaponMode = _mode;
+        }
+
+        public WeaponAnimation GetWeaponAnimation()
+        {
+            return Anim;
         }
 
         public void SetAimSensitivityScale(float _scale)
@@ -138,6 +143,8 @@ namespace Game.Weapon
             // Delegates
             OnFiring?.Invoke();
             OnSafetyChanged?.Invoke();
+
+            EnterWeapon();
         }
 
         private void Update()
@@ -168,24 +175,29 @@ namespace Game.Weapon
         private void FireUpdate()
         {
             // Conditions
-            bool inputConditions = Systems.Input.GetBool("WeaponFireTap");
             bool modeConditions = (Preset.weaponMode == WeaponPreset.WeaponMode.Combat);
             bool playerConditions = !FPSCharacterController.GetState("Running") && CharacterCamera.GetState("CursorLocked");
             bool stateConditions = !GetState("Drawing") && !GetState("Hiding") && !GetState("Reloading");
-            bool conditions = inputConditions && modeConditions && playerConditions && stateConditions;
+            bool conditions = modeConditions && playerConditions && stateConditions;
 
             if (conditions)
             {
                 switch (Preset.fireMode)
                 {
                     case WeaponPreset.FireMode.Semi:
-                        firingTimer = Preset.firerate * 3f;
-                        CalculateFire();
+                        if (Systems.Input.GetBool("WeaponFireTap"))
+                        {
+                            firingTimer = Preset.firerate * 3f;
+                            CalculateFire();
+                        }
                         break;
 
                     case WeaponPreset.FireMode.Auto:
-                        firingTimer = Preset.firerate * 3f;
-                        CalculateFire();
+                        if (Systems.Input.GetBool("WeaponFireAuto"))
+                        {
+                            firingTimer = Preset.firerate * 3f;
+                            CalculateFire();
+                        }
                         break;
                 }
             }
@@ -359,8 +371,7 @@ namespace Game.Weapon
             // Bullet hole
             if (WeaponImpacts.GetImpactWithTag(hit.transform.tag) != null)
             {
-                GameObject impact = GameObject.Instantiate(WeaponImpacts.GetImpactWithTag(hit.transform.tag).prefab, hit.point,
-                Quaternion.LookRotation(hit.normal));
+                GameObject impact = GameObject.Instantiate(WeaponImpacts.GetImpactWithTag(hit.transform.tag).prefab, hit.point, Quaternion.LookRotation(hit.normal));
                 impact.transform.position += impact.transform.forward * 0.001f;
 
                 MonoBehaviour.Destroy(impact, 5f);
@@ -396,10 +407,13 @@ namespace Game.Weapon
             }
         }
 
-        private void OnEnable()
+        public void EnterWeapon()
         {
-            // Setting switch values
             drawTimer = Preset.drawTime;
+        }
+
+        public void ExitWeapon()
+        {
             hideTimer = Preset.hideTime;
         }
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapons
 {
     [DisallowMultipleComponent]
     public class WeaponManager : Singleton<WeaponManager>
@@ -36,15 +36,14 @@ namespace Game.Weapon
             return Instance != null && Instance.currentWeapon != null;
         }
 
-        public static bool CanSwitchWeapon()
+        public static Weapon GetCurrentWeapon()
         {
-            return
-            !Instance.currentWeapon.GetState("Safety") &&
-            !Instance.currentWeapon.GetState("Aiming") &&
-            !Instance.currentWeapon.GetState("Reloading") &&
-            !Instance.currentWeapon.GetState("Firing") &&
-            !Instance.currentWeapon.GetState("Drawing") &&
-            !Instance.currentWeapon.GetState("Hiding");
+            return Instance.currentWeapon;
+        }
+
+        public static void SetCurrentWeapon(Weapon _weapon)
+        {
+            Instance.currentWeapon = _weapon;
         }
 
         public static LayerMask GetHittableMask()

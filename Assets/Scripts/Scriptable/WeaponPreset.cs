@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapons
 {
     [CreateAssetMenu(fileName = "WeaponPreset", menuName = "Game/Create WeaponPreset")]
     public class WeaponPreset : ScriptableObject
