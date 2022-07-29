@@ -1931,6 +1931,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6524658284546353981}
   - component: {fileID: 6524658284546353979}
+  - component: {fileID: 1948610973820770048}
   - component: {fileID: 6524658284546353983}
   - component: {fileID: 6524658284546353976}
   m_Layer: 6
@@ -1974,6 +1975,18 @@ MonoBehaviour:
   camRoot: {fileID: 6524658286383984273}
   coverWeaponRoot: {fileID: 6524658285594774920}
   coverCamRoot: {fileID: 6524658285594053868}
+--- !u!114 &1948610973820770048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6524658284546353977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa731a2348fe2de4ab6a0a07a3ec3b6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   BasicAnimator: {fileID: 6524658285066508436}
 --- !u!54 &6524658284546353983
 Rigidbody:

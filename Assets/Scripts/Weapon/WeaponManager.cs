@@ -20,18 +20,22 @@ namespace Game.Weapon
         {
             return HaveCurrentWeapon() && Instance.currentWeapon.GetState("Aiming");
         }
+
         public static bool IsReload()
         {
             return HaveCurrentWeapon() && Instance.currentWeapon.GetState("Reloading");
         }
+
         public static bool IsSafety()
         {
             return HaveCurrentWeapon() && Instance.currentWeapon.GetState("Safety");
         }
+
         public static bool HaveCurrentWeapon()
         {
             return Instance != null && Instance.currentWeapon != null;
         }
+
         public static bool CanSwitchWeapon()
         {
             return
@@ -42,10 +46,12 @@ namespace Game.Weapon
             !Instance.currentWeapon.GetState("Drawing") &&
             !Instance.currentWeapon.GetState("Hiding");
         }
+
         public static LayerMask GetHittableMask()
         {
             return Instance.hittableMask;
         }
+
         public static GameObject GetTracerPrefab()
         {
             return Instance.tracerPrefab;
@@ -55,14 +61,17 @@ namespace Game.Weapon
         {
             return Instance.sway;
         }
+
         public static WeaponRetract GetRetract()
         {
             return Instance.retract;
         }
+
         public static WeaponImpacts GetImpacts()
         {
             return Instance.impacts;
         }
+
         public static WeaponHitmark GetHitmark()
         {
             return Instance.hitmark;
@@ -75,6 +84,14 @@ namespace Game.Weapon
             retract = GetComponent<WeaponRetract>();
             impacts = GetComponent<WeaponImpacts>();
             hitmark = GetComponent<WeaponHitmark>();
+        }
+
+        private void LateUpdate()
+        {
+            if (currentWeapon == null)
+            {
+                currentWeapon = GameObject.FindObjectOfType<Weapon>();
+            }
         }
     }
 }

@@ -38,9 +38,6 @@ namespace Game.Character
         [SerializeField] private Transform coverWeaponRoot;
         [SerializeField] private Transform coverCamRoot;
 
-        [Header("Components")]
-        [SerializeField] private Animator BasicAnimator;
-
         // Private
         private float jumpCountdown;
         private float initialCapsuleHeight;
@@ -173,29 +170,11 @@ namespace Game.Character
 
                     Move(direction);
                     SetState("Walking", true);
-
-                    if (!WeaponManager.IsAim())
-                    {
-                        if (GetState("GroundArea"))
-                        {
-                            BasicAnimator.SetBool("Walking", GetState("Walking"));
-                            BasicAnimator.SetBool("Running", GetState("Running"));
-                        }
-                    }
-                    else
-                    {
-                        BasicAnimator.SetBool("Walking", false);
-                        BasicAnimator.SetBool("Running", false);
-                    }
                 }
             }
             else
             {
                 SetState("Walking", false);
-
-                // Reset animations
-                BasicAnimator.SetBool("Walking", false);
-                BasicAnimator.SetBool("Running", false);
             }
 
             // Additional gravity
@@ -234,10 +213,10 @@ namespace Game.Character
 
         private void JumpUpdate()
         {
-            bool inputCondition = Systems.Input.GetBool("Jump");
-            bool stateCondition = GetState("GroundCollision");
+            bool inputConditions = Systems.Input.GetBool("Jump");
+            bool stateConditions = GetState("GroundCollision");
             bool differenceConditions = jumpCountdown <= 0;
-            bool conditions = inputCondition && stateCondition && differenceConditions;
+            bool conditions = inputConditions && stateConditions && differenceConditions;
 
             if (conditions)
             {
@@ -251,9 +230,6 @@ namespace Game.Character
                 SetState("Jumping", false);
                 jumpCountdown -= Time.deltaTime;
             }
-
-            // Air animation
-            BasicAnimator.SetBool("Air", !GetState("GroundArea"));
         }
 
         private void CrouchUpdate()
@@ -290,8 +266,8 @@ namespace Game.Character
             {
                 Vector3 targetPos = new Vector3(Preset.coverAmount * Preset.coverCamScale * coverInput, 0f, 0f);
                 Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, Preset.coverAmount * -coverInput));
-
-                if (!GetState("Aiming"))
+                Debug.Log(WeaponManager.IsAim());
+                if (!WeaponManager.IsAim())
                 {
                     // Weapon
                     coverWeaponRoot.localRotation = Quaternion.Slerp(coverWeaponRoot.localRotation, targetRot, Preset.coverSpeed * Time.deltaTime);
@@ -318,8 +294,14 @@ namespace Game.Character
         {
             // Setting
             SetState("GroundArea", Physics.OverlapSphere(CapsuleBottom(), CapsuleCollider.radius + Preset.groundAreaRadius, Preset.walkableMask).Length > 0);
-            SetState("Running", Systems.Input.GetBool("Run") && GetState("Walking"));
             SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= Preset.maxAngleSlope);
+
+            // Running
+            bool inputConditions = Systems.Input.GetBool("Run") && Systems.Input.GetVector2("MoveAxis").y > 0;
+            bool playerConditions = GetState("Walking");
+            bool weaponConditions = !WeaponManager.IsAim();
+            bool runningConditions = inputConditions && playerConditions && weaponConditions;
+            SetState("Running", runningConditions);
 
             // Getting
             Rigidbody.useGravity = GetState("Graviting");

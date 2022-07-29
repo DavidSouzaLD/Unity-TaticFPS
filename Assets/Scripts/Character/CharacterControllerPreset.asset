@@ -28,7 +28,7 @@ MonoBehaviour:
   airDrag: 0.5
   crouchHeight: 1.5
   crouchSpeed: 5
-  coverAmount: 15
+  coverAmount: 20
   coverCamScale: 0.02
   coverSpeed: 6
   groundAreaHeight: -0.35
