@@ -51,6 +51,16 @@ namespace Game.Weapon
         private WeaponAnimation Anim;
         private WeaponState States;
 
+        // Delegate
+        public delegate void Firing();
+        public delegate void SafetyChanged();
+        public delegate void StartReload();
+        public delegate void EndReload();
+        public Firing OnFiring;
+        public SafetyChanged OnSafetyChanged;
+        public StartReload OnStartReload;
+        public EndReload OnEndReload;
+
         public bool HaveBullets()
         {
             return currentBullets > 0;
@@ -123,6 +133,10 @@ namespace Game.Weapon
             initialAimPos = transform.localPosition;
             initialAimRot = transform.localRotation;
             MaxAimSensitivityScale();
+
+            // Delegates
+            OnFiring?.Invoke();
+            OnSafetyChanged?.Invoke();
         }
 
         private void Update()
@@ -258,6 +272,9 @@ namespace Game.Weapon
                 }
 
                 SetState("Safety", Preset.weaponMode == WeaponPreset.WeaponMode.Safety);
+
+                // Delegate
+                OnSafetyChanged?.Invoke();
             }
         }
 
@@ -314,6 +331,9 @@ namespace Game.Weapon
                 // Removing bullets
                 currentBullets -= Preset.bulletsPerFire;
                 firerateTimer = Preset.firerate;
+
+                // Delegate
+                OnFiring?.Invoke();
             }
         }
 

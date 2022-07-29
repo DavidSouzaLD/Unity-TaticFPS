@@ -16,20 +16,34 @@ namespace Game.Weapon
             Animator = GetComponent<Animator>();
         }
 
-        private void LateUpdate()
-        {
-            // Active safe animation
-            Animator.SetBool("Safety", Weapon.Preset.weaponMode == WeaponPreset.WeaponMode.Safety);
-            Animator.SetBool("NoBullet", !Weapon.HaveBullets());
-        }
-
         /// <summary>
         /// Sets the necessarys componenets.
         /// </summary>
         public void Init(Weapon _weapon, WeaponSound _sound)
         {
+            // Setting components
             Weapon = _weapon;
             Sound = _sound;
+
+            // Setting events
+            Weapon.OnFiring += NoBulletCheck;
+            Weapon.OnSafetyChanged += SafetyCheck;
+        }
+
+        /// <summary>
+        /// Checks if weapon safety has been changed to change animation.
+        /// </summary>
+        private void SafetyCheck()
+        {
+            Animator.SetBool("Safety", Weapon.Preset.weaponMode == WeaponPreset.WeaponMode.Safety);
+        }
+
+        /// <summary>
+        /// Checks for bullet in magazine with each shot to trigger no bullet animation.
+        /// </summary>
+        private void NoBulletCheck()
+        {
+            Animator.SetBool("NoBullet", !Weapon.HaveBullets());
         }
 
         /// <summary>
@@ -46,6 +60,9 @@ namespace Game.Weapon
         public void StartAnimation()
         {
             Weapon.SetState("Reloading", true);
+
+            // Delegate
+            Weapon.OnStartReload?.Invoke();
         }
 
         /// <summary>
@@ -79,6 +96,9 @@ namespace Game.Weapon
         public void EndAnimation()
         {
             Weapon.SetState("Reloading", false);
+
+            // Delegate
+            Weapon.OnEndReload?.Invoke();
         }
     }
 }
