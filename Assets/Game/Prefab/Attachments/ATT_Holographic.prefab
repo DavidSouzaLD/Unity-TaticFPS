@@ -160,13 +160,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5194831732044058251}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b95fcbaf140a6b343940852848f7704a, type: 3}
+  m_Script: {fileID: 11500000, guid: e087fe10d2b108f40a34c9247658709f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attachmentType: 1
-  aimPosition: {x: -0.0725, y: 0.0555, z: -0.15}
-  newMuzzlePoint: {fileID: 5024036046303135343}
-  sensitivityScale: 1
+  aimPosition: {x: 0, y: 0, z: 0}
+  newMuzzlePoint: {fileID: 0}
+  sensitivityScale: 0
 --- !u!33 &5194831732043027083
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -231,7 +230,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5024036046303135343}
   m_Layer: 7
-  m_Name: MuzzlePoint
+  m_Name: MuzzleRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

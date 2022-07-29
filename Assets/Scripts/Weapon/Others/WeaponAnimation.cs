@@ -28,6 +28,7 @@ namespace Game.Weapon
             // Setting events
             Weapon.OnFiring += NoBulletCheck;
             Weapon.OnSafetyChanged += SafetyCheck;
+            Weapon.OnEndReload += NoBulletCheck;
         }
 
         /// <summary>
@@ -88,6 +89,9 @@ namespace Game.Weapon
         {
             Sound.Play("END_RELOAD");
             Weapon.CalculateReload();
+
+            // Delegate
+            Weapon.OnEndReload?.Invoke();
         }
 
         /// <summary>
@@ -96,9 +100,6 @@ namespace Game.Weapon
         public void EndAnimation()
         {
             Weapon.SetState("Reloading", false);
-
-            // Delegate
-            Weapon.OnEndReload?.Invoke();
         }
     }
 }

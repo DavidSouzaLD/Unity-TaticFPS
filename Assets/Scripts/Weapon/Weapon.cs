@@ -75,10 +75,9 @@ namespace Game.Weapon
         {
             aimSensitivityScale = _scale;
         }
-
-        public void SetmuzzleRoot(Transform _muzzle)
+        public void MaxAimSensitivityScale()
         {
-            muzzleRoot = _muzzle;
+            aimSensitivityScale = 1f;
         }
 
         public void SetAimPosition(Vector3 _aimPos)
@@ -86,19 +85,19 @@ namespace Game.Weapon
             Preset.aimPosition = _aimPos;
         }
 
-        public void ResetmuzzleRoot()
-        {
-            muzzleRoot = defaultmuzzleRoot;
-        }
-
         public void ResetAimPosition()
         {
             Preset.aimPosition = defaultAimPos;
         }
 
-        public void MaxAimSensitivityScale()
+        public void SetMuzzleRoot(Transform _muzzle)
         {
-            aimSensitivityScale = 1f;
+            muzzleRoot = _muzzle;
+        }
+
+        public void ResetMuzzleRoot()
+        {
+            muzzleRoot = defaultmuzzleRoot;
         }
 
         public bool GetState(string _stateName)
