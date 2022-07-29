@@ -40,7 +40,6 @@ namespace Game.Weapon
         private float firerateTimer;
         private float firingTimer;
         private float aimSensitivityScale;
-
         private Vector3 initialAimPos;
         private Quaternion initialAimRot;
         private Vector3 defaultAimPos;
@@ -56,6 +55,8 @@ namespace Game.Weapon
         public delegate void SafetyChanged();
         public delegate void StartReload();
         public delegate void EndReload();
+
+        // Delegate callbacks
         public Firing OnFiring;
         public SafetyChanged OnSafetyChanged;
         public StartReload OnStartReload;
@@ -75,6 +76,7 @@ namespace Game.Weapon
         {
             aimSensitivityScale = _scale;
         }
+
         public void MaxAimSensitivityScale()
         {
             aimSensitivityScale = 1f;

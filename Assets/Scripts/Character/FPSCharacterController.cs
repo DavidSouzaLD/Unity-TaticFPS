@@ -44,8 +44,6 @@ namespace Game.Character
         private Vector3 initialCoverCamPos;
         private Quaternion initialCoverRot;
         private Quaternion initialCoverCamRot;
-
-        // Components
         private Rigidbody Rigidbody;
         private CapsuleCollider CapsuleCollider;
         private CharacterState States;
@@ -234,9 +232,9 @@ namespace Game.Character
 
         private void CrouchUpdate()
         {
-            bool inputCondition = Systems.Input.GetBool("Crouch");
-            bool stateCondition = !GetState("Running");
-            bool conditions = inputCondition && stateCondition;
+            bool inputConditions = Systems.Input.GetBool("Crouch");
+            bool stateConditions = !GetState("Running");
+            bool conditions = inputConditions && stateConditions;
 
             SetState("Crouching", conditions);
 
