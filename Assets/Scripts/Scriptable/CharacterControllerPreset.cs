@@ -18,9 +18,10 @@ namespace Game.Character
         public float jumpingForce = 50f;
         public float gravityScale = 2f;
 
-        [Header("Friction")]
-        public float initialFriction = 5f;
-        public float movingFriction = 0.5f;
+        [Header("Drag")]
+        public float movingDrag = 0.5f;
+        public float idleDrag = 5f;
+        public float airDrag = 0.5f;
 
         [Header("Crouch")]
         public float crouchHeight = 1.5f;

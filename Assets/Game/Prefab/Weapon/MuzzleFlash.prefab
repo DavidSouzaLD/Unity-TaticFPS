@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 1015486922176001565}
   - component: {fileID: 5094383101331889515}
   m_Layer: 7
-  m_Name: Muzzle_weapon
+  m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5808455058921651836
 Transform:
   m_ObjectHideFlags: 0
@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3313572451830976928}
-  m_LocalRotation: {x: 0.0000001264405, y: -0.000000059604616, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0.0012004973}
   m_LocalScale: {x: 0.025, y: 0.025, z: 0.025}
   m_ConstrainProportionsScale: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3313572451830976928}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59cd3ece4ec401644842b314fbc6e751, type: 3}
+  m_Script: {fileID: 11500000, guid: a0f7afd2cff656d48abe21c6e0672c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   muzzleSprites:
@@ -188,7 +188,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1

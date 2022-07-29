@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6927958384002502658}
   - component: {fileID: 6927958384003633858}
   m_Layer: 7
-  m_Name: Grip_attachment
+  m_Name: ATT_Grip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

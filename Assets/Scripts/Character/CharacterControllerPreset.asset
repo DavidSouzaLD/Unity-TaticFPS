@@ -23,11 +23,12 @@ MonoBehaviour:
   maxCrouchingSpeed: 1.5
   jumpingForce: 50
   gravityScale: 2
-  initialFriction: 5
-  movingFriction: 0.5
+  movingDrag: 0.5
+  idleDrag: 5
+  airDrag: 0.5
   crouchHeight: 1.5
   crouchSpeed: 5
-  coverAmount: 20
+  coverAmount: 15
   coverCamScale: 0.02
   coverSpeed: 6
   groundAreaHeight: -0.35

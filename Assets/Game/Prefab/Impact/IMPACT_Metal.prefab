@@ -4819,7 +4819,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 21a0eca1899642349bb9c072bb514a60, type: 2}
+  - {fileID: 2100000, guid: f7ecca9378340714c8e39ff4489ab900, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4882,7 +4882,7 @@ GameObject:
   - component: {fileID: 2383440206482012204}
   - component: {fileID: 4406149976551599005}
   m_Layer: 0
-  m_Name: Grass_impact
+  m_Name: IMPACT_Metal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4914,7 +4914,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 5a69193d8388dc94fa1f4e7025cfa61f, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 38b0813a3ac216e409eb38df888caa80, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -5042,7 +5042,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b3823f5f5f94bd4479f04bbdc20355dd, type: 3}
-  m_Color: {r: 0.054136124, g: 0.6698113, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.54870564, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

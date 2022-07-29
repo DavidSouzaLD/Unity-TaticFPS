@@ -4819,7 +4819,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c146d3e69725ae1409a34e0df447e6c1, type: 2}
+  - {fileID: 2100000, guid: dbee3847e0ac83e44ba559962ae5d0a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4882,7 +4882,7 @@ GameObject:
   - component: {fileID: 2383440206482012204}
   - component: {fileID: 4406149976551599005}
   m_Layer: 0
-  m_Name: Concrete_impact
+  m_Name: IMPACT_Wood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4914,7 +4914,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: fee61a753f1343c46874f5b45efa0495, type: 3}
+  m_audioClip: {fileID: 8300000, guid: dc50373cce998664ea362c9d70902432, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -5042,7 +5042,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b3823f5f5f94bd4479f04bbdc20355dd, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5, g: 0.32969385, b: 0.2476415, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

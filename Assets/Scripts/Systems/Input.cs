@@ -32,7 +32,7 @@ namespace Game.Systems
 
             if (action == null)
             {
-                Debug.LogError("(" + _keyName + ") not found in InputSystem!");
+                ErrorMessage(_keyName);
                 return false;
             }
 
@@ -45,7 +45,7 @@ namespace Game.Systems
 
             if (action == null)
             {
-                Debug.LogError("(" + _keyName + ") not found in InputSystem!");
+                ErrorMessage(_keyName);
                 return 0;
             }
 
@@ -58,11 +58,16 @@ namespace Game.Systems
 
             if (action == null)
             {
-                Debug.LogError("(" + _keyName + ") not found in InputSystem!");
+                ErrorMessage(_keyName);
                 return Vector2.zero;
             }
 
             return action.ReadValue<Vector2>();
+        }
+
+        private static void ErrorMessage(string _message)
+        {
+            Debug.LogError("(" + _message + ") not found in InputSystem!");
         }
     }
 }

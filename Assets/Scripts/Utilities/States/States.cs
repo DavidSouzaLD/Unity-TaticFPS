@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,13 +25,11 @@ namespace Game.Utilities
     ///an instance of it where you want to create states and call its 
     ///voids for actions.
     /// </summary>
-    [Serializable]
     public class States
     {
         /// <summary>
         /// State structure
         /// </summary>
-        [Serializable]
         public class State
         {
             [HideInInspector]
@@ -49,7 +46,7 @@ namespace Game.Utilities
         /// <summary>
         /// Current list of states
         /// </summary>
-        [SerializeField] protected List<State> states;
+        protected List<State> states;
 
         /// <summary>
         /// Sets the current state value.

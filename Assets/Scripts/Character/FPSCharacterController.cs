@@ -1,6 +1,6 @@
-
 using System.Collections.Generic;
 using UnityEngine;
+using Game.Weapon;
 using Game.Utilities;
 
 namespace Game.Character
@@ -28,15 +28,15 @@ namespace Game.Character
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CapsuleCollider))]
-    public class CharacterController : MonoBehaviour
+    public class FPSCharacterController : Singleton<FPSCharacterController>
     {
         [SerializeField]
         private CharacterControllerPreset Preset;
 
         [Header("Roots")]
         [SerializeField] private Transform camRoot;
-        [SerializeField] private Transform coverCamRoot;
         [SerializeField] private Transform coverWeaponRoot;
+        [SerializeField] private Transform coverCamRoot;
 
         [Header("Components")]
         [SerializeField] private Animator BasicAnimator;
@@ -53,9 +53,9 @@ namespace Game.Character
         private CapsuleCollider CapsuleCollider;
         private CharacterState States;
 
-        public void UseGravity(bool value)
+        public void UseGravity(bool _value)
         {
-            Rigidbody.useGravity = value;
+            Rigidbody.useGravity = _value;
         }
 
         public Vector3 CapsuleTop()
@@ -93,33 +93,35 @@ namespace Game.Character
             return Vector3.Angle(transform.up, GroundNormal());
         }
 
-        public Transform GetTransform()
+        public static Transform GetTransform()
         {
-            return transform;
+            return Instance.transform;
         }
 
-        public Vector2 GetForwardXZ()
+        public static Vector2 GetForwardXZ()
         {
-            return new Vector2(transform.forward.x, transform.forward.z);
+            return new Vector2(Instance.transform.forward.x, Instance.transform.forward.z);
         }
 
-        public float GetLocalYRotation()
+        public static float GetLocalYRotation()
         {
-            return transform.localEulerAngles.y;
+            return Instance.transform.localEulerAngles.y;
         }
 
-        public bool GetState(string stateName)
+        public static bool GetState(string _stateName)
         {
-            return States.GetState(stateName);
+            return Instance.States.GetState(_stateName);
         }
 
-        public void SetState(string stateName, bool value)
+        public static void SetState(string _stateName, bool _value)
         {
-            States.SetState(stateName, value);
+            Instance.States.SetState(_stateName, _value);
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             // Create state
             if (States == null)
             {
@@ -130,7 +132,7 @@ namespace Game.Character
         private void Start()
         {
             // Setting starts states
-            States.SetState("Graviting", true);
+            SetState("Graviting", true);
 
             // Components
             Rigidbody = GetComponent<Rigidbody>();
@@ -159,13 +161,41 @@ namespace Game.Character
         private void FixedUpdate()
         {
             // Moving
-            if (States.GetState("GroundArea"))
+            Vector2 moveInput = Systems.Input.GetVector2("MoveAxis");
+
+            if (moveInput != Vector2.zero)
             {
-                Vector2 moveAxis = Systems.Input.GetVector2("MoveAxis");
-                Vector3 dir1 = transform.forward * moveAxis.y + transform.right * moveAxis.x;
-                Vector3 dir2 = Vector3.Cross(transform.right, GroundNormal()) * moveAxis.y + Vector3.Cross(-transform.forward, GroundNormal()) * moveAxis.x;
-                Vector3 direction = (!States.GetState("Sloping") ? dir1 : dir2);
-                Move(direction);
+                if (GetState("GroundArea"))
+                {
+                    Vector3 dir1 = transform.forward * moveInput.y + transform.right * moveInput.x;
+                    Vector3 dir2 = Vector3.Cross(transform.right, GroundNormal()) * moveInput.y + Vector3.Cross(-transform.forward, GroundNormal()) * moveInput.x;
+                    Vector3 direction = (!GetState("Sloping") ? dir1 : dir2);
+
+                    Move(direction);
+                    SetState("Walking", true);
+
+                    if (!WeaponManager.IsAim())
+                    {
+                        if (GetState("GroundArea"))
+                        {
+                            BasicAnimator.SetBool("Walking", GetState("Walking"));
+                            BasicAnimator.SetBool("Running", GetState("Running"));
+                        }
+                    }
+                    else
+                    {
+                        BasicAnimator.SetBool("Walking", false);
+                        BasicAnimator.SetBool("Running", false);
+                    }
+                }
+            }
+            else
+            {
+                SetState("Walking", false);
+
+                // Reset animations
+                BasicAnimator.SetBool("Walking", false);
+                BasicAnimator.SetBool("Running", false);
             }
 
             // Additional gravity
@@ -174,8 +204,25 @@ namespace Game.Character
                 Rigidbody.AddForce(transform.up * Physics.gravity.y * Preset.gravityScale * Time.deltaTime);
             }
 
+            // Drag / Friction
+            if (GetState("GroundCollision"))
+            {
+                if (GetState("Walking"))
+                {
+                    Rigidbody.drag = Preset.movingDrag;
+                }
+                else
+                {
+                    Rigidbody.drag = Preset.idleDrag;
+                }
+            }
+            else
+            {
+                Rigidbody.drag = Preset.airDrag;
+            }
+
             // Limit Velocity
-            float limitedSpeed = (!States.GetState("Crouching") ? (!States.GetState("Running") ? Preset.maxWalkingSpeed : Preset.maxRunningSpeed) : Preset.maxCrouchingSpeed);
+            float limitedSpeed = (!GetState("Crouching") ? (!GetState("Running") ? Preset.maxWalkingSpeed : Preset.maxRunningSpeed) : Preset.maxCrouchingSpeed);
             Vector3 flatVel = new Vector3(Rigidbody.velocity.x, 0f, Rigidbody.velocity.z);
 
             if (flatVel.magnitude > limitedSpeed)
@@ -187,45 +234,35 @@ namespace Game.Character
 
         private void JumpUpdate()
         {
-            bool jumpInput = Systems.Input.GetBool("Jump");
-            bool conditions = jumpInput && States.GetState("GroundCollision") && jumpCountdown <= 0;
+            bool inputCondition = Systems.Input.GetBool("Jump");
+            bool stateCondition = GetState("GroundCollision");
+            bool differenceConditions = jumpCountdown <= 0;
+            bool conditions = inputCondition && stateCondition && differenceConditions;
 
             if (conditions)
             {
-                States.SetState("Jumping", true);
+                SetState("Jumping", true);
                 Rigidbody.AddForce(transform.up * Preset.jumpingForce, ForceMode.Impulse);
                 jumpCountdown = 0.3f;
             }
 
             if (jumpCountdown > 0)
             {
-                States.SetState("Jumping", false);
+                SetState("Jumping", false);
                 jumpCountdown -= Time.deltaTime;
             }
 
             // Air animation
-            BasicAnimator.SetBool("Air", !States.GetState("GroundArea"));
-
-            // Removing drag in air
-            if (!States.GetState("Walking"))
-            {
-                if (States.GetState("GroundCollision"))
-                {
-                    Rigidbody.drag = Preset.initialFriction;
-                }
-                else
-                {
-                    Rigidbody.drag = Preset.movingFriction;
-                }
-            }
+            BasicAnimator.SetBool("Air", !GetState("GroundArea"));
         }
 
         private void CrouchUpdate()
         {
-            bool crouchInput = Systems.Input.GetBool("Crouch");
-            bool conditions = crouchInput && !States.GetState("Running");
+            bool inputCondition = Systems.Input.GetBool("Crouch");
+            bool stateCondition = !GetState("Running");
+            bool conditions = inputCondition && stateCondition;
 
-            States.SetState("Crouching", conditions);
+            SetState("Crouching", conditions);
 
             if (conditions)
             {
@@ -243,16 +280,18 @@ namespace Game.Character
         private void CoverUpdate()
         {
             float coverInput = Systems.Input.GetFloat("Cover");
-            bool conditions = !States.GetState("Running") && coverInput != 0;
+            bool inputCondition = coverInput != 0;
+            bool stateCondition = !GetState("Running");
+            bool conditions = inputCondition && stateCondition;
 
-            States.SetState("Covering", conditions);
+            SetState("Covering", conditions);
 
             if (conditions)
             {
                 Vector3 targetPos = new Vector3(Preset.coverAmount * Preset.coverCamScale * coverInput, 0f, 0f);
                 Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, Preset.coverAmount * -coverInput));
 
-                if (!States.GetState("Aiming"))
+                if (!GetState("Aiming"))
                 {
                     // Weapon
                     coverWeaponRoot.localRotation = Quaternion.Slerp(coverWeaponRoot.localRotation, targetRot, Preset.coverSpeed * Time.deltaTime);
@@ -278,12 +317,12 @@ namespace Game.Character
         private void StateUpdate()
         {
             // Setting
-            States.SetState("GroundArea", Physics.OverlapSphere(CapsuleBottom(), CapsuleCollider.radius + Preset.groundAreaRadius, Preset.walkableMask).Length > 0);
-            States.SetState("Running", Systems.Input.GetBool("Run") && States.GetState("Walking"));
-            States.SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= Preset.maxAngleSlope);
+            SetState("GroundArea", Physics.OverlapSphere(CapsuleBottom(), CapsuleCollider.radius + Preset.groundAreaRadius, Preset.walkableMask).Length > 0);
+            SetState("Running", Systems.Input.GetBool("Run") && GetState("Walking"));
+            SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= Preset.maxAngleSlope);
 
             // Getting
-            Rigidbody.useGravity = States.GetState("Graviting");
+            Rigidbody.useGravity = GetState("Graviting");
         }
 
         private void Move(Vector3 direction)
@@ -293,29 +332,9 @@ namespace Game.Character
 
             if (direction != Vector3.zero)
             {
-                float currentSpeed = !States.GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed;
-                States.SetState("Walking", true);
-
+                // Moving / Running
+                float currentSpeed = !GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed;
                 Rigidbody.AddForce(direction.normalized * currentSpeed * 10f, ForceMode.Force);
-
-                if (Rigidbody.drag != Preset.movingFriction)
-                {
-                    Rigidbody.drag = Preset.movingFriction;
-                }
-
-                if (States.GetState("GroundArea"))
-                {
-                    BasicAnimator.SetBool("Walking", States.GetState("Walking"));
-                    BasicAnimator.SetBool("Running", States.GetState("Running"));
-                }
-            }
-            else
-            {
-                States.SetState("Walking", false);
-
-                // Reset animations
-                BasicAnimator.SetBool("Walking", false);
-                BasicAnimator.SetBool("Running", false);
             }
         }
 
@@ -323,7 +342,7 @@ namespace Game.Character
         {
             if ((Preset.walkableMask.value & (1 << other.transform.gameObject.layer)) > 0)
             {
-                States.SetState("GroundCollision", true);
+                SetState("GroundCollision", true);
             }
         }
 
@@ -331,7 +350,33 @@ namespace Game.Character
         {
             if ((Preset.walkableMask.value & (1 << other.transform.gameObject.layer)) > 0)
             {
-                States.SetState("GroundCollision", false);
+                SetState("GroundCollision", false);
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            // Ground check
+            if (States != null)
+            {
+                if (CapsuleCollider != null)
+                {
+                    float radius = CapsuleCollider.radius + Preset.groundAreaRadius;
+                    Gizmos.color = States.GetState("GroundArea") ? Color.green : Color.red;
+                    Gizmos.DrawWireSphere(CapsuleBottom(), radius);
+
+                    // Normal check
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawRay(CapsuleBottom(), -transform.up * (CapsuleCollider.height / 2f) * 1.5f);
+                }
+                else
+                {
+                    CapsuleCollider = GetComponent<CapsuleCollider>();
+                }
+            }
+            else
+            {
+                States = new CharacterState();
             }
         }
     }

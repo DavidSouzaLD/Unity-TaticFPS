@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 277832011086963585}
   - component: {fileID: 6519366092426463599}
   m_Layer: 0
-  m_Name: BulletTracer_weapon
+  m_Name: BulletTracer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,8 +139,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 277832011086963584}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe7ffdc9c21fd254697bcb79459f2fec, type: 3}
+  m_Script: {fileID: 11500000, guid: 5df898b646881cb4690548fdb5d08ec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tracerSpeed: 0.05
+  tracerDestroySpeed: 0.003
   pos: []

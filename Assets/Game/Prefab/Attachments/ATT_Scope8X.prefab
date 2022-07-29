@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4318571107708489080}
   - component: {fileID: 4318571107707490232}
   m_Layer: 7
-  m_Name: Scope8X
+  m_Name: ATT_Scope8X
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

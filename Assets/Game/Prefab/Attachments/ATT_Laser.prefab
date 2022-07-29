@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 7154168839146179435}
   - component: {fileID: 7154168839145212331}
   m_Layer: 7
-  m_Name: Laser_attachment
+  m_Name: ATT_Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,14 +159,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7154168840058532937}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 069f1dffe27eefe4db23480cdc12ed78, type: 3}
+  m_Script: {fileID: 11500000, guid: 0920d29d5bdee5c43ae5759e4129207c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   laserMode: 0
   pointLight: {fileID: 7154168840302922215}
   distance: 200
   laserMaterial: {fileID: 2100000, guid: 7c37d2b452d0a1b45b2e8ecca5dcafb2, type: 2}
-  laserColor: {r: 1, g: 0, b: 0.019583702, a: 1}
+  laserColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!120 &7154168840058532939
 LineRenderer:
   m_ObjectHideFlags: 0

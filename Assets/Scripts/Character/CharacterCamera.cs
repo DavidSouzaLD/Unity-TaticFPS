@@ -20,7 +20,7 @@ namespace Game.Character
         }
     }
 
-    public class CharacterCamera : MonoBehaviour
+    public class CharacterCamera : Singleton<CharacterCamera>
     {
         [Header("Settings")]
         [SerializeField] private Vector2 sensitivity = new Vector2(0.15f, 0.15f);
@@ -33,43 +33,52 @@ namespace Game.Character
 
         [Header("Roots")]
         [SerializeField] private Transform playerTransform;
-        [SerializeField] private Transform camRecoilRoot;
 
         // Private
-        private const float recoilSpeed = 8f;
         private const float resetSpeed = 5f;
         private float sensitivityScale;
         private Vector2 camRot;
-        private Vector3 currentRotation;
-        private Vector3 targetRotation;
         private Quaternion characterTargetRot;
         private Quaternion camTargetRot;
         private Volume Volume;
         private Camera Camera;
         private CameraState States;
 
-        public void SetSensitivityScale(float scale)
+        public static void SetSensitivityScale(float scale)
         {
-            sensitivityScale = Mathf.Clamp(scale, 0, 1);
+            Instance.sensitivityScale = Mathf.Clamp(scale, 0, 1);
         }
 
-        public void MaxSensitivityScale()
+        public static void MaxSensitivityScale()
         {
-            sensitivityScale = 1f;
+            Instance.sensitivityScale = 1f;
         }
 
-        public Camera GetCamera()
+        public static Camera GetCamera()
         {
-            return Camera;
+            return Instance.Camera;
         }
 
-        public Vector3 WorldToScreen(Vector3 _position)
+        public static Vector3 WorldToScreen(Vector3 _position)
         {
-            return Camera.WorldToScreenPoint(_position);
+            return Instance.Camera.WorldToScreenPoint(_position);
         }
 
-        private void Awake()
+        public static bool GetState(string _stateName)
         {
+            return Instance.States.GetState(_stateName);
+        }
+
+        public static void SetState(string _stateName, bool _value)
+        {
+            Instance.States.SetState(_stateName, _value);
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            // Create state
             States = new CameraState();
         }
 
@@ -105,14 +114,6 @@ namespace Game.Character
                 playerTransform.localRotation = Quaternion.Slerp(playerTransform.localRotation, characterTargetRot, camSmooth * Time.deltaTime);
                 transform.localRotation = Quaternion.Slerp(transform.localRotation, camTargetRot, camSmooth * Time.deltaTime);
             }
-
-            // Recoil
-            if (camRecoilRoot)
-            {
-                targetRotation = Vector3.Lerp(targetRotation, Vector3.zero, resetSpeed * Time.deltaTime);
-                currentRotation = Vector3.Slerp(currentRotation, targetRotation, recoilSpeed * Time.deltaTime);
-                camRecoilRoot.localRotation = Quaternion.Euler(currentRotation);
-            }
         }
 
         public void LockCursor(bool value)
@@ -130,11 +131,6 @@ namespace Game.Character
                 Cursor.visible = true;
                 States.SetState("CursorLocked", false);
             }
-        }
-
-        public void ApplyRecoil(Vector3 _recoil)
-        {
-            targetRotation += new Vector3(-_recoil.x, Random.Range(-_recoil.y, _recoil.y), Random.Range(-_recoil.z, _recoil.z));
         }
     }
 }
