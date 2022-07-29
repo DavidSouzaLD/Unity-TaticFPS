@@ -33,3 +33,28 @@ MonoBehaviour:
   coverSpeed: 6
   groundAreaHeight: -0.35
   groundAreaRadius: 0.3
+  baseStepSpeed: 0.6
+  runStepSpeed: 0.4
+  crouchStepSpeed: 1.1
+  footstepVolume: 0.5
+  footsteps:
+  - tagName: Concrete
+    clips:
+    - {fileID: 8300000, guid: 0949c01424dd8446abda2f813285e617, type: 3}
+    - {fileID: 8300000, guid: 7f76c03ce707e40aa8e2e7ffe709a147, type: 3}
+    - {fileID: 8300000, guid: 7f4e07acc40a341108a1db244a63c85a, type: 3}
+    - {fileID: 8300000, guid: d88c5c95568b542d19580e1fe1be9379, type: 3}
+    - {fileID: 8300000, guid: e2a75382a49414ad1b427bcb9009545b, type: 3}
+    - {fileID: 8300000, guid: 58003e5a290cc49d0a24acf26b4d1458, type: 3}
+    - {fileID: 8300000, guid: 7ffcd3ab43a6747ceacc8fb5d035f75c, type: 3}
+    - {fileID: 8300000, guid: d93901b4ba67949608fea2386e3a5fa7, type: 3}
+  - tagName: Grass
+    clips:
+    - {fileID: 8300000, guid: e65dcf5a5851a41558b375596c666297, type: 3}
+    - {fileID: 8300000, guid: 4c252338c4f3443c3812a48906c1d1fc, type: 3}
+    - {fileID: 8300000, guid: 066d6d9639d3340a3a03ca031a380abc, type: 3}
+    - {fileID: 8300000, guid: 1eca43e5fc1004d8f9dad5db3163f0d1, type: 3}
+    - {fileID: 8300000, guid: 591ffa407c450493588f3459e306e07e, type: 3}
+    - {fileID: 8300000, guid: 8e07d37b471df46c6a60c7f0472db474, type: 3}
+    - {fileID: 8300000, guid: 1c82207ecd2a242fe8be313460067803, type: 3}
+    - {fileID: 8300000, guid: 329d82ffb7c834587b93219bd57ea7f8, type: 3}

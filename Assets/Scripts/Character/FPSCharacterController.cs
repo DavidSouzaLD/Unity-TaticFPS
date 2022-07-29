@@ -39,7 +39,9 @@ namespace Game.Character
         [SerializeField] private Transform coverCamRoot;
 
         // Private
-        private float jumpCountdown;
+        private string currentGroundTag;
+        private float jumpTimer;
+        private float footstepTimer;
         private float initialCapsuleHeight;
         private Vector3 initialCoverCamPos;
         private Quaternion initialCoverRot;
@@ -134,7 +136,7 @@ namespace Game.Character
             CapsuleCollider = transform.GetComponent<CapsuleCollider>();
 
             // Jump
-            jumpCountdown = 0.3f;
+            jumpTimer = 0.3f;
 
             // Cover
             initialCoverRot = coverWeaponRoot.localRotation;
@@ -150,6 +152,7 @@ namespace Game.Character
             JumpUpdate();
             CrouchUpdate();
             CoverUpdate();
+            FootstepUpdate();
             StateUpdate();
         }
 
@@ -213,20 +216,20 @@ namespace Game.Character
         {
             bool inputConditions = Systems.Input.GetBool("Jump");
             bool stateConditions = GetState("GroundCollision");
-            bool differenceConditions = jumpCountdown <= 0;
+            bool differenceConditions = jumpTimer <= 0;
             bool conditions = inputConditions && stateConditions && differenceConditions;
 
             if (conditions)
             {
                 SetState("Jumping", true);
                 Rigidbody.AddForce(transform.up * Preset.jumpingForce, ForceMode.Impulse);
-                jumpCountdown = 0.3f;
+                jumpTimer = 0.3f;
             }
 
-            if (jumpCountdown > 0)
+            if (jumpTimer > 0)
             {
                 SetState("Jumping", false);
-                jumpCountdown -= Time.deltaTime;
+                jumpTimer -= Time.deltaTime;
             }
         }
 
@@ -288,6 +291,29 @@ namespace Game.Character
             }
         }
 
+        private void FootstepUpdate()
+        {
+            bool conditions = GetState("GroundCollision") && GetState("Walking");
+            footstepTimer -= Time.deltaTime;
+
+            if (conditions)
+            {
+                float footstepSpeed = !GetState("Crouching") ? (!GetState("Running") ? (GetState("Walking") ? Preset.baseStepSpeed : 0) : Preset.runStepSpeed) : Preset.crouchStepSpeed;
+
+                if (footstepTimer <= 0)
+                {
+                    AudioClip[] clips = Preset.GetFootstepsWithTag(currentGroundTag).clips;
+
+                    if (clips.Length > 0)
+                    {
+                        Systems.Audio.PlaySound(clips[Random.Range(0, clips.Length)], Preset.footstepVolume);
+                    }
+
+                    footstepTimer = footstepSpeed;
+                }
+            }
+        }
+
         private void StateUpdate()
         {
             // Setting
@@ -323,6 +349,7 @@ namespace Game.Character
             if ((Preset.walkableMask.value & (1 << other.transform.gameObject.layer)) > 0)
             {
                 SetState("GroundCollision", true);
+                currentGroundTag = other.transform.tag;
             }
         }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Character
@@ -5,6 +6,13 @@ namespace Game.Character
     [CreateAssetMenu(fileName = "CharacterControllerPreset", menuName = "Game/Create CharacterControllerPreset")]
     public class CharacterControllerPreset : ScriptableObject
     {
+        [System.Serializable]
+        public class Footsteps
+        {
+            public string tagName;
+            public AudioClip[] clips;
+        }
+
         [Header("Movement")]
         public LayerMask walkableMask;
         public float walkingSpeed = 10f;
@@ -35,5 +43,23 @@ namespace Game.Character
         [Header("Ground Area")]
         public float groundAreaHeight = -0.35f;
         public float groundAreaRadius = 0.3f;
+
+        [Header("Footsteps Sounds")]
+        public float baseStepSpeed = 0.5f;
+        public float runStepSpeed = 0.2f;
+        public float crouchStepSpeed = 1.5f;
+        [Space]
+        public float footstepVolume = 0.5f;
+
+        public Footsteps[] footsteps;
+        public Footsteps GetFootstepsWithTag(string _tagName)
+        {
+            var sound =
+            from _sound in footsteps
+            where _sound.tagName.ToUpper() == _tagName.ToUpper()
+            select _sound;
+
+            return sound.ToArray().Count() > 0 ? sound.ToArray()[0] : null;
+        }
     }
 }
