@@ -22,17 +22,55 @@ namespace Game.Character
 
     public class CharacterCamera : Singleton<CharacterCamera>
     {
+        [System.Serializable]
+        public class PostProcessing
+        {
+            public VolumeProfile[] profiles;
+
+            public string GetVolume()
+            {
+                string volumeName = "";
+
+                if (Instance.Volume.profile == profiles[0])
+                {
+                    volumeName = "BASE";
+                }
+
+                if (Instance.Volume.profile == profiles[1])
+                {
+                    volumeName = "NIGHTVISION";
+                }
+
+                return volumeName;
+            }
+
+            public void ApplyVolume(string _volumeName)
+            {
+                string volumeName = _volumeName.ToUpper();
+
+                switch (volumeName)
+                {
+                    case "BASE":
+                        Instance.Volume.profile = profiles[0];
+                        break;
+
+                    case "NIGHTVISION":
+                        Instance.Volume.profile = profiles[1];
+                        break;
+                }
+            }
+        }
+
         [Header("Settings")]
         [SerializeField] private Vector2 sensitivity = new Vector2(0.15f, 0.15f);
         [SerializeField] private Vector2 clampVertical = new Vector2(-90f, 90f);
         [SerializeField] private float camSmooth = 20f;
 
-        [Header("Volume")]
-        [SerializeField] private VolumeProfile gameProfile;
-        [SerializeField] private VolumeProfile nightProfile;
-
         [Header("Roots")]
         [SerializeField] private Transform playerTransform;
+
+        [Header("Volume")]
+        [SerializeField] private PostProcessing postProcessing;
 
         // Private
         private const float resetSpeed = 5f;
@@ -52,6 +90,11 @@ namespace Game.Character
         public static void MaxSensitivityScale()
         {
             Instance.sensitivityScale = 1f;
+        }
+
+        public static PostProcessing GetPostProcessing()
+        {
+            return Instance.postProcessing;
         }
 
         public static Camera GetCamera()

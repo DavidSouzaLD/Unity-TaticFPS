@@ -8754,9 +8754,11 @@ MonoBehaviour:
   sensitivity: {x: 0.15, y: 0.15}
   clampVertical: {x: -90, y: 90}
   camSmooth: 30
-  gameProfile: {fileID: 11400000, guid: 188726aad7ca02e44b675a81daf8c974, type: 2}
-  nightProfile: {fileID: 11400000, guid: 33860012bbd63c34dbc78eb5e86e3bff, type: 2}
   playerTransform: {fileID: 6926302670835620936}
+  postProcessing:
+    profiles:
+    - {fileID: 11400000, guid: 188726aad7ca02e44b675a81daf8c974, type: 2}
+    - {fileID: 11400000, guid: 33860012bbd63c34dbc78eb5e86e3bff, type: 2}
 --- !u!114 &6926302668964436450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8885,6 +8887,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6926302668964436452}
   - component: {fileID: 6926302668964436448}
+  - component: {fileID: 6926302668964436458}
   - component: {fileID: 6926302668964436455}
   - component: {fileID: 6926302668964436454}
   - component: {fileID: 6926302668964436453}
@@ -8896,6 +8899,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6926302668964436458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6926302668964436457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85d0469c8a90b984ab0bf581bdeb1ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6926302668966669854
 GameObject:
   m_ObjectHideFlags: 0
@@ -11772,6 +11787,7 @@ MonoBehaviour:
   markerPrefab: {fileID: 0}
   markerHeight: 0
   markers: []
+  halfSize: 600
 --- !u!1 &6926302670653492077
 GameObject:
   m_ObjectHideFlags: 0
