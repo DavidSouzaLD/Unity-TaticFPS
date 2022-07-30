@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 /* BASE STATE STYLE /*
@@ -55,12 +54,13 @@ namespace Game.Utilities
         /// <param name="_value">Value that the state.</param>
         public void SetState(string _stateName, bool _value)
         {
-            var getState =
-                from state in states
-                where state.name == _stateName
-                select state;
-
-            getState.ToArray()[0].value = _value;
+            for (int i = 0; i < states.Count; i++)
+            {
+                if (states[i].name.Equals(_stateName))
+                {
+                    states[i].value = _value;
+                }
+            }
         }
 
         /// <summary>
@@ -70,12 +70,14 @@ namespace Game.Utilities
         /// <returns></returns>
         public bool GetState(string _stateName)
         {
-            var getState =
-                from state in states
-                where state.name == _stateName
-                select state;
-
-            return getState.ToArray()[0].value;
+            for (int i = 0; i < states.Count; i++)
+            {
+                if (states[i].name.Equals(_stateName))
+                {
+                    return states[i].value;
+                }
+            }
+            return false;
         }
     }
 }

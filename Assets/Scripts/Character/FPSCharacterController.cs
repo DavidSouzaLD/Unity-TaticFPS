@@ -38,11 +38,11 @@ namespace Game.Character
         [SerializeField] private Transform coverCamRoot;
 
         // Private
-        private bool useGravity;
         private string currentGroundTag;
         private float jumpTimer;
         private float footstepTimer;
         private float initialControllerHeight;
+        private float initialCamHeight;
         private Vector3 currentVelocity;
         private Vector3 initialCoverCamPos;
         private Quaternion initialCoverRot;
@@ -53,54 +53,12 @@ namespace Game.Character
 
         public void UseGravity(bool _value)
         {
-            useGravity = _value;
-        }
-
-        public Vector3 ControllerCenterTop()
-        {
-            Vector3 position = ControllerTop();
-            position.y -= Controller.radius;
-            return position;
-        }
-
-        public Vector3 ControllerCenterBottom()
-        {
-            Vector3 position = ControllerBottom();
-            position.y += Controller.radius;
-            return position;
-        }
-
-        public Vector3 ControllerTop()
-        {
-            Vector3 position = (transform.position + Controller.center) + new Vector3(0f, (Controller.height / 2f), 0f);
-            return position;
-        }
-
-        public Vector3 ControllerBottom()
-        {
-            Vector3 position = (transform.position + Controller.center) - new Vector3(0f, (Controller.height / 2f), 0f);
-            return position;
-        }
-
-        public Vector3 GroundNormal()
-        {
-            Vector3 position = ControllerCenterBottom();
-            Vector3 direction = -transform.up;
-            float distance = (Controller.height / 2f) * 1.5f;
-            RaycastHit hit = RaycastExtension.RaycastWithMask(position, direction, distance, Preset.walkableMask);
-
-            if (hit.collider != null)
-            {
-                Debug.DrawRay(hit.point, hit.normal, Color.yellow);
-                return hit.normal;
-            }
-
-            return Vector3.zero;
+            SetState("Graviting", _value);
         }
 
         public float GetSlopeAngle()
         {
-            return Vector3.Angle(transform.up, GroundNormal());
+            return Vector3.Angle(transform.up, GetGroundNormal());
         }
 
         public static Transform GetTransform()
@@ -126,6 +84,22 @@ namespace Game.Character
         public static void SetState(string _stateName, bool _value)
         {
             Instance.States.SetState(_stateName, _value);
+        }
+
+        public Vector3 GetGroundNormal()
+        {
+            Vector3 position = Controller.GetBottomCenterPosition();
+            Vector3 direction = -transform.up;
+            float distance = (Controller.height / 2f) * 1.5f;
+            RaycastHit hit = RaycastExtension.RaycastWithMask(position, direction, distance, Preset.walkableMask);
+
+            if (hit.collider != null)
+            {
+                Debug.DrawRay(hit.point, hit.normal, Color.yellow);
+                return hit.normal;
+            }
+
+            return Vector3.zero;
         }
 
         protected override void Awake()
@@ -157,6 +131,7 @@ namespace Game.Character
 
             // Others
             initialControllerHeight = Controller.height;
+            initialCamHeight = camRoot.localPosition.y;
         }
 
         private void Update()
@@ -178,9 +153,9 @@ namespace Game.Character
             {
                 if (GetState("GroundArea"))
                 {
-                    float currentSpeed = !GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed;
+                    float currentSpeed = !GetState("Crouching") ? (!GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed) : Preset.crouchingSpeed;
                     Vector3 dir1 = transform.forward * moveInput.y + transform.right * moveInput.x;
-                    Vector3 dir2 = Vector3.Cross(transform.right, GroundNormal()) * moveInput.y + Vector3.Cross(-transform.forward, GroundNormal()) * moveInput.x;
+                    Vector3 dir2 = Vector3.Cross(transform.right, GetGroundNormal()) * moveInput.y + Vector3.Cross(-transform.forward, GetGroundNormal()) * moveInput.x;
                     Vector3 direction = (!GetState("Sloping") ? dir1 : dir2);
 
                     currentVelocity += direction.normalized * currentSpeed * Time.deltaTime;
@@ -193,8 +168,8 @@ namespace Game.Character
                 SetState("Walking", false);
             }
 
-            // Additional gravity
-            if (useGravity)
+            // Gravity
+            if (GetState("Graviting"))
             {
                 currentVelocity += transform.up * Physics.gravity.y * Preset.gravityScale * Time.deltaTime;
             }
@@ -240,15 +215,14 @@ namespace Game.Character
 
             if (conditions)
             {
-                Controller.height = Mathf.Lerp(Controller.height, Preset.crouchHeight, Preset.crouchSpeed * Time.deltaTime);
+                Controller.SetSmoothHeight(Preset.crouchHeight, Preset.speedToCrouch);
             }
             else
             {
-                Controller.height = Mathf.Lerp(Controller.height, initialControllerHeight, Preset.crouchSpeed * Time.deltaTime);
+                Controller.SetSmoothHeight(Preset.standHeight, Preset.speedToCrouch);
             }
 
-            // Set camera in top Controller
-            coverCamRoot.position = Vector3.Lerp(coverCamRoot.position, ControllerCenterTop(), Preset.crouchSpeed * Time.deltaTime);
+            camRoot.transform.position = Controller.GetTopCenterPosition();
         }
 
         private void CoverUpdate()
@@ -313,7 +287,7 @@ namespace Game.Character
 
         private void GroundCheckUpdate()
         {
-            Vector3 position = ControllerBottom();
+            Vector3 position = Controller.GetBottomPosition();
             float radius = Controller.radius * Preset.groundRadius;
             LayerMask mask = Preset.walkableMask;
 
@@ -333,7 +307,7 @@ namespace Game.Character
         private void StateUpdate()
         {
             // Setting
-            SetState("GroundArea", Physics.OverlapSphere(ControllerCenterBottom(), Controller.radius + Preset.groundAreaRadius, Preset.walkableMask).Length > 0);
+            SetState("GroundArea", Physics.OverlapSphere(Controller.GetBottomCenterPosition(), Controller.radius + Preset.groundAreaRadius, Preset.walkableMask).Length > 0);
             SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= Controller.slopeLimit);
 
             // Running
@@ -342,9 +316,6 @@ namespace Game.Character
             bool weaponConditions = !WeaponManager.IsAim();
             bool runningConditions = inputConditions && playerConditions && weaponConditions;
             SetState("Running", runningConditions);
-
-            // Getting
-            useGravity = GetState("Graviting");
         }
 
         private void Move(ref Vector3 _currentVelocity)
@@ -362,14 +333,14 @@ namespace Game.Character
                 {
                     // Ground check
                     Gizmos.color = Color.blue;
-                    Vector3 positionCheck = ControllerBottom();
+                    Vector3 positionCheck = Controller.GetBottomPosition();
                     float radiusCheck = Controller.radius * Preset.groundRadius;
                     Gizmos.DrawWireSphere(positionCheck, radiusCheck);
 
                     // Ground area
                     Gizmos.color = States.GetState("GroundArea") ? Color.green : Color.blue;
                     float radiusArea = Controller.radius + Preset.groundAreaRadius;
-                    Gizmos.DrawWireSphere(ControllerCenterBottom(), radiusArea);
+                    Gizmos.DrawWireSphere(Controller.GetBottomCenterPosition(), radiusArea);
                 }
                 else
                 {

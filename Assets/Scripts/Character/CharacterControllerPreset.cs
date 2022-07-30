@@ -23,8 +23,9 @@ namespace Game.Character
         public float gravityScale = 2f;
 
         [Header("Crouch")]
+        public float standHeight = 2f;
         public float crouchHeight = 1.5f;
-        public float crouchSpeed = 5f;
+        public float speedToCrouch = 5f;
 
         [Header("Cover")]
         public float coverAmount = 20f;
