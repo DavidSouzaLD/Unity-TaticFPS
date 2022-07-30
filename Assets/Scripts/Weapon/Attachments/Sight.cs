@@ -2,32 +2,27 @@ using UnityEngine;
 
 namespace Game.Weapons.Attachments
 {
-    public class Sight : MonoBehaviour
+    public class Sight : Attachment
     {
         [Header("Settings")]
         [SerializeField] private Vector3 aimPosition;
         [SerializeField] private Transform newMuzzlePoint;
         [SerializeField, Range(0f, 1f)] private float sensitivityScale;
 
-        private Weapon Weapon;
-
-        private void Awake()
+        protected override void OnEnable()
         {
-            Weapon = GameObject.FindObjectOfType<Weapon>();
-        }
-
-        private void OnEnable()
-        {
+            base.OnEnable();
             Weapon.SetAimSensitivityScale(sensitivityScale);
             Weapon.SetAimPosition(aimPosition);
-            Weapon.SetMuzzleRoot(newMuzzlePoint);
+            Weapon.SetFireRoot(newMuzzlePoint);
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             Weapon.MaxAimSensitivityScale();
             Weapon.ResetAim();
-            Weapon.ResetMuzzleRoot();
+            Weapon.ResetFireRoot();
         }
 
         private void OnDrawGizmosSelected()

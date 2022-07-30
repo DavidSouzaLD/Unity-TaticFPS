@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5372311681176720801}
+  - component: {fileID: 6653492752503166051}
   - component: {fileID: 5372311681173820801}
   - component: {fileID: 5372311681174951745}
-  - component: {fileID: 5372311681184479809}
   m_Layer: 7
-  m_Name: ATT_Silencer
+  m_Name: Supressor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,15 +26,34 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5372311681177209217}
-  m_LocalRotation: {x: -0, y: 0.000000029802322, z: -0.70710677, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -0.1270001, y: 0.03999996, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5372311681176720803}
+  - {fileID: 3296346666049385902}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+--- !u!114 &6653492752503166051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5372311681177209217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50dde5fd6cc638a4087e169275047291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachmentName: Silencer
+  attachmentType: 0
+  MuzzleFlash: {fileID: 0}
+  muzzleRoot: {fileID: 3296346666049385902}
+  fireSounds:
+  - {fileID: 8300000, guid: 1085ccec61a115242ab2c000ed80cfd6, type: 3}
+  - {fileID: 8300000, guid: e2573b582eb968b45b8d7588b911975d, type: 3}
 --- !u!33 &5372311681173820801
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -85,27 +104,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!95 &5372311681184479809
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5372311681177209217}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 89021e39adba19b4a96bca608b0fa8a0, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
---- !u!1 &5372311681177209219
+--- !u!1 &8384173747023715341
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -113,23 +112,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5372311681176720803}
+  - component: {fileID: 3296346666049385902}
   m_Layer: 7
-  m_Name: SOCKET_Silencer_01
+  m_Name: MuzzleRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5372311681176720803
+--- !u!4 &3296346666049385902
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5372311681177209219}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.000000024874074, y: -0.2214434, z: -0.00000004004687}
+  m_GameObject: {fileID: 8384173747023715341}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0.223, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -188,7 +188,6 @@ namespace Game.Character
             // Drag / Friction
             if (GetState("GroundCollision"))
             {
-                Debug.Log("Collision:" + GetState("GroundCollision"));
                 if (GetState("Walking"))
                 {
                     Debug.Log("Walking:" + GetState("Walking"));

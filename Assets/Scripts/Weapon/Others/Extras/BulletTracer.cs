@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Game.Weapons
 {
     [RequireComponent(typeof(LineRenderer))]
-    public class WeaponTracer : MonoBehaviour
+    public class BulletTracer : MonoBehaviour
     {
         [Header("Settings")]
         [SerializeField] private float tracerDestroySpeed;

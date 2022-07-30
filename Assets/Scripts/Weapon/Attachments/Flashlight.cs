@@ -1,16 +1,18 @@
 using UnityEngine;
 
-namespace Game.Weapons
+namespace Game.Weapons.Attachments
 {
-    public class WeaponFlashlight : MonoBehaviour
+    public class Flashlight : Attachment
     {
         [Header("Settings")]
         [SerializeField] private GameObject lightObject;
-        private bool flashlightMode;
+
+        protected bool isEnabled;
+        protected bool changedMode;
 
         private void Start()
         {
-            lightObject.SetActive(flashlightMode);
+            lightObject.SetActive(isEnabled);
         }
 
         private void Update()
@@ -18,8 +20,8 @@ namespace Game.Weapons
             // Night vision
             if (Systems.Input.GetBool("WeaponHandguard"))
             {
-                flashlightMode = !flashlightMode;
-                lightObject.SetActive(flashlightMode);
+                isEnabled = !isEnabled;
+                lightObject.SetActive(isEnabled);
             }
         }
     }

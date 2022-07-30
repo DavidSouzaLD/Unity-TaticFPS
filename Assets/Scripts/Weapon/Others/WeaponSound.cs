@@ -20,7 +20,18 @@ namespace Game.Weapons
 
             switch (_soundName.ToUpper())
             {
-                case "FIRE": clip = Weapon.Preset.fireSounds[Random.Range(0, fireSoundLength)]; break;
+                case "FIRE":
+
+                    if (Weapon.GetOverrideFireSound() == null)
+                    {
+                        clip = Weapon.Preset.fireSounds[Random.Range(0, fireSoundLength)];
+                    }
+                    else
+                    {
+                        clip = Weapon.GetOverrideFireSound();
+                    }
+                    break;
+
                 case "START_RELOAD": clip = Weapon.Preset.startReloadSound; break;
                 case "MIDDLE_RELOAD": clip = Weapon.Preset.middleReloadSound; break;
                 case "END_RELOAD": clip = Weapon.Preset.endReloadSound; break;

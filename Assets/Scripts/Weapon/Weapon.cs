@@ -39,7 +39,7 @@ namespace Game.Weapons
         [SerializeField] private Quaternion aimRotation;
 
         [Header("Roots")]
-        [SerializeField] private Transform muzzleRoot;
+        [SerializeField] private Transform fireRoot;
 
         // Private
         private float drawTimer, hideTimer;
@@ -50,7 +50,8 @@ namespace Game.Weapons
         private Quaternion initialAimRot;
         private Vector3 defaultAimPos;
         private Quaternion defaultAimRot;
-        private Transform defaultmuzzleRoot;
+        private Transform defaultfireRoot;
+        private AudioClip overrideFireSound;
 
         // Weapon components
         private WeaponSound Sound;
@@ -105,14 +106,29 @@ namespace Game.Weapons
             aimRotation = defaultAimRot;
         }
 
-        public void SetMuzzleRoot(Transform _muzzle)
+        public Transform GetFireRoot()
         {
-            muzzleRoot = _muzzle;
+            return fireRoot;
         }
 
-        public void ResetMuzzleRoot()
+        public void SetFireRoot(Transform _muzzle)
         {
-            muzzleRoot = defaultmuzzleRoot;
+            fireRoot = _muzzle;
+        }
+
+        public void ResetFireRoot()
+        {
+            fireRoot = defaultfireRoot;
+        }
+
+        public AudioClip GetOverrideFireSound()
+        {
+            return overrideFireSound;
+        }
+
+        public void SetOverrideFireSound(AudioClip _clip)
+        {
+            overrideFireSound = _clip;
         }
 
         public bool GetState(string _stateName)
@@ -140,7 +156,7 @@ namespace Game.Weapons
             Anim.Init(this, Sound);
 
             // Default
-            defaultmuzzleRoot = muzzleRoot;
+            defaultfireRoot = fireRoot;
             defaultAimPos = aimPosition;
             defaultAimRot = aimRotation;
 
@@ -306,11 +322,11 @@ namespace Game.Weapons
             {
                 // Tracer
                 List<Vector3> tracerPositions = new List<Vector3>();
-                LineRenderer tracer = GameObject.Instantiate(WeaponManager.GetTracerPrefab(), muzzleRoot.position, Quaternion.identity).GetComponent<LineRenderer>();
-                WeaponTracer tracerScript = tracer.gameObject.GetComponent<WeaponTracer>();
+                LineRenderer tracer = GameObject.Instantiate(WeaponManager.GetTracerPrefab(), fireRoot.position, Quaternion.identity).GetComponent<LineRenderer>();
+                BulletTracer tracerScript = tracer.gameObject.GetComponent<BulletTracer>();
 
-                Vector3 point1 = muzzleRoot.position;
-                Vector3 predictedBulletVelocity = muzzleRoot.forward * Preset.maxBulletDistance;
+                Vector3 point1 = fireRoot.position;
+                Vector3 predictedBulletVelocity = fireRoot.forward * Preset.maxBulletDistance;
                 float stepSize = 0.01f;
 
                 // Tracer start position
@@ -331,7 +347,7 @@ namespace Game.Weapons
                     {
                         if (hit.transform)
                         {
-                            float distance = (muzzleRoot.position - hit.point).sqrMagnitude;
+                            float distance = (fireRoot.position - hit.point).sqrMagnitude;
                             float time = distance / (Preset.bulletVelocity * 1000f);
                             StartCoroutine(CalculateDelay(time, hit));
                             break;
@@ -367,7 +383,7 @@ namespace Game.Weapons
             Rigidbody HitBody = hit.transform.GetComponent<Rigidbody>();
             if (HitBody)
             {
-                HitBody.AddForceAtPosition(muzzleRoot.forward * Preset.bulletHitForce, hit.point);
+                HitBody.AddForceAtPosition(fireRoot.forward * Preset.bulletHitForce, hit.point);
             }
 
             // Hitmark in enemy
@@ -428,11 +444,11 @@ namespace Game.Weapons
 
         private void OnDrawGizmos()
         {
-            if (Preset != null && muzzleRoot != null)
+            if (Preset != null && fireRoot != null)
             {
                 Gizmos.color = Color.red;
-                Vector3 point1 = muzzleRoot.position;
-                Vector3 predictedBulletVelocity = muzzleRoot.forward * Preset.maxBulletDistance;
+                Vector3 point1 = fireRoot.position;
+                Vector3 predictedBulletVelocity = fireRoot.forward * Preset.maxBulletDistance;
                 float stepSize = 0.01f;
 
                 for (float step = 0f; step < 1; step += stepSize)
