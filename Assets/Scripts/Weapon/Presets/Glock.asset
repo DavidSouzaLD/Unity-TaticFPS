@@ -24,7 +24,7 @@ MonoBehaviour:
   maxBulletDistance: 100
   aimSpeed: 8
   aimSwayScale: 0.2
-  aimPosition: {x: -0.0679, y: 0.0555, z: 0}
+  aimPosition: {x: -0.0679, y: 0.0622, z: -0.09}
   aimRotation: {x: 0, y: 0, z: 0, w: 0}
   recoilForcePos: {x: 0, y: 0, z: -0.1}
   recoilForceRot: {x: 0, y: 0, z: 0}

@@ -32,6 +32,12 @@ namespace Game.Weapons
         [SerializeField] private int currentBullets = 12;
         [SerializeField] private int extraBullets = 24;
 
+        [Header("Aim")]
+        [SerializeField] private float aimSpeed = 5f;
+        [SerializeField] private float aimSwayScale = 0.2f;
+        [SerializeField] private Vector3 aimPosition;
+        [SerializeField] private Quaternion aimRotation;
+
         [Header("Roots")]
         [SerializeField] private Transform muzzleRoot;
 
@@ -43,6 +49,7 @@ namespace Game.Weapons
         private Vector3 initialAimPos;
         private Quaternion initialAimRot;
         private Vector3 defaultAimPos;
+        private Quaternion defaultAimRot;
         private Transform defaultmuzzleRoot;
 
         // Weapon components
@@ -89,12 +96,13 @@ namespace Game.Weapons
 
         public void SetAimPosition(Vector3 _aimPos)
         {
-            Preset.aimPosition = _aimPos;
+            aimPosition = _aimPos;
         }
 
-        public void ResetAimPosition()
+        public void ResetAim()
         {
-            Preset.aimPosition = defaultAimPos;
+            aimPosition = defaultAimPos;
+            aimRotation = defaultAimRot;
         }
 
         public void SetMuzzleRoot(Transform _muzzle)
@@ -133,7 +141,8 @@ namespace Game.Weapons
 
             // Default
             defaultmuzzleRoot = muzzleRoot;
-            defaultAimPos = Preset.aimPosition;
+            defaultAimPos = aimPosition;
+            defaultAimRot = aimRotation;
 
             // Aim
             initialAimPos = transform.localPosition;
@@ -248,10 +257,10 @@ namespace Game.Weapons
                 SetState("Aiming", true);
 
                 CharacterCamera.SetSensitivityScale(aimSensitivityScale);
-                WeaponSway.SwayAccuracy(Preset.aimSwayScale);
+                WeaponSway.SwayAccuracy(aimSwayScale);
 
-                transform.localPosition = Vector3.Lerp(transform.localPosition, Preset.aimPosition, Preset.aimSpeed * Time.deltaTime);
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, Preset.aimRotation, Preset.aimSpeed * Time.deltaTime);
+                transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, aimSpeed * Time.deltaTime);
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, aimRotation, aimSpeed * Time.deltaTime);
             }
             else
             {
@@ -265,8 +274,8 @@ namespace Game.Weapons
             if (resetConditions)
             {
                 WeaponSway.MaxAccuracy();
-                transform.localPosition = Vector3.Lerp(transform.localPosition, initialAimPos, Preset.aimSpeed * Time.deltaTime);
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, initialAimRot, Preset.aimSpeed * Time.deltaTime);
+                transform.localPosition = Vector3.Lerp(transform.localPosition, initialAimPos, aimSpeed * Time.deltaTime);
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, initialAimRot, aimSpeed * Time.deltaTime);
             }
         }
 

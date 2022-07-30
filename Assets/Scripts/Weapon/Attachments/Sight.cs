@@ -26,7 +26,7 @@ namespace Game.Weapons.Attachments
         private void OnDisable()
         {
             Weapon.MaxAimSensitivityScale();
-            Weapon.ResetAimPosition();
+            Weapon.ResetAim();
             Weapon.ResetMuzzleRoot();
         }
 
