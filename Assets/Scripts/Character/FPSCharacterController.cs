@@ -71,12 +71,12 @@ namespace Game.Character
 
         public Vector3 GroundNormal()
         {
-            RaycastHit hit;
             Vector3 position = CapsuleBottom();
             Vector3 direction = -transform.up;
             float distance = (CapsuleCollider.height / 2f) * 1.5f;
+            RaycastHit hit = RaycastExtension.Raycast(position, direction, distance, Preset.walkableMask);
 
-            if (Physics.Raycast(position, direction, out hit, distance, Preset.walkableMask))
+            if (hit.collider != null)
             {
                 Debug.DrawRay(hit.point, hit.normal, Color.yellow);
                 return hit.normal;
@@ -136,7 +136,7 @@ namespace Game.Character
             CapsuleCollider = transform.GetComponent<CapsuleCollider>();
 
             // Jump
-            jumpTimer = 0.3f;
+            jumpTimer = 1f;
 
             // Cover
             initialCoverRot = coverWeaponRoot.localRotation;
@@ -153,6 +153,7 @@ namespace Game.Character
             CrouchUpdate();
             CoverUpdate();
             FootstepUpdate();
+            GroundCheckUpdate();
             StateUpdate();
         }
 
@@ -187,13 +188,20 @@ namespace Game.Character
             // Drag / Friction
             if (GetState("GroundCollision"))
             {
+                Debug.Log("Collision:" + GetState("GroundCollision"));
                 if (GetState("Walking"))
                 {
+                    Debug.Log("Walking:" + GetState("Walking"));
                     Rigidbody.drag = Preset.movingDrag;
                 }
-                else
+                else if (!GetState("Jumping"))
                 {
                     Rigidbody.drag = Preset.idleDrag;
+                }
+
+                if (GetState("Jumping"))
+                {
+                    Rigidbody.drag = Preset.airDrag;
                 }
             }
             else
@@ -228,8 +236,12 @@ namespace Game.Character
 
             if (jumpTimer > 0)
             {
-                SetState("Jumping", false);
                 jumpTimer -= Time.deltaTime;
+            }
+
+            if (jumpTimer <= 0)
+            {
+                SetState("Jumping", false);
             }
         }
 
@@ -314,6 +326,25 @@ namespace Game.Character
             }
         }
 
+        private void GroundCheckUpdate()
+        {
+            Vector3 position = CapsuleBottom();
+            float radius = CapsuleCollider.radius;
+            LayerMask mask = Preset.walkableMask;
+
+            Collider[] colliders = Physics.OverlapSphere(position, radius, mask);
+
+            if (colliders.Length > 0)
+            {
+                SetState("GroundCollision", true);
+                currentGroundTag = colliders[0].transform.tag;
+            }
+            else
+            {
+                SetState("GroundCollision", false);
+            }
+        }
+
         private void StateUpdate()
         {
             // Setting
@@ -333,31 +364,10 @@ namespace Game.Character
 
         private void Move(Vector3 direction)
         {
-            // Direction Ray
-            Debug.DrawRay(transform.position, direction, Color.magenta);
-
             if (direction != Vector3.zero)
             {
-                // Moving / Running
                 float currentSpeed = !GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed;
                 Rigidbody.AddForce(direction.normalized * currentSpeed * 10f, ForceMode.Force);
-            }
-        }
-
-        private void OnCollisionEnter(Collision other)
-        {
-            if ((Preset.walkableMask.value & (1 << other.transform.gameObject.layer)) > 0)
-            {
-                SetState("GroundCollision", true);
-                currentGroundTag = other.transform.tag;
-            }
-        }
-
-        private void OnCollisionExit(Collision other)
-        {
-            if ((Preset.walkableMask.value & (1 << other.transform.gameObject.layer)) > 0)
-            {
-                SetState("GroundCollision", false);
             }
         }
 
@@ -368,13 +378,16 @@ namespace Game.Character
             {
                 if (CapsuleCollider != null)
                 {
-                    float radius = CapsuleCollider.radius + Preset.groundAreaRadius;
-                    Gizmos.color = States.GetState("GroundArea") ? Color.green : Color.red;
-                    Gizmos.DrawWireSphere(CapsuleBottom(), radius);
+                    // Ground check
+                    Vector3 positionCheck = CapsuleBottom();
+                    float radiusCheck = CapsuleCollider.radius;
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawWireSphere(positionCheck, radiusCheck);
 
-                    // Normal check
-                    Gizmos.color = Color.magenta;
-                    Gizmos.DrawRay(CapsuleBottom(), -transform.up * (CapsuleCollider.height / 2f) * 1.5f);
+                    // Ground area
+                    float radiusArea = CapsuleCollider.radius + Preset.groundAreaRadius;
+                    Gizmos.color = States.GetState("GroundArea") ? Color.green : Color.red;
+                    Gizmos.DrawWireSphere(CapsuleBottom(), radiusArea);
                 }
                 else
                 {

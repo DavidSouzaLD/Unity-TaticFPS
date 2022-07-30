@@ -18,9 +18,9 @@ MonoBehaviour:
   drawTime: 0.52
   hideTime: 0.52
   bulletHitForce: 100
-  bulletVelocity: 170
+  bulletVelocity: 250
   bulletsPerFire: 1
-  bulletGravityScale: 2
+  bulletGravityScale: 1
   maxBulletDistance: 100
   aimSpeed: 8
   aimSwayScale: 0.2

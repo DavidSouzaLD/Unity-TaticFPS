@@ -2,11 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Game.Character;
 
 namespace Game.Character.Gadgets
 {
-    public class CompassManager : StaticInstance<CompassManager>
+    public class Compass : StaticInstance<Compass>
     {
         public RawImage texture;
         public GameObject markerPrefab;

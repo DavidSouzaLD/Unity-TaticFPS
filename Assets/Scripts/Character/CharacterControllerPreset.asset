@@ -24,19 +24,19 @@ MonoBehaviour:
   jumpingForce: 50
   gravityScale: 2
   movingDrag: 0.5
-  idleDrag: 5
+  idleDrag: 50
   airDrag: 0.5
   crouchHeight: 1.5
   crouchSpeed: 5
   coverAmount: 20
-  coverCamScale: 0.02
-  coverSpeed: 6
-  groundAreaHeight: -0.35
+  coverCamScale: 0.035
+  coverSpeed: 4
+  groundAreaHeight: -0.3999
   groundAreaRadius: 0.3
   baseStepSpeed: 0.6
   runStepSpeed: 0.4
   crouchStepSpeed: 1.1
-  footstepVolume: 0.5
+  footstepVolume: 0.1
   footsteps:
   - tagName: Concrete
     clips:
@@ -58,3 +58,23 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 8e07d37b471df46c6a60c7f0472db474, type: 3}
     - {fileID: 8300000, guid: 1c82207ecd2a242fe8be313460067803, type: 3}
     - {fileID: 8300000, guid: 329d82ffb7c834587b93219bd57ea7f8, type: 3}
+  - tagName: Wood
+    clips:
+    - {fileID: 8300000, guid: 1f264b1900428415a9a9eec704d82b26, type: 3}
+    - {fileID: 8300000, guid: 50e0eb7275486409791e65228310d2d8, type: 3}
+    - {fileID: 8300000, guid: 7bcfaa38119874ca1900d93a7fc6987a, type: 3}
+    - {fileID: 8300000, guid: 0037a40d9374942bb8fb431566db1fc6, type: 3}
+    - {fileID: 8300000, guid: 8fc6d2a6e0eed415087df03907086db2, type: 3}
+    - {fileID: 8300000, guid: ed28d9a470c2d4f1c9ce3838e4a14a79, type: 3}
+    - {fileID: 8300000, guid: 3fd1130b112b24029bdd98d3087feae2, type: 3}
+    - {fileID: 8300000, guid: 4ab9072201bfb4ef39de63efd7fd6775, type: 3}
+  - tagName: Metal
+    clips:
+    - {fileID: 8300000, guid: 71227a36b37a76c408640cd59f443f18, type: 3}
+    - {fileID: 8300000, guid: 462bdf521e082974a943e01ec07fea33, type: 3}
+    - {fileID: 8300000, guid: bedf311d89204ea41875e9e34a6accc2, type: 3}
+    - {fileID: 8300000, guid: 0a82fe812eb4af04d9dd436236848ffa, type: 3}
+    - {fileID: 8300000, guid: 672504cdef929bc4bafa67c3350ec648, type: 3}
+    - {fileID: 8300000, guid: 3ef00d3296114a34ea5260a5fcf284af, type: 3}
+    - {fileID: 8300000, guid: e410858cb1d983949b1bbfe803ffe4bb, type: 3}
+    - {fileID: 8300000, guid: 5fca4ba89cb7f13408937b0216adcb8c, type: 3}
