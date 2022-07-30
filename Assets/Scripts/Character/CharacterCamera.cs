@@ -16,6 +16,7 @@ namespace Game.Character
             {
                 new State("CursorLocked"),
                 new State("NightVision"),
+                new State("FreeLook")
             };
         }
     }
@@ -66,21 +67,27 @@ namespace Game.Character
         [SerializeField] private Vector2 clampVertical = new Vector2(-90f, 90f);
         [SerializeField] private float camSmooth = 20f;
 
+        [Header("Cameras")]
+        [SerializeField] private Camera mainCam;
+        [SerializeField] private Camera freeLookCam;
+
         [Header("Roots")]
-        [SerializeField] private Transform playerTransform;
+        [SerializeField] private Transform characterTransform;
 
         [Header("Volume")]
+        [SerializeField] private Volume Volume;
         [SerializeField] private PostProcessing postProcessing;
 
         // Private
+        private bool changedFreeLook;
+        private float mainRotateX, mainRotateY;
+        private float freeRotateX, freeRotateY;
         private const float resetSpeed = 5f;
         private float sensitivityScale;
-        private Vector2 camRot;
-        private Quaternion characterTargetRot;
         private Quaternion camTargetRot;
-        private Volume Volume;
-        private Camera Camera;
+        private Quaternion characerTargetRot;
         private CameraState States;
+        private Camera currentCam;
 
         public static void SetSensitivityScale(float scale)
         {
@@ -99,12 +106,17 @@ namespace Game.Character
 
         public static Camera GetCamera()
         {
-            return Instance.Camera;
+            return Instance.mainCam;
+        }
+
+        public static Camera GetCurrentCamera()
+        {
+            return Instance.currentCam;
         }
 
         public static Vector3 WorldToScreen(Vector3 _position)
         {
-            return Instance.Camera.WorldToScreenPoint(_position);
+            return Instance.currentCam.WorldToScreenPoint(_position);
         }
 
         public static bool GetState(string _stateName)
@@ -128,12 +140,7 @@ namespace Game.Character
         private void Start()
         {
             // Components
-            Volume = GetComponent<Volume>();
-            Camera = GetComponent<Camera>();
-
-            // Starting values
-            characterTargetRot = playerTransform.localRotation;
-            camTargetRot = Camera.transform.localRotation;
+            currentCam = mainCam;
 
             MaxSensitivityScale();
             LockCursor(true);
@@ -142,21 +149,52 @@ namespace Game.Character
         private void Update()
         {
             // Camera
-            if (Camera != null)
+            if (currentCam != null)
             {
                 Vector2 camAxis = Systems.Input.GetVector2("CameraAxis");
 
-                camRot.x = (-camAxis.y * sensitivity.y) * sensitivityScale;
-                camRot.y = (camAxis.x * sensitivity.x) * sensitivityScale;
+                if (!Systems.Input.GetBool("FreeLook"))
+                {
+                    if (changedFreeLook)
+                    {
+                        currentCam = mainCam;
+                        mainCam.enabled = true;
+                        freeLookCam.enabled = false;
+                        changedFreeLook = false;
+                    }
 
-                characterTargetRot *= Quaternion.Euler(0f, camRot.y, 0f);
-                camTargetRot *= Quaternion.Euler(camRot.x, 0f, 0f);
+                    mainRotateX += (-camAxis.y * sensitivity.y) * sensitivityScale;
+                    mainRotateY += (camAxis.x * sensitivity.x) * sensitivityScale;
 
-                camTargetRot = camTargetRot.ClampRotation(clampVertical.x, clampVertical.y, RotationExtension.Axis.X);
+                    mainRotateX = Mathf.Clamp(mainRotateX, -90f, 90f);
 
-                playerTransform.localRotation = Quaternion.Slerp(playerTransform.localRotation, characterTargetRot, camSmooth * Time.deltaTime);
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, camTargetRot, camSmooth * Time.deltaTime);
+                    camTargetRot = Quaternion.Euler(mainRotateX, 0f, 0f);
+                    characerTargetRot = Quaternion.Euler(0f, mainRotateY, 0f);
+                }
+                else
+                {
+                    if (!changedFreeLook)
+                    {
+                        freeRotateX = 0f;
+                        freeRotateY = 0f;
+                        currentCam = freeLookCam;
+                        mainCam.enabled = false;
+                        freeLookCam.enabled = true;
+                        changedFreeLook = true;
+                    }
+
+                    freeRotateX += (-camAxis.y * sensitivity.y) * sensitivityScale;
+                    freeRotateY += (camAxis.x * sensitivity.x) * sensitivityScale;
+
+                    freeRotateX = Mathf.Clamp(freeRotateX, -70f, 20f);
+                    freeRotateY = Mathf.Clamp(freeRotateY, -45f, 45f);
+
+                    camTargetRot = Quaternion.Euler(freeRotateX, freeRotateY, 0f);
+                }
             }
+
+            currentCam.transform.localRotation = Quaternion.Slerp(currentCam.transform.localRotation, camTargetRot, camSmooth * Time.deltaTime);
+            characterTransform.localRotation = Quaternion.Slerp(characterTransform.transform.localRotation, characerTargetRot, camSmooth * Time.deltaTime);
         }
 
         public void LockCursor(bool value)

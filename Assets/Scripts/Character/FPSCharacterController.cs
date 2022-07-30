@@ -26,8 +26,7 @@ namespace Game.Character
     }
 
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(CapsuleCollider))]
+    [RequireComponent(typeof(CharacterController))]
     public class FPSCharacterController : Singleton<FPSCharacterController>
     {
         [SerializeField]
@@ -39,42 +38,56 @@ namespace Game.Character
         [SerializeField] private Transform coverCamRoot;
 
         // Private
+        private bool useGravity;
         private string currentGroundTag;
         private float jumpTimer;
         private float footstepTimer;
-        private float initialCapsuleHeight;
+        private float initialControllerHeight;
+        private Vector3 currentVelocity;
         private Vector3 initialCoverCamPos;
         private Quaternion initialCoverRot;
         private Quaternion initialCoverCamRot;
-        private Rigidbody Rigidbody;
-        private CapsuleCollider CapsuleCollider;
+        Transform cameraTransform;
+        private CharacterController Controller;
         private CharacterState States;
 
         public void UseGravity(bool _value)
         {
-            Rigidbody.useGravity = _value;
+            useGravity = _value;
         }
 
-        public Vector3 CapsuleTop()
+        public Vector3 ControllerCenterTop()
         {
-            Vector3 position = (transform.position - CapsuleCollider.center);
-            Vector3 direction = (transform.up * ((CapsuleCollider.height / 2f) + Preset.groundAreaHeight));
-            return position + direction;
+            Vector3 position = ControllerTop();
+            position.y -= Controller.radius;
+            return position;
         }
 
-        public Vector3 CapsuleBottom()
+        public Vector3 ControllerCenterBottom()
         {
-            Vector3 position = (transform.position + CapsuleCollider.center);
-            Vector3 direction = (transform.up * ((CapsuleCollider.height / 2f) + Preset.groundAreaHeight));
-            return position - direction;
+            Vector3 position = ControllerBottom();
+            position.y += Controller.radius;
+            return position;
+        }
+
+        public Vector3 ControllerTop()
+        {
+            Vector3 position = (transform.position + Controller.center) + new Vector3(0f, (Controller.height / 2f), 0f);
+            return position;
+        }
+
+        public Vector3 ControllerBottom()
+        {
+            Vector3 position = (transform.position + Controller.center) - new Vector3(0f, (Controller.height / 2f), 0f);
+            return position;
         }
 
         public Vector3 GroundNormal()
         {
-            Vector3 position = CapsuleBottom();
+            Vector3 position = ControllerCenterBottom();
             Vector3 direction = -transform.up;
-            float distance = (CapsuleCollider.height / 2f) * 1.5f;
-            RaycastHit hit = RaycastExtension.Raycast(position, direction, distance, Preset.walkableMask);
+            float distance = (Controller.height / 2f) * 1.5f;
+            RaycastHit hit = RaycastExtension.RaycastWithMask(position, direction, distance, Preset.walkableMask);
 
             if (hit.collider != null)
             {
@@ -132,8 +145,7 @@ namespace Game.Character
             SetState("Graviting", true);
 
             // Components
-            Rigidbody = GetComponent<Rigidbody>();
-            CapsuleCollider = transform.GetComponent<CapsuleCollider>();
+            Controller = GetComponent<CharacterController>();
 
             // Jump
             jumpTimer = 1f;
@@ -144,7 +156,7 @@ namespace Game.Character
             initialCoverCamRot = coverCamRoot.localRotation;
 
             // Others
-            initialCapsuleHeight = CapsuleCollider.height;
+            initialControllerHeight = Controller.height;
         }
 
         private void Update()
@@ -166,11 +178,13 @@ namespace Game.Character
             {
                 if (GetState("GroundArea"))
                 {
+                    float currentSpeed = !GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed;
                     Vector3 dir1 = transform.forward * moveInput.y + transform.right * moveInput.x;
                     Vector3 dir2 = Vector3.Cross(transform.right, GroundNormal()) * moveInput.y + Vector3.Cross(-transform.forward, GroundNormal()) * moveInput.x;
                     Vector3 direction = (!GetState("Sloping") ? dir1 : dir2);
 
-                    Move(direction);
+                    currentVelocity += direction.normalized * currentSpeed * Time.deltaTime;
+
                     SetState("Walking", true);
                 }
             }
@@ -180,56 +194,27 @@ namespace Game.Character
             }
 
             // Additional gravity
-            if (Rigidbody.velocity.y < 0)
+            if (useGravity)
             {
-                Rigidbody.AddForce(transform.up * Physics.gravity.y * Preset.gravityScale * Time.deltaTime);
+                currentVelocity += transform.up * Physics.gravity.y * Preset.gravityScale * Time.deltaTime;
             }
 
-            // Drag / Friction
-            if (GetState("GroundCollision"))
-            {
-                if (GetState("Walking"))
-                {
-                    Rigidbody.drag = Preset.movingDrag;
-                }
-                else if (!GetState("Jumping"))
-                {
-                    Rigidbody.drag = Preset.idleDrag;
-                }
-
-                if (GetState("Jumping"))
-                {
-                    Rigidbody.drag = Preset.airDrag;
-                }
-            }
-            else
-            {
-                Rigidbody.drag = Preset.airDrag;
-            }
-
-            // Limit Velocity
-            float limitedSpeed = (!GetState("Crouching") ? (!GetState("Running") ? Preset.maxWalkingSpeed : Preset.maxRunningSpeed) : Preset.maxCrouchingSpeed);
-            Vector3 flatVel = new Vector3(Rigidbody.velocity.x, 0f, Rigidbody.velocity.z);
-
-            if (flatVel.magnitude > limitedSpeed)
-            {
-                Vector3 limitedVel = flatVel.normalized * limitedSpeed;
-                Rigidbody.velocity = new Vector3(limitedVel.x, Rigidbody.velocity.y, limitedVel.z);
-            }
+            Move(ref currentVelocity);
         }
 
         private void JumpUpdate()
         {
-            bool inputConditions = Systems.Input.GetBool("Jump");
-            bool stateConditions = GetState("GroundCollision");
-            bool differenceConditions = jumpTimer <= 0;
-            bool conditions = inputConditions && stateConditions && differenceConditions;
+            // Jump
+            bool inputJumpConditions = Systems.Input.GetBool("Jump");
+            bool stateJumpConditions = GetState("GroundCollision");
+            bool differenceJumpConditions = jumpTimer <= 0;
+            bool jumpConditions = inputJumpConditions && stateJumpConditions && differenceJumpConditions;
 
-            if (conditions)
+            if (jumpConditions)
             {
                 SetState("Jumping", true);
-                Rigidbody.AddForce(transform.up * Preset.jumpingForce, ForceMode.Impulse);
-                jumpTimer = 0.3f;
+                currentVelocity += transform.up * Preset.jumpingForce;
+                jumpTimer = 1f;
             }
 
             if (jumpTimer > 0)
@@ -241,6 +226,8 @@ namespace Game.Character
             {
                 SetState("Jumping", false);
             }
+
+            Move(ref currentVelocity);
         }
 
         private void CrouchUpdate()
@@ -253,15 +240,15 @@ namespace Game.Character
 
             if (conditions)
             {
-                CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, Preset.crouchHeight, Preset.crouchSpeed * Time.deltaTime);
+                Controller.height = Mathf.Lerp(Controller.height, Preset.crouchHeight, Preset.crouchSpeed * Time.deltaTime);
             }
             else
             {
-                CapsuleCollider.height = Mathf.Lerp(CapsuleCollider.height, initialCapsuleHeight, Preset.crouchSpeed * Time.deltaTime);
+                Controller.height = Mathf.Lerp(Controller.height, initialControllerHeight, Preset.crouchSpeed * Time.deltaTime);
             }
 
-            // Set camera in top capsule
-            coverCamRoot.position = Vector3.Lerp(coverCamRoot.position, CapsuleTop(), Preset.crouchSpeed * Time.deltaTime);
+            // Set camera in top Controller
+            coverCamRoot.position = Vector3.Lerp(coverCamRoot.position, ControllerCenterTop(), Preset.crouchSpeed * Time.deltaTime);
         }
 
         private void CoverUpdate()
@@ -326,8 +313,8 @@ namespace Game.Character
 
         private void GroundCheckUpdate()
         {
-            Vector3 position = CapsuleBottom();
-            float radius = CapsuleCollider.radius;
+            Vector3 position = ControllerBottom();
+            float radius = Controller.radius * Preset.groundRadius;
             LayerMask mask = Preset.walkableMask;
 
             Collider[] colliders = Physics.OverlapSphere(position, radius, mask);
@@ -346,8 +333,8 @@ namespace Game.Character
         private void StateUpdate()
         {
             // Setting
-            SetState("GroundArea", Physics.OverlapSphere(CapsuleBottom(), CapsuleCollider.radius + Preset.groundAreaRadius, Preset.walkableMask).Length > 0);
-            SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= Preset.maxAngleSlope);
+            SetState("GroundArea", Physics.OverlapSphere(ControllerCenterBottom(), Controller.radius + Preset.groundAreaRadius, Preset.walkableMask).Length > 0);
+            SetState("Sloping", GetSlopeAngle() > 0 && GetSlopeAngle() <= Controller.slopeLimit);
 
             // Running
             bool inputConditions = Systems.Input.GetBool("Run") && Systems.Input.GetVector2("MoveAxis").y > 0;
@@ -357,16 +344,13 @@ namespace Game.Character
             SetState("Running", runningConditions);
 
             // Getting
-            Rigidbody.useGravity = GetState("Graviting");
+            useGravity = GetState("Graviting");
         }
 
-        private void Move(Vector3 direction)
+        private void Move(ref Vector3 _currentVelocity)
         {
-            if (direction != Vector3.zero)
-            {
-                float currentSpeed = !GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed;
-                Rigidbody.AddForce(direction.normalized * currentSpeed * 10f, ForceMode.Force);
-            }
+            Controller.Move(_currentVelocity);
+            _currentVelocity = Vector3.zero;
         }
 
         private void OnDrawGizmos()
@@ -374,22 +358,22 @@ namespace Game.Character
             // Ground check
             if (States != null)
             {
-                if (CapsuleCollider != null)
+                if (Controller != null)
                 {
                     // Ground check
-                    Vector3 positionCheck = CapsuleBottom();
-                    float radiusCheck = CapsuleCollider.radius;
                     Gizmos.color = Color.blue;
+                    Vector3 positionCheck = ControllerBottom();
+                    float radiusCheck = Controller.radius * Preset.groundRadius;
                     Gizmos.DrawWireSphere(positionCheck, radiusCheck);
 
                     // Ground area
-                    float radiusArea = CapsuleCollider.radius + Preset.groundAreaRadius;
-                    Gizmos.color = States.GetState("GroundArea") ? Color.green : Color.red;
-                    Gizmos.DrawWireSphere(CapsuleBottom(), radiusArea);
+                    Gizmos.color = States.GetState("GroundArea") ? Color.green : Color.blue;
+                    float radiusArea = Controller.radius + Preset.groundAreaRadius;
+                    Gizmos.DrawWireSphere(ControllerCenterBottom(), radiusArea);
                 }
                 else
                 {
-                    CapsuleCollider = GetComponent<CapsuleCollider>();
+                    Controller = GetComponent<CharacterController>();
                 }
             }
             else

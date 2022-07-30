@@ -1613,7 +1613,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1334278954232416360
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5779,7 +5779,7 @@ MonoBehaviour:
   swayAmount: 0.1
   swaySmooth: 0.1
   swayResetSpeed: 5
-  swayHorizontalScale: 1
+  swayHorizontalScale: 50
   swayRoot: {fileID: 1334278954266411376}
   horizontalSwayRoot: {fileID: 1334278954978014638}
 --- !u!114 &8258304529310099007

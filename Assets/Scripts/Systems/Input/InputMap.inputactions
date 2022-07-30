@@ -78,6 +78,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "FreeLook",
+                    "type": "Button",
+                    "id": "ef4e6558-7ddc-4c14-bffa-6060dd6b9c07",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "WeaponSafety",
                     "type": "Button",
                     "id": "66cbd9cd-1e92-4aae-9ca9-6b11e797954a",
@@ -390,6 +399,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "NightVision",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c4f7543f-db8c-4d53-96fd-f674a9319e6b",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeLook",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

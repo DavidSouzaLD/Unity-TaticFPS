@@ -100,6 +100,15 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""FreeLook"",
+                    ""type"": ""Button"",
+                    ""id"": ""ef4e6558-7ddc-4c14-bffa-6060dd6b9c07"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""WeaponSafety"",
                     ""type"": ""Button"",
                     ""id"": ""66cbd9cd-1e92-4aae-9ca9-6b11e797954a"",
@@ -414,6 +423,17 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                     ""action"": ""NightVision"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c4f7543f-db8c-4d53-96fd-f674a9319e6b"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FreeLook"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -498,6 +518,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         m_Player_Cover = m_Player.FindAction("Cover", throwIfNotFound: true);
         m_Player_NightVision = m_Player.FindAction("NightVision", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_FreeLook = m_Player.FindAction("FreeLook", throwIfNotFound: true);
         m_Player_WeaponSafety = m_Player.FindAction("WeaponSafety", throwIfNotFound: true);
         m_Player_WeaponFireAuto = m_Player.FindAction("WeaponFireAuto", throwIfNotFound: true);
         m_Player_WeaponFireTap = m_Player.FindAction("WeaponFireTap", throwIfNotFound: true);
@@ -578,6 +599,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Cover;
     private readonly InputAction m_Player_NightVision;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_FreeLook;
     private readonly InputAction m_Player_WeaponSafety;
     private readonly InputAction m_Player_WeaponFireAuto;
     private readonly InputAction m_Player_WeaponFireTap;
@@ -598,6 +620,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         public InputAction @Cover => m_Wrapper.m_Player_Cover;
         public InputAction @NightVision => m_Wrapper.m_Player_NightVision;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @FreeLook => m_Wrapper.m_Player_FreeLook;
         public InputAction @WeaponSafety => m_Wrapper.m_Player_WeaponSafety;
         public InputAction @WeaponFireAuto => m_Wrapper.m_Player_WeaponFireAuto;
         public InputAction @WeaponFireTap => m_Wrapper.m_Player_WeaponFireTap;
@@ -639,6 +662,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @FreeLook.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeLook;
+                @FreeLook.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeLook;
+                @FreeLook.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFreeLook;
                 @WeaponSafety.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponSafety;
                 @WeaponSafety.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponSafety;
                 @WeaponSafety.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponSafety;
@@ -691,6 +717,9 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @FreeLook.started += instance.OnFreeLook;
+                @FreeLook.performed += instance.OnFreeLook;
+                @FreeLook.canceled += instance.OnFreeLook;
                 @WeaponSafety.started += instance.OnWeaponSafety;
                 @WeaponSafety.performed += instance.OnWeaponSafety;
                 @WeaponSafety.canceled += instance.OnWeaponSafety;
@@ -778,6 +807,7 @@ public partial class @InputMap : IInputActionCollection2, IDisposable
         void OnCover(InputAction.CallbackContext context);
         void OnNightVision(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnFreeLook(InputAction.CallbackContext context);
         void OnWeaponSafety(InputAction.CallbackContext context);
         void OnWeaponFireAuto(InputAction.CallbackContext context);
         void OnWeaponFireTap(InputAction.CallbackContext context);

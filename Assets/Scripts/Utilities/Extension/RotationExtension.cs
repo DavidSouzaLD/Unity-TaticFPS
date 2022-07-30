@@ -59,4 +59,14 @@ public static class RotationExtension
 
         return Quaternion.Euler(0f, 0f, 0f);
     }
+
+    public static Vector3 QuaternionToVector3(this Quaternion _quaternion)
+    {
+        return new Vector3(_quaternion.x, _quaternion.y, _quaternion.z);
+    }
+
+    public static Quaternion Vector3ToQuaternion(this Vector3 _vector3)
+    {
+        return Quaternion.Euler(_vector3);
+    }
 }

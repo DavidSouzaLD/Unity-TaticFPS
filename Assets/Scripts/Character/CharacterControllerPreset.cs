@@ -15,21 +15,12 @@ namespace Game.Character
 
         [Header("Movement")]
         public LayerMask walkableMask;
-        public float walkingSpeed = 10f;
-        public float runningSpeed = 15f;
-        public float maxAngleSlope = 65f;
-        [Space]
-        public float maxWalkingSpeed = 3f;
-        public float maxRunningSpeed = 4.5f;
-        public float maxCrouchingSpeed = 1.5f;
+        public float walkingSpeed = 2f;
+        public float runningSpeed = 5f;
+        public float crouchingSpeed = 1f;
         [Space]
         public float jumpingForce = 50f;
         public float gravityScale = 2f;
-
-        [Header("Drag")]
-        public float movingDrag = 0.5f;
-        public float idleDrag = 5f;
-        public float airDrag = 0.5f;
 
         [Header("Crouch")]
         public float crouchHeight = 1.5f;
@@ -40,8 +31,8 @@ namespace Game.Character
         public float coverCamScale = 0.02f;
         public float coverSpeed = 6f;
 
-        [Header("Ground Area")]
-        public float groundAreaHeight = -0.35f;
+        [Header("Ground")]
+        public float groundRadius;
         public float groundAreaRadius = 0.3f;
 
         [Header("Footsteps Sounds")]

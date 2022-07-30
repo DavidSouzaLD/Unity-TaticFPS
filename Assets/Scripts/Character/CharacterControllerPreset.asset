@@ -15,24 +15,18 @@ MonoBehaviour:
   walkableMask:
     serializedVersion: 2
     m_Bits: 8
-  walkingSpeed: 10
-  runningSpeed: 15
-  maxAngleSlope: 65
-  maxWalkingSpeed: 3
-  maxRunningSpeed: 4.5
-  maxCrouchingSpeed: 1.5
-  jumpingForce: 50
-  gravityScale: 2
-  movingDrag: 0.5
-  idleDrag: 50
-  airDrag: 0.5
-  crouchHeight: 1.5
+  walkingSpeed: 2
+  runningSpeed: 4
+  crouchingSpeed: 1
+  jumpingForce: 1
+  gravityScale: 0.9
+  crouchHeight: 1
   crouchSpeed: 5
   coverAmount: 20
   coverCamScale: 0.035
   coverSpeed: 6
-  groundAreaHeight: -0.3999
-  groundAreaRadius: 0.3
+  groundRadius: 0.42
+  groundAreaRadius: 0.2
   baseStepSpeed: 0.6
   runStepSpeed: 0.4
   crouchStepSpeed: 1.1
