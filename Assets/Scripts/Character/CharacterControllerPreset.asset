@@ -30,7 +30,7 @@ MonoBehaviour:
   crouchSpeed: 5
   coverAmount: 20
   coverCamScale: 0.035
-  coverSpeed: 4
+  coverSpeed: 6
   groundAreaHeight: -0.3999
   groundAreaRadius: 0.3
   baseStepSpeed: 0.6

@@ -202,8 +202,9 @@ namespace Game.Weapons
             // Conditions
             bool modeConditions = (Preset.weaponMode == WeaponPreset.WeaponMode.Combat);
             bool playerConditions = !FPSCharacterController.GetState("Running") && CharacterCamera.GetState("CursorLocked");
+            bool weaponManagerConditions = !WeaponManager.GetRetract().IsRetracting();
             bool stateConditions = !GetState("Drawing") && !GetState("Hiding") && !GetState("Reloading");
-            bool conditions = modeConditions && playerConditions && stateConditions;
+            bool conditions = modeConditions && playerConditions && weaponManagerConditions && stateConditions;
 
             if (conditions)
             {
@@ -249,9 +250,10 @@ namespace Game.Weapons
             bool inputConditions = Systems.Input.GetBool("WeaponReload");
             bool modeConditions = (Preset.weaponMode == WeaponPreset.WeaponMode.Combat);
             bool playerConditions = !FPSCharacterController.GetState("Running") && CharacterCamera.GetState("CursorLocked");
+            bool weaponManagerConditions = !WeaponManager.GetRetract().IsRetracting();
             bool stateConditions = !GetState("Reloading") && !GetState("Drawing") && !GetState("Hiding");
             bool reloadConditions = extraBullets > 0 && currentBullets < bulletsPerMagazine;
-            bool conditions = inputConditions && modeConditions && playerConditions && stateConditions && reloadConditions;
+            bool conditions = inputConditions && modeConditions && playerConditions && weaponManagerConditions && stateConditions && reloadConditions;
 
             if (conditions)
             {
@@ -265,8 +267,9 @@ namespace Game.Weapons
             bool inputConditions = Systems.Input.GetBool("WeaponAim");
             bool modeConditions = (Preset.weaponMode == WeaponPreset.WeaponMode.Combat);
             bool playerConditions = !FPSCharacterController.GetState("Running") && CharacterCamera.GetState("CursorLocked");
+            bool weaponManagerConditions = !WeaponManager.GetRetract().IsRetracting();
             bool stateConditions = !GetState("Reloading") && !GetState("Drawing") && !GetState("Hiding");
-            bool conditions = inputConditions && modeConditions && playerConditions && stateConditions;
+            bool conditions = inputConditions && modeConditions && playerConditions && weaponManagerConditions && stateConditions;
 
             if (conditions)
             {

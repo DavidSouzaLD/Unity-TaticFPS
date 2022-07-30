@@ -190,7 +190,6 @@ namespace Game.Character
             {
                 if (GetState("Walking"))
                 {
-                    Debug.Log("Walking:" + GetState("Walking"));
                     Rigidbody.drag = Preset.movingDrag;
                 }
                 else if (!GetState("Jumping"))
@@ -278,7 +277,7 @@ namespace Game.Character
             {
                 Vector3 targetPos = new Vector3(Preset.coverAmount * Preset.coverCamScale * coverInput, 0f, 0f);
                 Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, Preset.coverAmount * -coverInput));
-                Debug.Log(WeaponManager.IsAim());
+
                 if (!WeaponManager.IsAim())
                 {
                     // Weapon
