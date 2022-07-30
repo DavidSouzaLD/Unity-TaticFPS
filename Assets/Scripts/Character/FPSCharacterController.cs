@@ -215,11 +215,11 @@ namespace Game.Character
 
             if (conditions)
             {
-                Controller.SetSmoothHeight(Preset.crouchHeight, Preset.speedToCrouch);
+                Controller.SetSmoothHeight(Preset.crouchHeight, Preset.speedToCrouch * Time.deltaTime);
             }
             else
             {
-                Controller.SetSmoothHeight(Preset.standHeight, Preset.speedToCrouch);
+                Controller.SetSmoothHeight(Preset.standHeight, Preset.speedToCrouch * Time.deltaTime);
             }
 
             camRoot.transform.position = Controller.GetTopCenterPosition();

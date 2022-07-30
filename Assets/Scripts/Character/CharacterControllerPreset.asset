@@ -20,8 +20,9 @@ MonoBehaviour:
   crouchingSpeed: 1
   jumpingForce: 1
   gravityScale: 0.9
+  standHeight: 2
   crouchHeight: 1.5
-  crouchSpeed: 5
+  speedToCrouch: 5
   coverAmount: 20
   coverCamScale: 0.035
   coverSpeed: 6

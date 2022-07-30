@@ -7,6 +7,7 @@ namespace Game.Weapons
         [Header("Settings")]
         [SerializeField] private LayerMask rectractMask;
         [SerializeField] private float retractRayDistance = 1f;
+        [SerializeField] private float retractPosition = -5f;
         [SerializeField] private float retractAngle = -20f;
         [SerializeField] private float retractSpeed = 6f;
 
@@ -16,7 +17,8 @@ namespace Game.Weapons
 
         // Private
         private bool isRetracting;
-        private Quaternion retractInitialRot;
+        private Vector3 initialRetractPos;
+        private Quaternion initialRetractRot;
 
         public bool IsRetracting()
         {
@@ -25,7 +27,8 @@ namespace Game.Weapons
 
         private void Start()
         {
-            retractInitialRot = retracRoot.localRotation;
+            initialRetractPos = retracRoot.localPosition;
+            initialRetractRot = retracRoot.localRotation;
         }
 
         private void Update()
@@ -38,7 +41,9 @@ namespace Game.Weapons
                 if (hit.transform)
                 {
                     isRetracting = true;
-                    Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), retractInitialRot.y, retractInitialRot.z));
+                    Vector3 targetPos = new Vector3(retracRoot.localPosition.x, retracRoot.localPosition.y, ((retractPosition * 0.001f) / hit.distance));
+                    Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), initialRetractRot.y, initialRetractRot.z));
+                    retracRoot.localPosition = Vector3.Lerp(retracRoot.localPosition, targetPos, retractSpeed * Time.deltaTime);
                     retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, targetRot, retractSpeed * Time.deltaTime);
                 }
             }
@@ -47,7 +52,8 @@ namespace Game.Weapons
                 isRetracting = false;
             }
 
-            retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, retractInitialRot, retractSpeed * Time.deltaTime);
+            retracRoot.localPosition = Vector3.Lerp(retracRoot.localPosition, initialRetractPos, retractSpeed * Time.deltaTime);
+            retracRoot.localRotation = Quaternion.Slerp(retracRoot.localRotation, initialRetractRot, retractSpeed * Time.deltaTime);
         }
     }
 }
