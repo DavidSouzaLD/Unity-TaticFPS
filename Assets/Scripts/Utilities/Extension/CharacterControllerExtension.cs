@@ -34,30 +34,4 @@ public static class CharacterControllerExtension
         Vector3 position = (_controller.transform.position + _controller.center) - new Vector3(0f, (_controller.height / 2f), 0f);
         return position;
     }
-
-    public static Vector3 GetTopCenterLocalPosition(this CharacterController _controller)
-    {
-        Vector3 position = GetTopLocalPosition(_controller);
-        position.y -= _controller.radius;
-        return position;
-    }
-
-    public static Vector3 GetBottomCenterLocalPosition(this CharacterController _controller)
-    {
-        Vector3 position = GetBottomLocalPosition(_controller);
-        position.y += _controller.radius;
-        return position;
-    }
-
-    public static Vector3 GetTopLocalPosition(this CharacterController _controller)
-    {
-        Vector3 position = (_controller.transform.localPosition + _controller.center) + new Vector3(0f, (_controller.height / 2f), 0f);
-        return position;
-    }
-
-    public static Vector3 GetBottomLocalPosition(this CharacterController _controller)
-    {
-        Vector3 position = (_controller.transform.localPosition + _controller.center) - new Vector3(0f, (_controller.height / 2f), 0f);
-        return position;
-    }
 }

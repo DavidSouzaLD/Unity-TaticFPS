@@ -122,7 +122,7 @@ namespace Game.Character
             Controller = GetComponent<CharacterController>();
 
             // Jump
-            jumpTimer = 1f;
+            jumpTimer = 0.3f;
 
             // Cover
             initialCoverRot = coverWeaponRoot.localRotation;
@@ -147,38 +147,29 @@ namespace Game.Character
         private void FixedUpdate()
         {
             // Moving
+            if (Controller.isGrounded && currentVelocity.y < 0)
+            {
+                currentVelocity.y = 0f;
+            }
+
             Vector2 moveInput = Systems.Input.GetVector2("MoveAxis");
 
             if (moveInput != Vector2.zero)
             {
-                if (GetState("GroundArea"))
-                {
-                    float currentSpeed = !GetState("Crouching") ? (!GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed) : Preset.crouchingSpeed;
-                    Vector3 dir1 = transform.forward * moveInput.y + transform.right * moveInput.x;
-                    Vector3 dir2 = Vector3.Cross(transform.right, GetGroundNormal()) * moveInput.y + Vector3.Cross(-transform.forward, GetGroundNormal()) * moveInput.x;
-                    Vector3 direction = (!GetState("Sloping") ? dir1 : dir2);
+                float currentSpeed = !GetState("Crouching") ? (!GetState("Running") ? Preset.walkingSpeed : Preset.runningSpeed) : Preset.crouchingSpeed;
+                Vector3 dir1 = transform.forward * moveInput.y + transform.right * moveInput.x;
+                Vector3 dir2 = Vector3.Cross(transform.right, GetGroundNormal()) * moveInput.y + Vector3.Cross(-transform.forward, GetGroundNormal()) * moveInput.x;
+                Vector3 direction = (!GetState("Sloping") ? dir1 : dir2);
 
-                    currentVelocity += direction.normalized * currentSpeed * Time.deltaTime;
+                Controller.Move(direction.normalized * currentSpeed * Time.deltaTime);
 
-                    SetState("Walking", true);
-                }
+                SetState("Walking", true);
             }
             else
             {
                 SetState("Walking", false);
             }
 
-            // Gravity
-            if (GetState("Graviting"))
-            {
-                currentVelocity += transform.up * Physics.gravity.y * Preset.gravityScale * Time.deltaTime;
-            }
-
-            Move(ref currentVelocity);
-        }
-
-        private void JumpUpdate()
-        {
             // Jump
             bool inputJumpConditions = Systems.Input.GetBool("Jump");
             bool stateJumpConditions = GetState("GroundCollision");
@@ -188,10 +179,21 @@ namespace Game.Character
             if (jumpConditions)
             {
                 SetState("Jumping", true);
-                currentVelocity += transform.up * Preset.jumpingForce;
-                jumpTimer = 1f;
+                currentVelocity.y += Mathf.Sqrt(Preset.jumpingForce * -3f * (Physics.gravity.y * Preset.gravityScale));
+                jumpTimer = 0.3f;
             }
 
+            // Gravity
+            if (GetState("Graviting"))
+            {
+                currentVelocity.y += Physics.gravity.y * Preset.gravityScale * Time.deltaTime;
+            }
+
+            Controller.Move(currentVelocity * Time.deltaTime);
+        }
+
+        private void JumpUpdate()
+        {
             if (jumpTimer > 0)
             {
                 jumpTimer -= Time.deltaTime;
@@ -201,8 +203,6 @@ namespace Game.Character
             {
                 SetState("Jumping", false);
             }
-
-            Move(ref currentVelocity);
         }
 
         private void CrouchUpdate()
@@ -216,17 +216,21 @@ namespace Game.Character
             if (conditions)
             {
                 Controller.LerpHeight(Preset.crouchHeight, Preset.speedToCrouch * Time.deltaTime);
+                camRoot.transform.localPosition = new Vector3(
+                    camRoot.transform.localPosition.x,
+                    Mathf.Lerp(camRoot.transform.localPosition.y, Preset.crouchHeight / 2f, Preset.speedToCrouch * Time.deltaTime),
+                camRoot.transform.localPosition.z
+                );
             }
             else
             {
                 Controller.LerpHeight(Preset.standHeight, Preset.speedToCrouch * Time.deltaTime);
+                camRoot.transform.localPosition = new Vector3(
+                    camRoot.transform.localPosition.x,
+                    Mathf.Lerp(camRoot.transform.localPosition.y, Preset.standHeight / 2f, Preset.speedToCrouch * Time.deltaTime),
+                camRoot.transform.localPosition.z
+                );
             }
-
-            camRoot.transform.localPosition = new Vector3(
-                 camRoot.transform.localPosition.x,
-                 Controller.GetTopCenterLocalPosition().y / 2f,
-                 camRoot.transform.localPosition.z
-            );
         }
 
         private void CoverUpdate()

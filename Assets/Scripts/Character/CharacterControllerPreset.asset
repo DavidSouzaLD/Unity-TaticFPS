@@ -15,23 +15,23 @@ MonoBehaviour:
   walkableMask:
     serializedVersion: 2
     m_Bits: 8
-  walkingSpeed: 2
+  walkingSpeed: 1
   runningSpeed: 4
-  crouchingSpeed: 1
-  jumpingForce: 1
+  crouchingSpeed: 0.5
+  jumpingForce: 0.5
   gravityScale: 0.9
   standHeight: 2
   crouchHeight: 1
   speedToCrouch: 5
   coverAmount: 20
   coverCamScale: 0.005
-  coverSpeed: 6
+  coverSpeed: 4
   groundRadius: 0.42
-  groundAreaRadius: 0.2
+  groundAreaRadius: 0.1
   baseStepSpeed: 0.6
   runStepSpeed: 0.4
   crouchStepSpeed: 1.1
-  footstepVolume: 0.1
+  footstepVolume: 0.2
   footsteps:
   - tagName: Concrete
     clips:
