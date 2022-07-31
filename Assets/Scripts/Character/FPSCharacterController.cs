@@ -215,14 +215,18 @@ namespace Game.Character
 
             if (conditions)
             {
-                Controller.SetSmoothHeight(Preset.crouchHeight, Preset.speedToCrouch * Time.deltaTime);
+                Controller.LerpHeight(Preset.crouchHeight, Preset.speedToCrouch * Time.deltaTime);
             }
             else
             {
-                Controller.SetSmoothHeight(Preset.standHeight, Preset.speedToCrouch * Time.deltaTime);
+                Controller.LerpHeight(Preset.standHeight, Preset.speedToCrouch * Time.deltaTime);
             }
 
-            camRoot.transform.position = Controller.GetTopCenterPosition();
+            camRoot.transform.localPosition = new Vector3(
+                 camRoot.transform.localPosition.x,
+                 Controller.GetTopCenterLocalPosition().y / 2f,
+                 camRoot.transform.localPosition.z
+            );
         }
 
         private void CoverUpdate()

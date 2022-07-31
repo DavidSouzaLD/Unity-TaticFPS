@@ -21,10 +21,10 @@ MonoBehaviour:
   jumpingForce: 1
   gravityScale: 0.9
   standHeight: 2
-  crouchHeight: 1.5
+  crouchHeight: 1
   speedToCrouch: 5
   coverAmount: 20
-  coverCamScale: 0.035
+  coverCamScale: 0.005
   coverSpeed: 6
   groundRadius: 0.42
   groundAreaRadius: 0.2
