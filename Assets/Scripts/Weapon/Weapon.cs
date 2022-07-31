@@ -54,6 +54,7 @@ namespace Game.Weapons
         private AudioClip overrideFireSound;
 
         // Weapon components
+        private WeaponProjectile Projectile;
         private WeaponSound Sound;
         private WeaponAnimation Anim;
         private WeaponState States;
@@ -150,6 +151,7 @@ namespace Game.Weapons
         private void Start()
         {
             // Animation
+            Projectile = GetComponentInChildren<WeaponProjectile>();
             Sound = GetComponentInChildren<WeaponSound>();
             Anim = GetComponentInChildren<WeaponAnimation>();
             Sound.Init(this);
@@ -372,6 +374,9 @@ namespace Game.Weapons
                 // Removing bullets
                 currentBullets -= Preset.bulletsPerFire;
                 firerateTimer = Preset.firerate;
+
+                // Projectile drop
+                Projectile.Drop();
 
                 // Delegate
                 OnFiring?.Invoke();

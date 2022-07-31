@@ -15,7 +15,7 @@ MonoBehaviour:
   walkableMask:
     serializedVersion: 2
     m_Bits: 8
-  walkingSpeed: 1
+  walkingSpeed: 2
   runningSpeed: 4
   crouchingSpeed: 0.5
   jumpingForce: 0.5
