@@ -3088,7 +3088,7 @@ MonoBehaviour:
   BoneGizmosSize: 0.005
   BoneColor: {r: 1, g: 1, b: 1, a: 1}
   HideRoot: 0
-  EnableConstraint: 1
+  EnableConstraint: 0
 --- !u!1 &737874090
 GameObject:
   m_ObjectHideFlags: 0
