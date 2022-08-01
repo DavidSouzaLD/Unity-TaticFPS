@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a3bfb6e8b138d54686940a0cd78307c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tracerDestroySpeed: 0.001
+  tracerDestroySpeed: 0.05
   pos: []
 --- !u!120 &277832011086963585
 LineRenderer:
@@ -96,8 +96,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.22138484
-        value: 0.1226432
+        time: 0.2412289
+        value: 0.19811317
         inSlope: 0
         outSlope: 0
         tangentMode: 0
