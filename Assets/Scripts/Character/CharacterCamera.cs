@@ -72,7 +72,8 @@ namespace Game.Character
         [SerializeField] private Camera freeLookCam;
 
         [Header("Roots")]
-        [SerializeField] private Transform characterTransform;
+        [SerializeField] private Transform cameraMaskRoot;
+        [SerializeField] private Transform characterRoot;
 
         [Header("Volume")]
         [SerializeField] private Volume Volume;
@@ -161,6 +162,10 @@ namespace Game.Character
                         mainCam.enabled = true;
                         freeLookCam.enabled = false;
                         changedFreeLook = false;
+
+                        // Set mask cam rotation
+                        cameraMaskRoot.parent = mainCam.transform;
+                        cameraMaskRoot.localEulerAngles = Vector3.zero;
                     }
 
                     mainRotateX += (-camAxis.y * sensitivity.y) * sensitivityScale;
@@ -170,6 +175,8 @@ namespace Game.Character
 
                     camTargetRot = Quaternion.Euler(mainRotateX, 0f, 0f);
                     characerTargetRot = Quaternion.Euler(0f, mainRotateY, 0f);
+
+                    cameraMaskRoot.localPosition = Vector3.zero;
                 }
                 else
                 {
@@ -181,6 +188,10 @@ namespace Game.Character
                         mainCam.enabled = false;
                         freeLookCam.enabled = true;
                         changedFreeLook = true;
+
+                        // Set mask cam rotation
+                        cameraMaskRoot.parent = freeLookCam.transform;
+                        cameraMaskRoot.localEulerAngles = Vector3.zero;
                     }
 
                     freeRotateX += (-camAxis.y * sensitivity.y) * sensitivityScale;
@@ -190,11 +201,13 @@ namespace Game.Character
                     freeRotateY = Mathf.Clamp(freeRotateY, -45f, 45f);
 
                     camTargetRot = Quaternion.Euler(freeRotateX, freeRotateY, 0f);
+
+                    cameraMaskRoot.localPosition = Vector3.zero;
                 }
             }
 
             currentCam.transform.localRotation = Quaternion.Slerp(currentCam.transform.localRotation, camTargetRot, camSmooth * Time.deltaTime);
-            characterTransform.localRotation = Quaternion.Slerp(characterTransform.transform.localRotation, characerTargetRot, camSmooth * Time.deltaTime);
+            characterRoot.localRotation = Quaternion.Slerp(characterRoot.transform.localRotation, characerTargetRot, camSmooth * Time.deltaTime);
         }
 
         public void LockCursor(bool value)
