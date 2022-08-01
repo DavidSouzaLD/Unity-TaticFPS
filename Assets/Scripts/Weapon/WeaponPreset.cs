@@ -5,11 +5,9 @@ namespace Game.Weapons
     [CreateAssetMenu(fileName = "WeaponPreset", menuName = "Game/Create WeaponPreset")]
     public class WeaponPreset : ScriptableObject
     {
-        public enum WeaponMode { Safety, Combat }
         public enum FireMode { Semi, Auto }
 
         [Header("Settings")]
-        public WeaponMode weaponMode;
         public FireMode fireMode;
         public float firerate = 1f;
 
@@ -27,6 +25,7 @@ namespace Game.Weapons
         public int bulletsPerFire = 1;
         public float bulletGravityScale = 1;
         public float maxBulletDistance;
+        public float effectiveDistance;
 
         [Header("Recoil")]
         public Vector3 recoilForcePos;

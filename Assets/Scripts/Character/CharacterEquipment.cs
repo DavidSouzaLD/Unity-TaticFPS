@@ -13,6 +13,19 @@ namespace Game.Character
         [SerializeField] private Weapon primaryWeapon;
         [SerializeField] private Weapon secondaryWeapon;
 
+        private void Start()
+        {
+            if (primaryWeapon.gameObject.activeSelf)
+            {
+                currentType = WeaponType.PrimaryWeapon;
+            }
+
+            if (secondaryWeapon.gameObject.activeSelf)
+            {
+                currentType = WeaponType.SecondaryWeapon;
+            }
+        }
+
         private void Update()
         {
             if (Systems.Input.GetBool("EquipPrimary") && currentType == WeaponType.SecondaryWeapon)

@@ -37,7 +37,7 @@ namespace Game.Weapons
         /// </summary>
         private void SafetyCheck()
         {
-            Animator.SetBool("Safety", Weapon.Preset.weaponMode == WeaponPreset.WeaponMode.Safety);
+            Animator.SetBool("Safety", Weapon.weaponMode == Weapon.WeaponMode.Safety);
         }
 
         /// <summary>

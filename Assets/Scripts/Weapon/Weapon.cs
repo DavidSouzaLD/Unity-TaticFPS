@@ -26,6 +26,8 @@ namespace Game.Weapons
     [DisallowMultipleComponent]
     public class Weapon : MonoBehaviour
     {
+        public enum WeaponMode { Safety, Combat }
+        public WeaponMode weaponMode;
         public WeaponPreset Preset;
 
         [Header("Data")]
@@ -77,9 +79,9 @@ namespace Game.Weapons
             return currentBullets > 0;
         }
 
-        public void ChangeWeaponMode(WeaponPreset.WeaponMode _mode)
+        public void ChangeWeaponMode(WeaponMode _mode)
         {
-            Preset.weaponMode = _mode;
+            weaponMode = _mode;
         }
 
         public WeaponAnimation GetWeaponAnimation()
@@ -100,6 +102,10 @@ namespace Game.Weapons
         public void SetAimPosition(Vector3 _aimPos)
         {
             aimPosition = _aimPos;
+        }
+        public void SetAimRotation(Quaternion _aimRot)
+        {
+            aimRotation = _aimRot;
         }
 
         public void ResetAim()
@@ -151,6 +157,9 @@ namespace Game.Weapons
 
         private void Start()
         {
+            // Setting start weapon mode
+            weaponMode = WeaponMode.Combat;
+
             // Animation
             Projectile = GetComponentInChildren<WeaponProjectile>();
             Sound = GetComponentInChildren<WeaponSound>();
@@ -203,7 +212,7 @@ namespace Game.Weapons
         private void FireUpdate()
         {
             // Conditions
-            bool modeConditions = (Preset.weaponMode == WeaponPreset.WeaponMode.Combat);
+            bool modeConditions = (weaponMode == WeaponMode.Combat);
             bool playerConditions = !FPSCharacterController.GetState("Running") && CharacterCamera.GetState("CursorLocked");
             bool weaponManagerConditions = !WeaponManager.GetRetract().IsRetracting();
             bool stateConditions = !GetState("Drawing") && !GetState("Hiding") && !GetState("Reloading");
@@ -251,7 +260,7 @@ namespace Game.Weapons
         private void ReloadUpdate()
         {
             bool inputConditions = Systems.Input.GetBool("WeaponReload");
-            bool modeConditions = (Preset.weaponMode == WeaponPreset.WeaponMode.Combat);
+            bool modeConditions = (weaponMode == WeaponMode.Combat);
             bool playerConditions = !FPSCharacterController.GetState("Running") && CharacterCamera.GetState("CursorLocked");
             bool weaponManagerConditions = !WeaponManager.GetRetract().IsRetracting();
             bool stateConditions = !GetState("Reloading") && !GetState("Drawing") && !GetState("Hiding");
@@ -268,7 +277,7 @@ namespace Game.Weapons
         private void AimUpdate()
         {
             bool inputConditions = Systems.Input.GetBool("WeaponAim");
-            bool modeConditions = (Preset.weaponMode == WeaponPreset.WeaponMode.Combat);
+            bool modeConditions = (weaponMode == WeaponMode.Combat);
             bool playerConditions = !FPSCharacterController.GetState("Running") && CharacterCamera.GetState("CursorLocked");
             bool weaponManagerConditions = !WeaponManager.GetRetract().IsRetracting();
             bool stateConditions = !GetState("Reloading") && !GetState("Drawing") && !GetState("Hiding");
@@ -309,13 +318,13 @@ namespace Game.Weapons
 
             if (conditions)
             {
-                switch (Preset.weaponMode)
+                switch (weaponMode)
                 {
-                    case WeaponPreset.WeaponMode.Safety: Preset.weaponMode = WeaponPreset.WeaponMode.Combat; break;
-                    case WeaponPreset.WeaponMode.Combat: Preset.weaponMode = WeaponPreset.WeaponMode.Safety; break;
+                    case WeaponMode.Safety: weaponMode = WeaponMode.Combat; break;
+                    case WeaponMode.Combat: weaponMode = WeaponMode.Safety; break;
                 }
 
-                SetState("Safety", Preset.weaponMode == WeaponPreset.WeaponMode.Safety);
+                SetState("Safety", weaponMode == WeaponMode.Safety);
 
                 // Delegate
                 OnSafetyChanged?.Invoke();
@@ -464,14 +473,19 @@ namespace Game.Weapons
         {
             if (Preset != null && fireRoot != null)
             {
-                Gizmos.color = Color.red;
+                Gizmos.color = Color.green;
                 Vector3 point1 = fireRoot.position;
                 Vector3 predictedBulletVelocity = fireRoot.forward * Preset.maxBulletDistance;
                 float stepSize = 0.01f;
 
                 for (float step = 0f; step < 1; step += stepSize)
                 {
-                    predictedBulletVelocity += (Physics.gravity * stepSize) * Preset.bulletGravityScale;
+                    if (step > (Preset.effectiveDistance / Preset.maxBulletDistance))
+                    {
+                        Gizmos.color = Color.red;
+                        predictedBulletVelocity += (Physics.gravity * stepSize) * Preset.bulletGravityScale;
+                    }
+
                     Vector3 point2 = point1 + predictedBulletVelocity * stepSize;
                     Gizmos.DrawLine(point1, point2);
                     point1 = point2;

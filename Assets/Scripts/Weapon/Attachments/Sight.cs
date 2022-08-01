@@ -6,6 +6,7 @@ namespace Game.Weapons.Attachments
     {
         [Header("Settings")]
         [SerializeField] private Vector3 aimPosition;
+        [SerializeField] private Quaternion aimRotation;
         [SerializeField] private Transform newMuzzlePoint;
         [SerializeField, Range(0f, 1f)] private float sensitivityScale;
 
@@ -14,6 +15,7 @@ namespace Game.Weapons.Attachments
             base.OnEnable();
             Weapon.SetAimSensitivityScale(sensitivityScale);
             Weapon.SetAimPosition(aimPosition);
+            Weapon.SetAimRotation(aimRotation);
             Weapon.SetFireRoot(newMuzzlePoint);
         }
 

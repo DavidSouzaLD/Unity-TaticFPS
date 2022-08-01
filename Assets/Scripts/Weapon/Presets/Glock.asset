@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86a361a8fec344544bc1dcfbc1879fe0, type: 3}
   m_Name: Glock
   m_EditorClassIdentifier: 
-  weaponMode: 1
   fireMode: 0
   firerate: 0.09
+  minDamage: 35
+  maxDamage: 60
   drawTime: 0.5
   hideTime: 0.5
   bulletHitForce: 100
   bulletVelocity: 250
   bulletsPerFire: 1
   bulletGravityScale: 1
-  maxBulletDistance: 100
+  maxBulletDistance: 200
+  effectiveDistance: 50
   recoilForcePos: {x: 0, y: 0, z: -0.1}
   recoilForceRot: {x: 0, y: 0, z: 0}
   recoilForceCam: {x: 5, y: 1, z: 1}
