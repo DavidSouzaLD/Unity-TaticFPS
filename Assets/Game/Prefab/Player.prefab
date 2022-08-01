@@ -2433,6 +2433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d0469c8a90b984ab0bf581bdeb1ec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeToUse: 1
+  nightVisionSound: {fileID: 8300000, guid: a554b0e6a634da34798b5821954fdcdc, type: 3}
 --- !u!20 &1800276946941744991
 Camera:
   m_ObjectHideFlags: 0
