@@ -1443,7 +1443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1800276946461167185
 Transform:
   m_ObjectHideFlags: 0
@@ -1472,6 +1472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7042fe437d7cf9b4eb31e4ad1bd65bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponMode: 0
   Preset: {fileID: 11400000, guid: 5bd2c04b9ec29ec46b5da72c02f95669, type: 2}
   bulletsPerMagazine: 12
   currentBullets: 12
@@ -10659,7 +10660,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8711357839660314753
 Transform:
   m_ObjectHideFlags: 0
@@ -10688,6 +10689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7042fe437d7cf9b4eb31e4ad1bd65bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponMode: 0
   Preset: {fileID: 11400000, guid: 8fe6e390d728d1b47878e7864d132d2a, type: 2}
   bulletsPerMagazine: 30
   currentBullets: 30

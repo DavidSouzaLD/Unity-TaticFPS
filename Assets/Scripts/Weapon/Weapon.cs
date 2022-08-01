@@ -471,24 +471,27 @@ namespace Game.Weapons
 
         private void OnDrawGizmos()
         {
-            if (Preset != null && fireRoot != null)
+            if (!Application.isPlaying)
             {
-                Gizmos.color = Color.green;
-                Vector3 point1 = fireRoot.position;
-                Vector3 predictedBulletVelocity = fireRoot.forward * Preset.maxBulletDistance;
-                float stepSize = 0.01f;
-
-                for (float step = 0f; step < 1; step += stepSize)
+                if (Preset != null && fireRoot != null)
                 {
-                    if (step > (Preset.effectiveDistance / Preset.maxBulletDistance))
-                    {
-                        Gizmos.color = Color.red;
-                        predictedBulletVelocity += (Physics.gravity * stepSize) * Preset.bulletGravityScale;
-                    }
+                    Gizmos.color = Color.green;
+                    Vector3 point1 = fireRoot.position;
+                    Vector3 predictedBulletVelocity = fireRoot.forward * Preset.maxBulletDistance;
+                    float stepSize = 0.01f;
 
-                    Vector3 point2 = point1 + predictedBulletVelocity * stepSize;
-                    Gizmos.DrawLine(point1, point2);
-                    point1 = point2;
+                    for (float step = 0f; step < 1; step += stepSize)
+                    {
+                        if (step > (Preset.effectiveDistance / Preset.maxBulletDistance))
+                        {
+                            Gizmos.color = Color.red;
+                            predictedBulletVelocity += (Physics.gravity * stepSize) * Preset.bulletGravityScale;
+                        }
+
+                        Vector3 point2 = point1 + predictedBulletVelocity * stepSize;
+                        Gizmos.DrawLine(point1, point2);
+                        point1 = point2;
+                    }
                 }
             }
         }
