@@ -17,7 +17,7 @@ MonoBehaviour:
     m_Bits: 8
   walkingSpeed: 2
   runningSpeed: 4
-  crouchingSpeed: 0.5
+  crouchingSpeed: 1
   jumpingForce: 0.5
   gravityScale: 0.9
   standHeight: 2

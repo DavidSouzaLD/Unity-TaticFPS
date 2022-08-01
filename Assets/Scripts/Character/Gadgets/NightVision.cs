@@ -7,6 +7,12 @@ namespace Game.Character.Gadgets
         [Header("Settings")]
         [SerializeField] private float timeToUse = 1f;
         [SerializeField] private AudioClip nightVisionSound;
+        [SerializeField] private Light nightVisionLight;
+
+        [Header("Exposure")]
+        [SerializeField] private float exposureSpeed = 1f;
+        [SerializeField] private float defaultExposure = 6f;
+        [SerializeField] private float enabledExposure = 50f;
 
         // Private
         private float nightVisionTimer;
@@ -23,6 +29,12 @@ namespace Game.Character.Gadgets
 
         private void Start()
         {
+            // Exposure
+            if (nightVisionLight.intensity != enabledExposure)
+            {
+                nightVisionLight.intensity = enabledExposure;
+            }
+
             NightVisionUpdate();
         }
 
@@ -32,14 +44,17 @@ namespace Game.Character.Gadgets
             if (Systems.Input.GetBool("NightVision") && nightVisionTimer <= 0)
             {
                 nightVisionMode = !nightVisionMode;
-
-                if (nightVisionMode)
-                {
-                    Systems.Audio.PlaySound(nightVisionSound, 0.5f);
-                }
-
                 NightVisionUpdate();
                 nightVisionTimer = timeToUse;
+            }
+
+            // Exposure
+            if (nightVisionMode)
+            {
+                if (nightVisionLight.intensity != defaultExposure)
+                {
+                    nightVisionLight.intensity = Mathf.Lerp(nightVisionLight.intensity, defaultExposure, exposureSpeed * Time.deltaTime);
+                }
             }
 
             if (nightVisionTimer > 0)
@@ -57,8 +72,12 @@ namespace Game.Character.Gadgets
                     if (CharacterCamera.GetPostProcessing().GetVolume() != "NIGHTVISION")
                     {
                         CharacterCamera.GetPostProcessing().ApplyVolume("NIGHTVISION");
+
                         changeControl = true;
                     }
+
+                    Systems.Audio.PlaySound(nightVisionSound, 0.5f);
+                    nightVisionLight.gameObject.SetActive(true);
                 }
             }
             else
@@ -70,6 +89,14 @@ namespace Game.Character.Gadgets
                         CharacterCamera.GetPostProcessing().ApplyVolume("BASE");
                         changeControl = false;
                     }
+
+                    // Exposure
+                    if (nightVisionLight.intensity != enabledExposure)
+                    {
+                        nightVisionLight.intensity = enabledExposure;
+                    }
+
+                    nightVisionLight.gameObject.SetActive(false);
                 }
             }
         }
