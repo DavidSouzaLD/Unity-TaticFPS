@@ -13,6 +13,10 @@ namespace Game.Weapons
         public FireMode fireMode;
         public float firerate = 1f;
 
+        [Header("Damage")]
+        public float minDamage = 35f;
+        public float maxDamage = 60f;
+
         [Header("Switch")]
         public float drawTime;
         public float hideTime;

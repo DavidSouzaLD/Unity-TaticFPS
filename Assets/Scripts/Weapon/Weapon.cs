@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.Character;
 using Game.Utilities;
+using Game.Interfaces;
 
 namespace Game.Weapons
 {
@@ -394,6 +395,14 @@ namespace Game.Weapons
                 HitBody.AddForceAtPosition(fireRoot.forward * Preset.bulletHitForce, hit.point);
             }
 
+            // Apply damage to IHealth
+            IDamageable<float> hitHealth = hit.collider.GetComponent<IDamageable<float>>();
+
+            if (hitHealth != null)
+            {
+                hitHealth.TakeDamage(Random.Range(Preset.minDamage, Preset.maxDamage));
+            }
+
             // Hitmark in enemy
             if (hit.transform.tag.Equals("Enemy"))
             {
@@ -405,6 +414,7 @@ namespace Game.Weapons
             if (WeaponImpacts.GetImpactWithTag(hit.transform.tag) != null)
             {
                 GameObject impact = GameObject.Instantiate(WeaponImpacts.GetImpactWithTag(hit.transform.tag).prefab, hit.point, Quaternion.LookRotation(hit.normal));
+                impact.transform.parent = hit.collider.transform;
                 impact.transform.position += impact.transform.forward * 0.001f;
 
                 MonoBehaviour.Destroy(impact, 5f);
