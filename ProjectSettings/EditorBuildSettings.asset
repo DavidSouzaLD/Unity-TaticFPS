@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Desertic.unity
+    guid: fea34fd3edaac164a9f1bc22ffe87377
+  - enabled: 0
     path: Assets/Scenes/Training.unity
     guid: defdfa781ec09e74aa5204ba08650aaf
   m_configObjects:
