@@ -303,13 +303,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 4942819945930454358}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b95fcbaf140a6b343940852848f7704a, type: 3}
+  m_Script: {fileID: 11500000, guid: e087fe10d2b108f40a34c9247658709f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attachmentType: 1
-  aimPosition: {x: 0, y: 0, z: 0}
+  attachmentName: Scope3X
+  attachmentType: 2
+  aimPosition: {x: -0.07, y: 0.0448, z: -0.15}
+  aimRotation: {x: 0, y: 0, z: 0, w: 0}
   newMuzzlePoint: {fileID: 2865214857370871051}
-  sensitivityScale: 0.6
+  sensitivityScale: 0.7
 --- !u!33 &4942819945929353558
 MeshFilter:
   m_ObjectHideFlags: 0
