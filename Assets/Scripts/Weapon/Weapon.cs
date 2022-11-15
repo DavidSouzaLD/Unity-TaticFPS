@@ -98,7 +98,10 @@ namespace Game.Weapon
 
         private void OnEnable()
         {
-            WeaponManager.Instance.currentWeapon = this;
+            if (WeaponManager.Instance != null)
+            {
+                WeaponManager.Instance.currentWeapon = this;
+            }
         }
 
         private void Update()
@@ -162,15 +165,20 @@ namespace Game.Weapon
             bool inputConditions = PlayerKeys.Click("Reload");
             bool modeConditions = (data.weaponMode == WeaponMode.Combat);
             bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
-            bool weaponManagerConditions = !Retract.isRetracting;
-            bool statusConditions = !isReloading && !isDrawing && !isHiding;
-            bool reloadConditions = extraBullets > 0 && currentBullets < bulletsPerMagazine;
-            bool conditions = inputConditions && modeConditions && playerConditions && weaponManagerConditions && statusConditions && reloadConditions;
+            bool statusConditions = !isReloading && !isDrawing && !isHiding && !Retract.isRetracting;
+            bool reloadConditions = extraBullets > 0;
+            bool conditions = inputConditions && modeConditions && playerConditions && statusConditions && reloadConditions;
 
             if (conditions)
             {
-                // Animation no-bullet
-                weaponAnimation.Play("Reload");
+                if (currentBullets <= 0)
+                {
+                    weaponAnimation.Play("Reload");
+                }
+                else if (currentBullets > 0 && currentBullets < bulletsPerMagazine)
+                {
+                    weaponAnimation.Play("Reload With Ammo");
+                }
             }
         }
 
@@ -179,9 +187,8 @@ namespace Game.Weapon
             bool inputConditions = PlayerKeys.Press("Aim");
             bool modeConditions = (data.weaponMode == WeaponMode.Combat);
             bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
-            bool weaponManagerConditions = !Retract.isRetracting;
-            bool statusConditions = !isReloading && !isDrawing && !isHiding;
-            bool conditions = inputConditions && modeConditions && playerConditions && weaponManagerConditions && statusConditions;
+            bool statusConditions = !isReloading && !isDrawing && !isHiding && !Retract.isRetracting;
+            bool conditions = inputConditions && modeConditions && playerConditions && statusConditions;
 
             if (conditions)
             {
@@ -189,6 +196,7 @@ namespace Game.Weapon
 
                 PlayerCamera.sensitivityScale = data.aimSensitivityScale;
                 Sway.swayScale = data.aimSwayScale;
+                Sway.swayHorizontalScale = 0f;
 
                 transform.localPosition = Vector3.Lerp(transform.localPosition, data.aimPosition, data.aimSpeed * Time.deltaTime);
                 transform.localRotation = Quaternion.Slerp(transform.localRotation, data.aimRotation, data.aimSpeed * Time.deltaTime);
@@ -196,6 +204,7 @@ namespace Game.Weapon
             else
             {
                 PlayerCamera.sensitivityScale = 1;
+                Sway.swayHorizontalScale = Sway.defaultSwayHorizontalScale;
                 isAiming = false;
             }
 
@@ -212,7 +221,7 @@ namespace Game.Weapon
 
         private void UpdateMode()
         {
-            bool inputConditions = PlayerKeys.Click("Secure");
+            bool inputConditions = PlayerKeys.Click("Safety");
             bool statusConditions = !isReloading && !isAiming && !isFiring && !isDrawing && !isHiding;
             bool conditions = inputConditions && statusConditions;
 

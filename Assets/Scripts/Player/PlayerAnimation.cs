@@ -18,20 +18,17 @@ namespace Game.Player
             // Moving animation
             if (WeaponManager.Instance.currentWeapon != null)
             {
+                BasicAnimator.SetBool("Aiming", WeaponManager.Instance.currentWeapon.isAiming);
+
                 if (!WeaponManager.Instance.currentWeapon.isAiming)
                 {
                     if (PlayerController.isGrounded)
                     {
-                        BasicAnimator.SetBool("Aiming", false);
                         BasicAnimator.SetBool("Walking", PlayerController.isWalking);
                         BasicAnimator.SetBool("Running", PlayerController.isRunning);
                     }
 
                     BasicAnimator.SetBool("Air", !PlayerController.isGrounded);
-                }
-                else
-                {
-                    BasicAnimator.SetBool("Aiming", true);
                 }
             }
             else

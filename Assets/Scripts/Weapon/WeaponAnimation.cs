@@ -56,14 +56,14 @@ namespace Game.Weapon
                 case WeaponEvents.Cocking:
 
                     WeaponManager.Instance.PlaySound("COCKING");
-                    WeaponManager.Instance.currentWeapon.CalculateReload();
-                    WeaponManager.Instance.currentWeapon.onEndReload?.Invoke();
 
                     break;
 
                 case WeaponEvents.EndAnimation:
 
                     WeaponManager.Instance.currentWeapon.isReloading = false;
+                    WeaponManager.Instance.currentWeapon.CalculateReload();
+                    WeaponManager.Instance.currentWeapon.onEndReload?.Invoke();
 
                     break;
             }

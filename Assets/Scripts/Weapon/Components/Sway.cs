@@ -10,7 +10,7 @@ namespace Game.Weapon
         public float swayAmount = 0.1f;
         public float swaySmooth = 0.1f;
         public float swayResetSpeed = 5f;
-        public float swayHorizontalScale = 1f;
+
 
         [Header("Transforms")]
         public Transform swayTransform;
@@ -19,12 +19,17 @@ namespace Game.Weapon
         private Vector3 swayInitialPos;
         private Quaternion swayInitialRot;
         private Quaternion horSwayInitialRot;
+
+        public static float defaultSwayHorizontalScale;
         public static float swayScale = 1f;
+        public static float swayHorizontalScale = 1f;
 
         private void Start()
         {
             // Setting start values
             swayScale = 1f;
+            swayHorizontalScale = 8f;
+            defaultSwayHorizontalScale = swayHorizontalScale;
             swayInitialPos = swayTransform.localPosition;
             swayInitialRot = swayTransform.localRotation;
             horSwayInitialRot = horizontalSwayTransform.localRotation;

@@ -103,13 +103,11 @@ namespace Game.Player
             }
         }
 
-        public BoolKey[] boolKeys;
-        public FloatKey[] floatKeys;
-        public AxisKey[] axisKeys;
+        public PlayerKeysData data;
 
         public static bool Press(string name)
         {
-            foreach (BoolKey key in Instance.boolKeys)
+            foreach (BoolKey key in Instance.data.boolKeys)
             {
                 if (name == key.name)
                 {
@@ -122,7 +120,7 @@ namespace Game.Player
 
         public static bool Click(string name)
         {
-            foreach (BoolKey key in Instance.boolKeys)
+            foreach (BoolKey key in Instance.data.boolKeys)
             {
                 if (name == key.name)
                 {
@@ -135,7 +133,7 @@ namespace Game.Player
 
         public static float GetFloat(string name)
         {
-            foreach (FloatKey key in Instance.floatKeys)
+            foreach (FloatKey key in Instance.data.floatKeys)
             {
                 if (name == key.name)
                 {
@@ -147,7 +145,7 @@ namespace Game.Player
 
         public static Vector2 GetAxis(string name)
         {
-            foreach (AxisKey key in Instance.axisKeys)
+            foreach (AxisKey key in Instance.data.axisKeys)
             {
                 if (name == key.name)
                 {
@@ -159,7 +157,7 @@ namespace Game.Player
 
         public static Vector2 GetAxisRaw(string name)
         {
-            foreach (AxisKey key in Instance.axisKeys)
+            foreach (AxisKey key in Instance.data.axisKeys)
             {
                 if (name == key.name)
                 {

@@ -58,6 +58,11 @@ namespace Game.Player
         {
             get
             {
+                if (isCrouching)
+                {
+                    return crouchingSpeed;
+                }
+
                 if (isWalking && !isRunning)
                 {
                     return walkingSpeed;
@@ -66,11 +71,6 @@ namespace Game.Player
                 if (isRunning)
                 {
                     return runningSpeed;
-                }
-
-                if (isCrouching)
-                {
-                    return crouchingSpeed;
                 }
 
                 return 0;
