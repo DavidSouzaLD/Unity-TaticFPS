@@ -25,7 +25,7 @@ namespace Game.Weapon
 
         public void PlaySound(string soundName, float volume = 1f, AudioClip custom = null)
         {
-            int fireSoundLength = currentWeapon.fireSounds.Length;
+            int fireSoundLength = currentWeapon.data.fireSounds.Length;
             AudioClip clip = null;
 
             switch (soundName.ToUpper())
@@ -34,7 +34,7 @@ namespace Game.Weapon
 
                     if (currentWeapon.overrideFireSound == null)
                     {
-                        clip = currentWeapon.fireSounds[Random.Range(0, fireSoundLength)];
+                        clip = currentWeapon.data.fireSounds[Random.Range(0, fireSoundLength)];
                     }
                     else
                     {
@@ -42,9 +42,9 @@ namespace Game.Weapon
                     }
                     break;
 
-                case "REMOVING_MAGAZINE": clip = currentWeapon.startReloadSound; break;
-                case "PUTTING_MAGAZINE": clip = currentWeapon.middleReloadSound; break;
-                case "COCKING": clip = currentWeapon.endReloadSound; break;
+                case "REMOVING_MAGAZINE": clip = currentWeapon.data.startReloadSound; break;
+                case "PUTTING_MAGAZINE": clip = currentWeapon.data.middleReloadSound; break;
+                case "COCKING": clip = currentWeapon.data.endReloadSound; break;
                 case "HITMARK": clip = Hitmark.GetHitMarkSound(); break;
                 case "CUSTOM": clip = custom; break;
             }

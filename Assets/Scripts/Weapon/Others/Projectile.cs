@@ -5,20 +5,20 @@ namespace Game.Weapon
     public class Projectile : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] private GameObject projectilePrefab;
-        [SerializeField] private Transform dropLocation;
+        public GameObject projectilePrefab;
+        public Transform dropTransform;
 
         public void Drop()
         {
-            GameObject projectile = Instantiate(projectilePrefab, dropLocation.position, dropLocation.rotation);
+            GameObject projectile = Instantiate(projectilePrefab, dropTransform.position, dropTransform.rotation);
         }
 
         private void OnDrawGizmosSelected()
         {
-            if (dropLocation != null)
+            if (dropTransform != null)
             {
                 Gizmos.color = Color.blue;
-                Gizmos.DrawRay(dropLocation.position, dropLocation.forward);
+                Gizmos.DrawRay(dropTransform.position, dropTransform.forward);
             }
         }
     }

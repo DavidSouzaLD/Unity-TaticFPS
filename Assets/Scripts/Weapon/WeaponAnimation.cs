@@ -25,7 +25,7 @@ namespace Game.Weapon
         public void Play(string animationName) => animator.Play(animationName);
 
         private void SafetyCheck()
-        => animator.SetBool("Safety", WeaponManager.Instance.currentWeapon.weaponMode == WeaponMode.Secure);
+        => animator.SetBool("Safety", WeaponManager.Instance.currentWeapon.data.weaponMode == WeaponMode.Secure);
 
         private void BulletsCheck()
         => animator.SetBool("NoBullet", !WeaponManager.Instance.currentWeapon.haveBullets);

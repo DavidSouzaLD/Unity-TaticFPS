@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01030fa9bfc1b184b9d98f72c58ac185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tracerDestroySpeed: 0.03
+  tracerDestroySpeed: 0.001
 --- !u!120 &277832011086963585
 LineRenderer:
   m_ObjectHideFlags: 0

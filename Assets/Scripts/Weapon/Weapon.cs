@@ -8,53 +8,14 @@ namespace Game.Weapon
     public partial class Weapon : MonoBehaviour
     {
         [Header("Settings")]
-        public WeaponMode weaponMode;
-        public WeaponFireMode fireMode;
-        public float firerate = 1f;
+        public WeaponData data;
+        public Transform fireTransform;
+        public MuzzleFlash muzzleObject;
 
         [Header("Data")]
         public int bulletsPerMagazine = 12;
         public int currentBullets = 12;
         public int extraBullets = 24;
-
-        [Header("Aim")]
-        public float aimSpeed = 5f;
-        public Vector3 aimPosition;
-        public Quaternion aimRotation;
-        [Space]
-        [Range(0f, 1f)] public float aimSensitivityScale = 1f;
-        [Range(0f, 1f)] public float aimSwayScale = 0.2f;
-
-        [Header("Damage")]
-        public float minDamage = 35f;
-        public float maxDamage = 60f;
-
-        [Header("Switch")]
-        public float drawTime;
-        public float hideTime;
-
-        [Header("Bullet")]
-        public float bulletHitForce = 100f;
-        public float bulletVelocity = 25f;
-        public int bulletsPerFire = 1;
-        public float bulletGravityScale = 1;
-        public float maxBulletDistance = 100f;
-        public float effectiveDistance = 70f;
-
-        [Header("Recoil")]
-        public Vector3 recoilForcePos;
-        public Vector3 recoilForceRot;
-        public Vector3 recoilForceCam;
-
-        [Header("Sounds")]
-        public AudioClip[] fireSounds;
-        public AudioClip noBulletSound;
-        public AudioClip startReloadSound;
-        public AudioClip middleReloadSound;
-        public AudioClip endReloadSound;
-
-        [Header("Transforms")]
-        public Transform fireTransform;
 
         public AudioClip overrideFireSound { get; set; }
 
@@ -98,13 +59,13 @@ namespace Game.Weapon
 
         public void SetMode(WeaponMode mode)
         {
-            weaponMode = mode;
+            data.weaponMode = mode;
         }
 
         public void ResetAim()
         {
-            aimPosition = defaultAimPos;
-            aimRotation = defaultAimRot;
+            data.aimPosition = defaultAimPos;
+            data.aimRotation = defaultAimRot;
         }
 
         public void ResetFireTransform()
@@ -116,8 +77,8 @@ namespace Game.Weapon
         {
             // Default
             defaultFireTransform = fireTransform;
-            defaultAimPos = aimPosition;
-            defaultAimRot = aimRotation;
+            defaultAimPos = data.aimPosition;
+            defaultAimRot = data.aimRotation;
 
             // Aim
             initialAimPos = transform.localPosition;
@@ -151,7 +112,7 @@ namespace Game.Weapon
         private void UpdateFire()
         {
             // Conditions
-            bool modeConditions = (weaponMode == WeaponMode.Combat);
+            bool modeConditions = (data.weaponMode == WeaponMode.Combat);
             bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
             bool weaponManagerConditions = !Retract.isRetracting;
             bool statusConditions = !isDrawing && !isHiding && !isReloading;
@@ -159,12 +120,12 @@ namespace Game.Weapon
 
             if (conditions)
             {
-                switch (fireMode)
+                switch (data.fireMode)
                 {
                     case WeaponFireMode.Semi:
                         if (PlayerKeys.Click("Fire"))
                         {
-                            firingTimer = firerate * 3f;
+                            firingTimer = data.firerate * 3f;
                             CalculateFire();
                         }
                         break;
@@ -172,7 +133,7 @@ namespace Game.Weapon
                     case WeaponFireMode.Auto:
                         if (PlayerKeys.Press("Fire"))
                         {
-                            firingTimer = firerate * 3f;
+                            firingTimer = data.firerate * 3f;
                             CalculateFire();
                         }
                         break;
@@ -199,7 +160,7 @@ namespace Game.Weapon
         public void UpdateReload()
         {
             bool inputConditions = PlayerKeys.Click("Reload");
-            bool modeConditions = (weaponMode == WeaponMode.Combat);
+            bool modeConditions = (data.weaponMode == WeaponMode.Combat);
             bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
             bool weaponManagerConditions = !Retract.isRetracting;
             bool statusConditions = !isReloading && !isDrawing && !isHiding;
@@ -216,7 +177,7 @@ namespace Game.Weapon
         private void UpdateAim()
         {
             bool inputConditions = PlayerKeys.Press("Aim");
-            bool modeConditions = (weaponMode == WeaponMode.Combat);
+            bool modeConditions = (data.weaponMode == WeaponMode.Combat);
             bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
             bool weaponManagerConditions = !Retract.isRetracting;
             bool statusConditions = !isReloading && !isDrawing && !isHiding;
@@ -226,11 +187,11 @@ namespace Game.Weapon
             {
                 isAiming = true;
 
-                PlayerCamera.sensitivityScale = aimSensitivityScale;
-                Sway.swayScale = aimSwayScale;
+                PlayerCamera.sensitivityScale = data.aimSensitivityScale;
+                Sway.swayScale = data.aimSwayScale;
 
-                transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, aimSpeed * Time.deltaTime);
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, aimRotation, aimSpeed * Time.deltaTime);
+                transform.localPosition = Vector3.Lerp(transform.localPosition, data.aimPosition, data.aimSpeed * Time.deltaTime);
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, data.aimRotation, data.aimSpeed * Time.deltaTime);
             }
             else
             {
@@ -244,8 +205,8 @@ namespace Game.Weapon
             if (resetConditions)
             {
                 Sway.swayScale = 1;
-                transform.localPosition = Vector3.Lerp(transform.localPosition, initialAimPos, aimSpeed * Time.deltaTime);
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, initialAimRot, aimSpeed * Time.deltaTime);
+                transform.localPosition = Vector3.Lerp(transform.localPosition, initialAimPos, data.aimSpeed * Time.deltaTime);
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, initialAimRot, data.aimSpeed * Time.deltaTime);
             }
         }
 
@@ -257,13 +218,13 @@ namespace Game.Weapon
 
             if (conditions)
             {
-                switch (weaponMode)
+                switch (data.weaponMode)
                 {
-                    case WeaponMode.Secure: weaponMode = WeaponMode.Combat; break;
-                    case WeaponMode.Combat: weaponMode = WeaponMode.Secure; break;
+                    case WeaponMode.Secure: data.weaponMode = WeaponMode.Combat; break;
+                    case WeaponMode.Combat: data.weaponMode = WeaponMode.Secure; break;
                 }
 
-                isSafety = weaponMode == WeaponMode.Secure;
+                isSafety = data.weaponMode == WeaponMode.Secure;
 
                 // Delegate
                 onSecureChanged?.Invoke();
@@ -272,7 +233,7 @@ namespace Game.Weapon
 
         public void CalculateFire()
         {
-            if (currentBullets >= bulletsPerFire && firerateTimer <= 0)
+            if (currentBullets >= data.bulletsPerFire && firerateTimer <= 0)
             {
                 // Tracer
                 List<Vector3> tracerPositions = new List<Vector3>();
@@ -280,7 +241,7 @@ namespace Game.Weapon
                 BulletTracer tracerScript = tracer.gameObject.GetComponent<BulletTracer>();
 
                 Vector3 point1 = fireTransform.position;
-                Vector3 predictedBulletVelocity = fireTransform.forward * maxBulletDistance;
+                Vector3 predictedBulletVelocity = fireTransform.forward * data.maxBulletDistance;
                 float stepSize = 0.01f;
 
                 // Tracer start position
@@ -288,7 +249,7 @@ namespace Game.Weapon
 
                 for (float step = 0f; step < 1; step += stepSize)
                 {
-                    predictedBulletVelocity += (Physics.gravity * stepSize) * bulletGravityScale;
+                    predictedBulletVelocity += (Physics.gravity * stepSize) * data.bulletGravityScale;
                     Vector3 point2 = point1 + predictedBulletVelocity * stepSize;
                     tracerPositions.Add(point2);
 
@@ -302,7 +263,7 @@ namespace Game.Weapon
                         if (hit.transform)
                         {
                             float distance = (fireTransform.position - hit.point).sqrMagnitude;
-                            float time = distance / (bulletVelocity * 1000f);
+                            float time = distance / (data.bulletVelocity * 1000f);
                             StartCoroutine(CalculateDelay(time, hit));
                             break;
                         }
@@ -313,13 +274,16 @@ namespace Game.Weapon
 
                 tracerScript.pos = tracerPositions;
 
-                Recoil.ApplyRecoil(recoilForcePos, recoilForceRot, recoilForceCam);
+                currentBullets -= data.bulletsPerFire;
+                firerateTimer = data.firerate;
 
-                currentBullets -= bulletsPerFire;
-                firerateTimer = firerate;
-
+                // Visuals
                 WeaponManager.Instance.PlaySound("Fire");
                 weaponAnimation.Play("Fire");
+
+                // Events
+                Recoil.ApplyRecoil(data.recoilForcePos, data.recoilForceRot, data.recoilForceCam);
+                StartCoroutine(ApplyMuzzle(data.muzzleTime));
                 projectile.Drop();
 
                 // Delegate
@@ -335,7 +299,7 @@ namespace Game.Weapon
             Rigidbody HitBody = hit.transform.GetComponent<Rigidbody>();
             if (HitBody)
             {
-                HitBody.AddForceAtPosition(fireTransform.forward * bulletHitForce, hit.point);
+                HitBody.AddForceAtPosition(fireTransform.forward * data.bulletHitForce, hit.point);
             }
 
             // Apply damage to IHealth
@@ -343,7 +307,7 @@ namespace Game.Weapon
 
             if (hitHealth != null)
             {
-                hitHealth.TakeDamage(Random.Range(minDamage, maxDamage));
+                hitHealth.TakeDamage(Random.Range(data.minDamage, data.maxDamage));
             }
 
             // Hitmark in enemy
@@ -392,6 +356,13 @@ namespace Game.Weapon
             }
         }
 
+        private IEnumerator ApplyMuzzle(float muzzleTime)
+        {
+            muzzleObject.gameObject.SetActive(true);
+            yield return new WaitForSeconds(muzzleTime);
+            muzzleObject.gameObject.SetActive(false);
+        }
+
         private void OnDrawGizmos()
         {
             if (!Application.isPlaying)
@@ -400,15 +371,15 @@ namespace Game.Weapon
                 {
                     Gizmos.color = Color.green;
                     Vector3 point1 = fireTransform.position;
-                    Vector3 predictedBulletVelocity = fireTransform.forward * maxBulletDistance;
+                    Vector3 predictedBulletVelocity = fireTransform.forward * data.maxBulletDistance;
                     float stepSize = 0.01f;
 
                     for (float step = 0f; step < 1; step += stepSize)
                     {
-                        if (step > (effectiveDistance / maxBulletDistance))
+                        if (step > (data.effectiveDistance / data.maxBulletDistance))
                         {
                             Gizmos.color = Color.red;
-                            predictedBulletVelocity += (Physics.gravity * stepSize) * bulletGravityScale;
+                            predictedBulletVelocity += (Physics.gravity * stepSize) * data.bulletGravityScale;
                         }
 
                         Vector3 point2 = point1 + predictedBulletVelocity * stepSize;

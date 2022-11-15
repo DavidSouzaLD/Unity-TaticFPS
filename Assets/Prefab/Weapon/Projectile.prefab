@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4460128152627374857}
   - component: {fileID: 5044977710228499395}
   m_Layer: 0
-  m_Name: BulletShell
+  m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
