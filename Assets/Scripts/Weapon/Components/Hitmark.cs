@@ -2,14 +2,12 @@ using UnityEngine;
 
 namespace Game.Weapon
 {
-    public class WeaponHitmark : Singleton<WeaponHitmark>
+    public class Hitmark : Singleton<Hitmark>
     {
         [Header("HitMark")]
-        [SerializeField] private GameObject hitMark;
-        [SerializeField] private AudioClip hitMarkSound;
-        [SerializeField] private float hitMarkTime;
-
-        // Private
+        public GameObject hitMark;
+        public AudioClip hitMarkSound;
+        public float hitMarkTime;
         private float timerHitMark;
 
         public static AudioClip GetHitMarkSound()

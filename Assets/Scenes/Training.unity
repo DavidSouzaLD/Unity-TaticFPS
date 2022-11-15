@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 32406674}
   m_Layer: 6
-  m_Name: Retract (Location)
+  m_Name: Weapon Retract
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3088,10 +3088,10 @@ GameObject:
   - component: {fileID: 1201088922}
   - component: {fileID: 1201088928}
   - component: {fileID: 1201088929}
+  - component: {fileID: 1201088930}
   - component: {fileID: 1201088931}
   - component: {fileID: 1201088932}
   - component: {fileID: 1201088933}
-  - component: {fileID: 1201088930}
   m_Layer: 7
   m_Name: WeaponManager
   m_TagString: Untagged
@@ -3142,12 +3142,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1201088921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e70b3f0e1c7e5074cb72004d1c9fc19c, type: 3}
+  m_Script: {fileID: 11500000, guid: aa102d77c86472243b7830087cc91830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitMark: {fileID: 1135170276}
-  hitMarkSound: {fileID: 8300000, guid: 9094de9e22d4dc64e95f530286fab45f, type: 3}
-  hitMarkTime: 0.1
+  swayMultiplier: {x: 1, y: 0.5}
+  swayAmount: 1
+  swaySmooth: 0.3
+  swayResetSpeed: 5
+  swayHorizontalScale: 15
+  swayTransform: {fileID: 1833304761}
+  horizontalSwayTransform: {fileID: 1572358117}
 --- !u!114 &1201088930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3157,71 +3161,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1201088921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b28616f570dc534dafb24b0c905ccb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  impacts:
-  - name: Wood
-    prefab: {fileID: 4406149976551598978, guid: 3e6ba8af2a2f32b4ab481b05fb29d12d,
-      type: 3}
-  - name: Metal
-    prefab: {fileID: 4406149976551598978, guid: 58f9539fb96e83b4b9959ef51f4ab1b1,
-      type: 3}
-  - name: Enemy
-    prefab: {fileID: 4406149976551598978, guid: 5eaee058a540e2d4c858b6f0ac20b6c9,
-      type: 3}
-  - name: Concrete
-    prefab: {fileID: 4406149976551598978, guid: cee8326c1cb9ec84a910152dfc716243,
-      type: 3}
-  - name: Grass
-    prefab: {fileID: 4406149976551598978, guid: 9ae3a08ae8381b64cb4d3747d9b333c3,
-      type: 3}
---- !u!114 &1201088931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1201088921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 340a8c5f6e56fd74f818906bcfef187e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponResetSpeed: 5
-  camResetSpeed: 8
-  recoilLocation: {fileID: 2114570492}
-  camRecoilLocation: {fileID: 1571702815}
---- !u!114 &1201088932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1201088921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2156ac8b1e8aa644c876b19826e2c946, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  swayMultiplier: {x: 1, y: 0.5}
-  swayAmount: 1
-  swaySmooth: 0.2
-  swayResetSpeed: 5
-  swayHorizontalScale: 15
-  swayAccuracy: 1
-  swayLocation: {fileID: 1833304761}
-  horizontalSwayLocation: {fileID: 1572358117}
---- !u!114 &1201088933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1201088921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a70e9cc4295d2ee459de93b5949cf725, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f75850ad69d3fe4d9bca09580aa2193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rectractMask:
@@ -3231,8 +3171,55 @@ MonoBehaviour:
   retractPosition: -5
   retractAngle: -20
   retractSpeed: 6
-  retractRayLocation: {fileID: 661285492}
-  retracLocation: {fileID: 32406674}
+  retractTransform: {fileID: 32406674}
+  retractRayTransform: {fileID: 661285492}
+--- !u!114 &1201088931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201088921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe5c132f04027941b8ee44cf29ed7f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponResetSpeed: 5
+  camResetSpeed: 8
+  recoilTransform: {fileID: 2114570492}
+  camRecoilTransform: {fileID: 1571702815}
+--- !u!114 &1201088932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201088921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aeb2e5b5607ba943bdb6cce957d4ea0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitMark: {fileID: 1135170276}
+  hitMarkSound: {fileID: 8300000, guid: 9094de9e22d4dc64e95f530286fab45f, type: 3}
+  hitMarkTime: 0.3
+--- !u!114 &1201088933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201088921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5626c9ea4fcd2144c84806a18e777fc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  impacts:
+  - name: Default
+    prefab: {fileID: 4406149976551598978, guid: cee8326c1cb9ec84a910152dfc716243,
+      type: 3}
 --- !u!1 &1267777960
 GameObject:
   m_ObjectHideFlags: 0
@@ -4251,7 +4238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1571702815}
   m_Layer: 6
-  m_Name: Recoil (Location)
+  m_Name: Cam Recoil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4283,7 +4270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1572358117}
   m_Layer: 6
-  m_Name: SwayHorizontal (Location)
+  m_Name: Sway Horizontal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4618,7 +4605,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1748232781}
   m_Layer: 6
-  m_Name: Lean (Location)
+  m_Name: Weapon Lean
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4747,7 +4734,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1833304761}
   m_Layer: 6
-  m_Name: Sway (Location)
+  m_Name: Weapon Sway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4779,7 +4766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1836386723}
   m_Layer: 6
-  m_Name: Lean (Location)
+  m_Name: Cam Lean
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5018,7 +5005,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2114570492}
   m_Layer: 6
-  m_Name: Recoil (Location)
+  m_Name: Weapon Recoil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5082,7 +5069,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2116095162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7042fe437d7cf9b4eb31e4ad1bd65bf2, type: 3}
+  m_Script: {fileID: 11500000, guid: 84e713e47be79884192dce360952aacb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   weaponMode: 1
@@ -5094,7 +5081,7 @@ MonoBehaviour:
   aimSpeed: 5
   aimPosition: {x: -0.015, y: 0.085, z: -0.18}
   aimRotation: {x: 0, y: 0, z: -0.0784591, w: 0.9969173}
-  aimSensitivityScale: 1
+  aimSensitivityScale: 0.7
   aimSwayScale: 0.2
   minDamage: 35
   maxDamage: 60
@@ -7069,7 +7056,6 @@ GameObject:
   - component: {fileID: 4763842459143260109}
   - component: {fileID: 5284765077765365114}
   - component: {fileID: 5284765077765365113}
-  - component: {fileID: 5284765077765365112}
   m_Layer: 0
   m_Name: Arms
   m_TagString: Untagged
@@ -7077,18 +7063,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &5284765077765365112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5284765077765365111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74d36f27510e065438867f9a0d9dc658, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5284765077765365113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7098,7 +7072,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5284765077765365111}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d6f97ff6bfdeaf478918fd36dde2742, type: 3}
+  m_Script: {fileID: 11500000, guid: 4bb49ab5e814ab94ea1cc59131b8794e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!95 &5284765077765365114

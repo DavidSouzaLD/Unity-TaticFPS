@@ -4,45 +4,46 @@ using UnityEngine;
 
 namespace Game.Weapon
 {
-    public class WeaponRecoil : MonoBehaviour
+    public class Recoil : Singleton<Recoil>
     {
         [Header("Settings")]
-        [SerializeField] private float weaponResetSpeed = 5f;
-        [SerializeField] private float camResetSpeed = 8f;
+        public float weaponResetSpeed = 5f;
+        public float camResetSpeed = 8f;
 
-        [Header("Locations")]
-        [SerializeField] private Transform recoilLocation;
-        [SerializeField] private Transform camRecoilLocation;
+        [Header("Transforms")]
+        public Transform recoilTransform;
+        public Transform camRecoilTransform;
 
         private Vector3 initialRecoilPos;
         private Quaternion initialRecoilRot;
         private Vector3 camCurrentRotation;
         private Vector3 camTargetRotation;
+
         private void Start()
         {
-            initialRecoilPos = recoilLocation.localPosition;
-            initialRecoilRot = recoilLocation.localRotation;
+            initialRecoilPos = recoilTransform.localPosition;
+            initialRecoilRot = recoilTransform.localRotation;
         }
 
         private void Update()
         {
             // Weapon reset recoil
-            if (recoilLocation.localPosition != initialRecoilPos || recoilLocation.localRotation != initialRecoilRot)
+            if (recoilTransform.localPosition != initialRecoilPos || recoilTransform.localRotation != initialRecoilRot)
             {
-                recoilLocation.localPosition = Vector3.Lerp(recoilLocation.localPosition, initialRecoilPos, weaponResetSpeed * Time.deltaTime);
-                recoilLocation.localRotation = Quaternion.Slerp(recoilLocation.localRotation, initialRecoilRot, weaponResetSpeed * Time.deltaTime);
+                recoilTransform.localPosition = Vector3.Lerp(recoilTransform.localPosition, initialRecoilPos, weaponResetSpeed * Time.deltaTime);
+                recoilTransform.localRotation = Quaternion.Slerp(recoilTransform.localRotation, initialRecoilRot, weaponResetSpeed * Time.deltaTime);
             }
 
             // Camera reset recoil
-            if (camRecoilLocation)
+            if (camRecoilTransform)
             {
                 camTargetRotation = Vector3.Lerp(camTargetRotation, Vector3.zero, camResetSpeed * Time.deltaTime);
                 camCurrentRotation = Vector3.Slerp(camCurrentRotation, camTargetRotation, camResetSpeed * Time.deltaTime);
-                camRecoilLocation.localRotation = Quaternion.Euler(camCurrentRotation);
+                camRecoilTransform.localRotation = Quaternion.Euler(camCurrentRotation);
             }
         }
 
-        public void ApplyRecoil(Vector3 _recoilForcePos, Vector3 _recoilForceRot, Vector3 _recoilForceCam)
+        public static void ApplyRecoil(Vector3 _recoilForcePos, Vector3 _recoilForceRot, Vector3 _recoilForceCam)
         {
             Vector3 pos = new Vector3(
             Random.Range(_recoilForcePos.x / 2f, _recoilForcePos.x),
@@ -54,10 +55,10 @@ namespace Game.Weapon
                 Random.Range(_recoilForceRot.y / 2f, _recoilForceRot.y),
                 Random.Range(_recoilForceRot.z / 2f, _recoilForceRot.z));
 
-            recoilLocation.localPosition += pos;
-            recoilLocation.localRotation *= Quaternion.Euler(rot);
+            Instance.recoilTransform.localPosition += pos;
+            Instance.recoilTransform.localRotation *= Quaternion.Euler(rot);
 
-            camTargetRotation += new Vector3(
+            Instance.camTargetRotation += new Vector3(
                 -_recoilForceCam.x,
                 Random.Range(-_recoilForceCam.y, _recoilForceCam.y),
                 Random.Range(-_recoilForceCam.z, _recoilForceCam.z));

@@ -4,115 +4,74 @@ namespace Game.Weapon
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(WeaponSound))]
     public class WeaponAnimation : MonoBehaviour
     {
-        // Private
-        private Weapon weapon;
-        private WeaponSound weaponSound;
         private Animator animator;
 
         private void Awake()
         {
             animator = GetComponent<Animator>();
-            weaponSound = GetComponent<WeaponSound>();
-
             animator.keepAnimatorControllerStateOnDisable = true;
         }
 
-        /// <summary>
-        /// Sets the necessarys componenets.
-        /// </summary>
-        public void Init(Weapon sendWeapon, WeaponSound sendWeaponSound)
+        public void Init()
         {
-            // Setting components
-            weapon = sendWeapon;
-            weaponSound = sendWeaponSound;
-
             // Setting events
-            weapon.onFiring += NoBulletCheck;
-            weapon.onSecureChanged += SafetyCheck;
-            weapon.onEndReload += NoBulletCheck;
+            WeaponManager.Instance.currentWeapon.onFiring += BulletsCheck;
+            WeaponManager.Instance.currentWeapon.onSecureChanged += SafetyCheck;
+            WeaponManager.Instance.currentWeapon.onEndReload += BulletsCheck;
         }
 
-        /// <summary>
-        /// Checks if weapon safety has been changed to change animation.
-        /// </summary>
+        public void Play(string animationName) => animator.Play(animationName);
+
         private void SafetyCheck()
+        => animator.SetBool("Safety", WeaponManager.Instance.currentWeapon.weaponMode == WeaponMode.Secure);
+
+        private void BulletsCheck()
+        => animator.SetBool("NoBullet", !WeaponManager.Instance.currentWeapon.haveBullets);
+
+        public void PlayEvent(WeaponEvents events)
         {
-            animator.SetBool("Safety", weapon.weaponMode == WeaponMode.Secure);
+            switch (events)
+            {
+                case WeaponEvents.StartAnimation:
+
+                    WeaponManager.Instance.currentWeapon.isReloading = true;
+                    WeaponManager.Instance.currentWeapon.onStartReload?.Invoke();
+
+                    break;
+
+                case WeaponEvents.RemoveMagazine:
+
+                    WeaponManager.Instance.PlaySound("REMOVING_MAGAZINE");
+
+                    break;
+
+                case WeaponEvents.PutMagazine:
+
+                    WeaponManager.Instance.PlaySound("PUTTING_MAGAZINE");
+
+                    break;
+
+                case WeaponEvents.Cocking:
+
+                    WeaponManager.Instance.PlaySound("COCKING");
+                    WeaponManager.Instance.currentWeapon.CalculateReload();
+                    WeaponManager.Instance.currentWeapon.onEndReload?.Invoke();
+
+                    break;
+
+                case WeaponEvents.EndAnimation:
+
+                    WeaponManager.Instance.currentWeapon.isReloading = false;
+
+                    break;
+            }
         }
 
-        /// <summary>
-        /// Checks for bullet in magazine with each shot to trigger no bullet animation.
-        /// </summary>
-        private void NoBulletCheck()
+        public void PlayAudio(AudioClip clip)
         {
-            animator.SetBool("NoBullet", !weapon.haveBullets);
-        }
-
-        /// <summary>
-        /// Play any animation in animator with animation name.
-        /// </summary>
-        public void Play(string animationName)
-        {
-            animator.Play(animationName);
-        }
-
-        /// <summary>
-        /// Starts when the animation starts.
-        /// </summary>
-        public void StartAnimation()
-        {
-            weapon.isReloading = true;
-
-            // Delegate
-            weapon.onStartReload?.Invoke();
-        }
-
-        /// <summary>
-        /// Activates the sound of removing the charger.
-        /// </summary>
-        public void RemoveMagazine()
-        {
-            weaponSound.Play("START_RELOAD");
-        }
-
-        /// <summary>
-        /// Activates the sound of replacing the charger.
-        /// </summary>
-        public void PutMagazine()
-        {
-            weaponSound.Play("MIDDLE_RELOAD");
-        }
-
-        /// <summary>
-        /// Activates the sound of cocking the weapon.
-        /// </summary>
-        public void Cocking()
-        {
-            weaponSound.Play("END_RELOAD");
-            weapon.CalculateReload();
-
-            // Delegate
-            weapon.onEndReload?.Invoke();
-        }
-
-        /// <summary>
-        /// Calculates bullet loading.
-        /// </summary>
-        public void EndAnimation()
-        {
-            weapon.isReloading = false;
-        }
-
-        /// <summary>
-        /// Reset animator to a specific draw anim.
-        /// </summary>
-        public void HideWeapon()
-        {
-            animator.Play("Draw");
-            weapon.gameObject.SetActive(false);
+            WeaponManager.Instance.PlaySound("CUSTOM", 1f, clip);
         }
     }
 }

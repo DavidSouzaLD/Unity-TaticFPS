@@ -36,7 +36,7 @@ namespace Game.Player
                 Vector3 targetPos = new Vector3(leanAmount * leanCamScale * leanInput, 0f, 0f);
                 Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, leanAmount * -leanInput));
 
-                bool conditionsToLeanWeapon = WeaponManager.CurrentWeapon != null && !WeaponManager.CurrentWeapon.isAiming;
+                bool conditionsToLeanWeapon = WeaponManager.Instance.currentWeapon != null && !WeaponManager.Instance.currentWeapon.isAiming;
 
                 if (conditionsToLeanWeapon)
                 {

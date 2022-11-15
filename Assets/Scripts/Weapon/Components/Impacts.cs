@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Weapon
 {
-    public class WeaponImpacts : Singleton<WeaponImpacts>
+    public class Impacts : Singleton<Impacts>
     {
         [System.Serializable]
         public class Impact
@@ -12,7 +12,7 @@ namespace Game.Weapon
         }
 
         [Header("Settings")]
-        [SerializeField] private Impact[] impacts;
+        public Impact[] impacts;
 
         public static Impact GetImpactWithTag(string tag)
         {

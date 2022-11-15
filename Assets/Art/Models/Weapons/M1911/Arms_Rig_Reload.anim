@@ -77436,37 +77436,45 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: StartAnimation
+    functionName: PlayEvent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0.6666667
-    functionName: RemoveMagazine
+    functionName: PlayEvent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 1
     messageOptions: 0
   - time: 1.2916666
-    functionName: PutMagazine
+    functionName: PlayEvent
     data: 
     objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 2
+    messageOptions: 0
+  - time: 1.7083334
+    functionName: PlayAudio
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: 7aa1126975bfe6140800047baee75932,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 2.625
-    functionName: Cocking
+    functionName: PlayEvent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 3
     messageOptions: 0
   - time: 3.5
-    functionName: EndAnimation
+    functionName: PlayEvent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 4
     messageOptions: 0

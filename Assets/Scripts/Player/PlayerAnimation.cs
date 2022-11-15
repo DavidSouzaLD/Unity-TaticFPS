@@ -16,9 +16,9 @@ namespace Game.Player
         private void BasicUpdate()
         {
             // Moving animation
-            if (WeaponManager.CurrentWeapon != null)
+            if (WeaponManager.Instance.currentWeapon != null)
             {
-                if (!WeaponManager.CurrentWeapon.isAiming)
+                if (!WeaponManager.Instance.currentWeapon.isAiming)
                 {
                     if (PlayerController.isGrounded)
                     {
@@ -26,6 +26,8 @@ namespace Game.Player
                         BasicAnimator.SetBool("Walking", PlayerController.isWalking);
                         BasicAnimator.SetBool("Running", PlayerController.isRunning);
                     }
+
+                    BasicAnimator.SetBool("Air", !PlayerController.isGrounded);
                 }
                 else
                 {
@@ -38,12 +40,6 @@ namespace Game.Player
                 BasicAnimator.SetBool("Walking", false);
                 BasicAnimator.SetBool("Running", false);
             }
-
-            // Aiming animation 
-
-
-            // Air animation
-            BasicAnimator.SetBool("Air", !PlayerController.isGrounded);
         }
     }
 }
