@@ -16,8 +16,8 @@ MonoBehaviour:
   fireMode: 0
   firerate: 0.1
   muzzleTime: 0.01
-  drawTime: 0.7
-  hideTime: 0.7
+  drawTime: 1
+  hideTime: 1
   aimSpeed: 8
   aimPosition: {x: -0.0536, y: 0.082, z: -0.15}
   aimRotation: {x: 0, y: 0, z: 0, w: 0}

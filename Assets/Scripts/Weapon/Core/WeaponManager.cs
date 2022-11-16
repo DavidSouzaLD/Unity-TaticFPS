@@ -1,51 +1,66 @@
 using UnityEngine;
-using Game.Weapon.Components;
+using Game.WeaponSystem.Components;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
-    public class WeaponManager : MonoBehaviour
+    public class WeaponManager : Singleton<WeaponManager>
     {
-        public static WeaponManager Instance;
-
         [Header("Settings")]
-        public LayerMask hittableMask;
-        public Weapon currentWeapon;
-        public GameObject tracerPrefab;
+        public LayerMask m_hittableMask;
+        public Weapon m_currentWeapon;
+        public GameObject m_tracerPrefab;
 
-        private void Awake()
+        public static LayerMask hittableMask
         {
-            if (Instance == null)
+            get
             {
-                Instance = this;
-            }
-            else
-            {
-                Destroy(this);
+                return Instance.m_hittableMask;
             }
         }
 
-        public void PlaySound(string soundName, float volume = 1f, AudioClip custom = null)
+        public static Weapon currentWeapon
         {
-            int fireSoundLength = currentWeapon.data.fireSounds.Length;
+            get
+            {
+                return Instance.m_currentWeapon;
+            }
+
+            set
+            {
+                Instance.m_currentWeapon = value;
+            }
+        }
+
+        public static GameObject tracerPrefab
+        {
+            get
+            {
+                return Instance.m_tracerPrefab;
+            }
+        }
+
+        public static void PlaySound(string soundName, float volume = 1f, AudioClip custom = null)
+        {
+            int fireSoundLength = Instance.m_currentWeapon.data.fireSounds.Length;
             AudioClip clip = null;
 
             switch (soundName.ToUpper())
             {
                 case "FIRE":
 
-                    if (currentWeapon.overrideFireSound == null)
+                    if (Instance.m_currentWeapon.overrideFireSound == null)
                     {
-                        clip = currentWeapon.data.fireSounds[Random.Range(0, fireSoundLength)];
+                        clip = Instance.m_currentWeapon.data.fireSounds[Random.Range(0, fireSoundLength)];
                     }
                     else
                     {
-                        clip = currentWeapon.overrideFireSound;
+                        clip = Instance.m_currentWeapon.overrideFireSound;
                     }
                     break;
 
-                case "REMOVING_MAGAZINE": clip = currentWeapon.data.startReloadSound; break;
-                case "PUTTING_MAGAZINE": clip = currentWeapon.data.middleReloadSound; break;
-                case "COCKING": clip = currentWeapon.data.endReloadSound; break;
+                case "REMOVING_MAGAZINE": clip = Instance.m_currentWeapon.data.startReloadSound; break;
+                case "PUTTING_MAGAZINE": clip = Instance.m_currentWeapon.data.middleReloadSound; break;
+                case "COCKING": clip = Instance.m_currentWeapon.data.endReloadSound; break;
                 case "HITMARK": clip = Hitmark.GetSound; break;
                 case "CUSTOM": clip = custom; break;
             }

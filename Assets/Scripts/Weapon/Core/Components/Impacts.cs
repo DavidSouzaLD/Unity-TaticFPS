@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon.Components
+namespace Game.WeaponSystem.Components
 {
     public class Impacts : Singleton<Impacts>
     {

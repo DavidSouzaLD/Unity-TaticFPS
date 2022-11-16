@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
     public partial class Weapon
     {

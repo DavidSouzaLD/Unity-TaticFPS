@@ -1,4 +1,4 @@
-namespace Game.Weapon.Enums
+namespace Game.WeaponSystem.Enums
 {
     public enum WeaponEvents
     {
@@ -6,6 +6,7 @@ namespace Game.Weapon.Enums
         RemoveMagazine,
         PutMagazine,
         Cocking,
-        EndAnimation
+        EndAnimation,
+        SetDrawOrHide
     }
 }

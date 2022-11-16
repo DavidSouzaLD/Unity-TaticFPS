@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using Game.Player;
-using Game.Weapon.Components;
-using Game.Weapon.Others;
+using Game.WeaponSystem.Components;
+using Game.WeaponSystem.Others;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
     public partial class Weapon
     {
@@ -15,7 +15,7 @@ namespace Game.Weapon
             {
                 // Tracer
                 List<Vector3> tracerPositions = new List<Vector3>();
-                LineRenderer tracer = GameObject.Instantiate(WeaponManager.Instance.tracerPrefab, fireRoot.position, Quaternion.identity).GetComponent<LineRenderer>();
+                LineRenderer tracer = GameObject.Instantiate(WeaponManager.tracerPrefab, fireRoot.position, Quaternion.identity).GetComponent<LineRenderer>();
                 BulletTracer tracerScript = tracer.gameObject.GetComponent<BulletTracer>();
 
                 Vector3 point1 = fireRoot.position;
@@ -36,7 +36,7 @@ namespace Game.Weapon
 
                     Debug.DrawLine(point1, point2, Color.green);
 
-                    if (Physics.Raycast(ray, out hit, (point2 - point1).magnitude, WeaponManager.Instance.hittableMask))
+                    if (Physics.Raycast(ray, out hit, (point2 - point1).magnitude, WeaponManager.hittableMask))
                     {
                         if (hit.transform)
                         {
@@ -56,7 +56,7 @@ namespace Game.Weapon
                 firerateTimer = data.firerate;
 
                 // Visuals
-                WeaponManager.Instance.PlaySound("Fire");
+                WeaponManager.PlaySound("Fire");
                 weaponAnimation.Play("Fire");
 
                 // Events
@@ -92,7 +92,7 @@ namespace Game.Weapon
             if (hit.transform.tag.Equals("Enemy"))
             {
                 Hitmark.ApplyHitMark(PlayerCamera.WorldToScreen(hit.point));
-                WeaponManager.Instance.PlaySound("Hitmark", 0.3f);
+                WeaponManager.PlaySound("Hitmark", 0.3f);
             }
 
             // Bullet hole

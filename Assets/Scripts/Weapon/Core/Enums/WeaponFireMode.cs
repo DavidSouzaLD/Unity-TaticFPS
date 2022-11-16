@@ -1,4 +1,4 @@
-namespace Game.Weapon.Enums
+namespace Game.WeaponSystem.Enums
 {
     public enum WeaponFireMode
     {

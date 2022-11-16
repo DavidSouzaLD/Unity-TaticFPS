@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Weapon.Enums;
+using Game.WeaponSystem.Enums;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Animator))]
@@ -15,7 +15,6 @@ namespace Game.Weapon
         {
             parent = GetComponentInParent<Weapon>();
             animator = GetComponent<Animator>();
-            animator.keepAnimatorControllerStateOnDisable = true;
 
             if (parent == null)
             {
@@ -31,10 +30,27 @@ namespace Game.Weapon
             parent.onEndReload += BulletsCheck;
         }
 
-        public void Play(string animationName) => animator.Play(animationName);
+        public void Play(string animationName, bool force = false)
+        {
+            if (!force)
+            {
+                bool conditionsToPlay = !parent.isDrawing && !parent.isHiding;
+
+                if (conditionsToPlay)
+                {
+                    animator.Play(animationName);
+                }
+            }
+            else
+            {
+                animator.Play(animationName);
+            }
+        }
 
         private void SafetyCheck()
-        => animator.SetBool("Safety", parent.data.weaponMode == WeaponMode.Secure);
+        {
+            animator.SetBool("Safety", parent.data.weaponMode == WeaponMode.Secure);
+        }
 
         private void BulletsCheck()
         {
@@ -47,6 +63,16 @@ namespace Game.Weapon
             {
                 animator.SetBool("NoBullet", false);
             }
+        }
+
+        public void SetDrawing(int value)
+        {
+            parent.isDrawing = value > 0;
+        }
+
+        public void SetHiding(int value)
+        {
+            parent.isHiding = value > 0;
         }
 
         public void PlayEvent(WeaponEvents events)
@@ -65,19 +91,19 @@ namespace Game.Weapon
 
                 case WeaponEvents.RemoveMagazine:
 
-                    WeaponManager.Instance.PlaySound("REMOVING_MAGAZINE");
+                    WeaponManager.PlaySound("REMOVING_MAGAZINE");
 
                     break;
 
                 case WeaponEvents.PutMagazine:
 
-                    WeaponManager.Instance.PlaySound("PUTTING_MAGAZINE");
+                    WeaponManager.PlaySound("PUTTING_MAGAZINE");
 
                     break;
 
                 case WeaponEvents.Cocking:
 
-                    WeaponManager.Instance.PlaySound("COCKING");
+                    WeaponManager.PlaySound("COCKING");
 
                     break;
 
@@ -93,7 +119,7 @@ namespace Game.Weapon
 
         public void PlayAudio(AudioClip clip)
         {
-            WeaponManager.Instance.PlaySound("CUSTOM", 1f, clip);
+            WeaponManager.PlaySound("CUSTOM", 1f, clip);
         }
     }
 }

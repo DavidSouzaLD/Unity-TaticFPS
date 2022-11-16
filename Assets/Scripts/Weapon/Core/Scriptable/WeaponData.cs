@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Weapon.Enums;
+using Game.WeaponSystem.Enums;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
 
     [CreateAssetMenu(fileName = "WeaponData", menuName = "PPM22/Weapon/WeaponData", order = 0)]
@@ -12,10 +12,6 @@ namespace Game.Weapon
         public WeaponFireMode fireMode;
         public float firerate = 1f;
         public float muzzleTime = 0.01f;
-
-        [Header("Switch")]
-        public float drawTime;
-        public float hideTime;
 
         [Header("Aim")]
         public float aimSpeed = 5f;

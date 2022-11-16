@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
     public partial class Weapon
     {
@@ -10,13 +10,6 @@ namespace Game.Weapon
             muzzleObject.SetActive(true);
             yield return new WaitForSeconds(muzzleTime);
             muzzleObject.SetActive(false);
-        }
-
-        private IEnumerator HideEnumerator()
-        {
-            isHiding = true;
-            yield return new WaitForSeconds(data.hideTime);
-            Destroy(gameObject);
         }
     }
 }

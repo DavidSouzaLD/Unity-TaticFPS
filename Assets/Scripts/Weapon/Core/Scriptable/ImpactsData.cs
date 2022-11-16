@@ -1,7 +1,7 @@
 using UnityEngine;
-using Game.Weapon.Components;
+using Game.WeaponSystem.Components;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
 
     [CreateAssetMenu(fileName = "ImpactsData", menuName = "PPM22/Weapon/ImpactsData", order = 0)]

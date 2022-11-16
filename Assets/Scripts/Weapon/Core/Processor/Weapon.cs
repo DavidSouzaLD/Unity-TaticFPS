@@ -1,11 +1,11 @@
 using UnityEngine;
 using Game.Player;
 using Game.Player.Components;
-using Game.Weapon.Enums;
-using Game.Weapon.Components;
-using Game.Weapon.Others;
+using Game.WeaponSystem.Enums;
+using Game.WeaponSystem.Components;
+using Game.WeaponSystem.Others;
 
-namespace Game.Weapon
+namespace Game.WeaponSystem
 {
     public partial class Weapon : MonoBehaviour
     {
@@ -32,11 +32,12 @@ namespace Game.Weapon
         public bool isFiring { get; private set; }
         public bool isAiming { get; private set; }
         public bool isReloading { get; set; }
-        public bool isDrawing { get; private set; }
-        public bool isHiding { get; private set; }
+        public bool isDrawing { get; set; }
+        public bool isHiding { get; set; }
         public bool isSafety { get; private set; }
         public bool haveBullets { get { return currentBullets > 0; } }
         public AudioClip overrideFireSound { get; set; }
+        public WeaponAnimation weaponAnimation { get; private set; }
 
         private float drawTimer;
         private float hideTimer;
@@ -48,7 +49,6 @@ namespace Game.Weapon
         private Quaternion defaultAimRot;
         private Transform defaultFireRoot;
         private BulletDrop bulletDrop;
-        private WeaponAnimation weaponAnimation;
 
         public void ResetAim()
         {
@@ -82,17 +82,6 @@ namespace Game.Weapon
 
             // Setting
             weaponAnimation.Init();
-        }
-
-        public void Hide()
-        {
-            bool conditionsToHide =
-            !isReloading && !isFiring && !isAiming && !isDrawing && !isHiding && !isSafety;
-
-            if (conditionsToHide)
-            {
-                StartCoroutine(HideEnumerator());
-            }
         }
 
         private void Update()

@@ -1,5 +1,5 @@
 using UnityEngine;
-using Game.Weapon;
+using Game.WeaponSystem;
 
 namespace Game.Player.Components
 {
@@ -16,11 +16,11 @@ namespace Game.Player.Components
         private void BasicUpdate()
         {
             // Moving animation
-            if (WeaponManager.Instance.currentWeapon != null)
+            if (WeaponManager.currentWeapon != null)
             {
-                BasicAnimator.SetBool("Aiming", WeaponManager.Instance.currentWeapon.isAiming);
+                BasicAnimator.SetBool("Aiming", WeaponManager.currentWeapon.isAiming);
 
-                if (!WeaponManager.Instance.currentWeapon.isAiming)
+                if (!WeaponManager.currentWeapon.isAiming)
                 {
                     if (PlayerController.isGrounded)
                     {
@@ -29,6 +29,10 @@ namespace Game.Player.Components
                     }
 
                     BasicAnimator.SetBool("Air", !PlayerController.isGrounded);
+                }
+                else
+                {
+                    BasicAnimator.SetBool("Air", false);
                 }
             }
             else

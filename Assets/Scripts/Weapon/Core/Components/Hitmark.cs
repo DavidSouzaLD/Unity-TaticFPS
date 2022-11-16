@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Game.Weapon.Components
+namespace Game.WeaponSystem.Components
 {
     public class Hitmark : Singleton<Hitmark>
     {
