@@ -1,7 +1,7 @@
 using UnityEngine;
 using Game.Player;
 
-namespace Game.Weapon
+namespace Game.Weapon.Components
 {
     public class Sway : Singleton<Sway>
     {

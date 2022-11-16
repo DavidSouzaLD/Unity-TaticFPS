@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using Game.Player;
+using Game.Weapon.Enums;
+using Game.Weapon.Components;
+using Game.Weapon.Others;
 
 namespace Game.Weapon
 {
@@ -9,38 +12,33 @@ namespace Game.Weapon
     {
         [Header("Settings")]
         public WeaponData data;
-        public Transform fireTransform;
-        public MuzzleFlash muzzleObject;
+        public Transform fireRoot;
+        public GameObject muzzleObject;
 
-        [Header("Data")]
+        [Header("Bullets")]
         public int bulletsPerMagazine = 12;
         public int currentBullets = 12;
         public int extraBullets = 24;
 
-        public AudioClip overrideFireSound { get; set; }
-
-        // Delegate
         public delegate void firing();
         public delegate void secureChanged();
         public delegate void startReload();
         public delegate void endReload();
 
-        // Delegate callbacks
         public firing onFiring;
         public secureChanged onSecureChanged;
         public startReload onStartReload;
         public endReload onEndReload;
 
-        // Status
         public bool isFiring { get; private set; }
         public bool isAiming { get; private set; }
         public bool isReloading { get; set; }
         public bool isDrawing { get; private set; }
         public bool isHiding { get; private set; }
         public bool isSafety { get; private set; }
-        public bool canFire { get; private set; }
+        public bool haveBullets { get { return currentBullets > 0; } }
+        public AudioClip overrideFireSound { get; set; }
 
-        // Private
         private float drawTimer;
         private float hideTimer;
         private float firerateTimer;
@@ -49,18 +47,9 @@ namespace Game.Weapon
         private Quaternion initialAimRot;
         private Vector3 defaultAimPos;
         private Quaternion defaultAimRot;
-        private Transform defaultFireTransform;
-
-        // Components
+        private Transform defaultFireRoot;
+        private BulletDrop bulletDrop;
         private WeaponAnimation weaponAnimation;
-        private Projectile projectile;
-
-        public bool haveBullets { get { return currentBullets > 0; } }
-
-        public void SetMode(WeaponMode mode)
-        {
-            data.weaponMode = mode;
-        }
 
         public void ResetAim()
         {
@@ -68,15 +57,20 @@ namespace Game.Weapon
             data.aimRotation = defaultAimRot;
         }
 
-        public void ResetFireTransform()
+        public void ResetFireRoot()
         {
-            fireTransform = defaultFireTransform;
+            fireRoot = defaultFireRoot;
+        }
+
+        private void OnEnable()
+        {
+            WeaponManager.Instance.currentWeapon = this;
         }
 
         private void Start()
         {
             // Default
-            defaultFireTransform = fireTransform;
+            defaultFireRoot = fireRoot;
             defaultAimPos = data.aimPosition;
             defaultAimRot = data.aimRotation;
 
@@ -90,18 +84,10 @@ namespace Game.Weapon
 
             // Get components
             weaponAnimation = GetComponentInChildren<WeaponAnimation>();
-            projectile = GetComponentInChildren<Projectile>();
+            bulletDrop = GetComponentInChildren<BulletDrop>();
 
             // Setting
             weaponAnimation.Init();
-        }
-
-        private void OnEnable()
-        {
-            if (WeaponManager.Instance != null)
-            {
-                WeaponManager.Instance.currentWeapon = this;
-            }
         }
 
         private void Update()
@@ -114,36 +100,42 @@ namespace Game.Weapon
 
         private void UpdateFire()
         {
-            // Conditions
-            bool modeConditions = (data.weaponMode == WeaponMode.Combat);
-            bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
-            bool weaponManagerConditions = !Retract.isRetracting;
-            bool statusConditions = !isDrawing && !isHiding && !isReloading;
-            bool conditions = modeConditions && playerConditions && weaponManagerConditions && statusConditions;
+            bool conditionsToFire =
+            (PlayerKeys.Click("Fire") || PlayerKeys.Press("Fire")) &&
+            !PlayerController.isRunning && PlayerCamera.cursorLocked &&
+             !isDrawing && !isHiding && !isReloading && !Retract.isRetracting;
 
-            if (conditions)
+            if (conditionsToFire)
             {
                 switch (data.fireMode)
                 {
                     case WeaponFireMode.Semi:
+
                         if (PlayerKeys.Click("Fire"))
                         {
                             firingTimer = data.firerate * 3f;
                             CalculateFire();
                         }
+
                         break;
 
                     case WeaponFireMode.Auto:
+
                         if (PlayerKeys.Press("Fire"))
                         {
                             firingTimer = data.firerate * 3f;
                             CalculateFire();
                         }
+
                         break;
                 }
             }
 
-            // Is firing
+            UpdateFirerate();
+        }
+
+        private void UpdateFirerate()
+        {
             if (firingTimer >= 0)
             {
                 isFiring = true;
@@ -160,16 +152,16 @@ namespace Game.Weapon
             }
         }
 
-        public void UpdateReload()
+        private void UpdateReload()
         {
-            bool inputConditions = PlayerKeys.Click("Reload");
-            bool modeConditions = (data.weaponMode == WeaponMode.Combat);
-            bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
-            bool statusConditions = !isReloading && !isDrawing && !isHiding && !Retract.isRetracting;
-            bool reloadConditions = extraBullets > 0;
-            bool conditions = inputConditions && modeConditions && playerConditions && statusConditions && reloadConditions;
+            bool conditionsToReload =
+            PlayerKeys.Click("Reload") &&
+            (data.weaponMode == WeaponMode.Combat) &&
+            !PlayerController.isRunning && PlayerCamera.cursorLocked &&
+            !isReloading && !isDrawing && !isHiding && !Retract.isRetracting &&
+            extraBullets > 0;
 
-            if (conditions)
+            if (conditionsToReload)
             {
                 if (currentBullets <= 0)
                 {
@@ -184,13 +176,17 @@ namespace Game.Weapon
 
         private void UpdateAim()
         {
-            bool inputConditions = PlayerKeys.Press("Aim");
-            bool modeConditions = (data.weaponMode == WeaponMode.Combat);
-            bool playerConditions = !PlayerController.isRunning && PlayerCamera.cursorLocked;
-            bool statusConditions = !isReloading && !isDrawing && !isHiding && !Retract.isRetracting;
-            bool conditions = inputConditions && modeConditions && playerConditions && statusConditions;
+            bool conditionsToAim =
+            PlayerKeys.Press("Aim") &&
+            (data.weaponMode == WeaponMode.Combat) &&
+            !PlayerController.isRunning && PlayerCamera.cursorLocked &&
+            !isReloading && !isDrawing && !isHiding && !Retract.isRetracting;
 
-            if (conditions)
+            bool conditionsToReset =
+            (transform.localPosition != initialAimPos || transform.localRotation != initialAimRot) &&
+            !conditionsToAim;
+
+            if (conditionsToAim)
             {
                 isAiming = true;
 
@@ -208,10 +204,7 @@ namespace Game.Weapon
                 isAiming = false;
             }
 
-            bool differenceConditions = (transform.localPosition != initialAimPos || transform.localRotation != initialAimRot);
-            bool resetConditions = !conditions && differenceConditions;
-
-            if (resetConditions)
+            if (conditionsToReset)
             {
                 Sway.swayScale = 1;
                 transform.localPosition = Vector3.Lerp(transform.localPosition, initialAimPos, data.aimSpeed * Time.deltaTime);
@@ -221,11 +214,11 @@ namespace Game.Weapon
 
         private void UpdateMode()
         {
-            bool inputConditions = PlayerKeys.Click("Safety");
-            bool statusConditions = !isReloading && !isAiming && !isFiring && !isDrawing && !isHiding;
-            bool conditions = inputConditions && statusConditions;
+            bool conditionsToChangeMode =
+            PlayerKeys.Click("Safety") &&
+            !isReloading && !isAiming && !isFiring && !isDrawing && !isHiding;
 
-            if (conditions)
+            if (conditionsToChangeMode)
             {
                 switch (data.weaponMode)
                 {
@@ -240,17 +233,17 @@ namespace Game.Weapon
             }
         }
 
-        public void CalculateFire()
+        private void CalculateFire()
         {
             if (currentBullets >= data.bulletsPerFire && firerateTimer <= 0)
             {
                 // Tracer
                 List<Vector3> tracerPositions = new List<Vector3>();
-                LineRenderer tracer = GameObject.Instantiate(WeaponManager.Instance.tracerPrefab, fireTransform.position, Quaternion.identity).GetComponent<LineRenderer>();
+                LineRenderer tracer = GameObject.Instantiate(WeaponManager.Instance.tracerPrefab, fireRoot.position, Quaternion.identity).GetComponent<LineRenderer>();
                 BulletTracer tracerScript = tracer.gameObject.GetComponent<BulletTracer>();
 
-                Vector3 point1 = fireTransform.position;
-                Vector3 predictedBulletVelocity = fireTransform.forward * data.maxBulletDistance;
+                Vector3 point1 = fireRoot.position;
+                Vector3 predictedBulletVelocity = fireRoot.forward * data.maxBulletDistance;
                 float stepSize = 0.01f;
 
                 // Tracer start position
@@ -271,7 +264,7 @@ namespace Game.Weapon
                     {
                         if (hit.transform)
                         {
-                            float distance = (fireTransform.position - hit.point).sqrMagnitude;
+                            float distance = (fireRoot.position - hit.point).sqrMagnitude;
                             float time = distance / (data.bulletVelocity * 1000f);
                             StartCoroutine(CalculateDelay(time, hit));
                             break;
@@ -293,14 +286,14 @@ namespace Game.Weapon
                 // Events
                 Recoil.ApplyRecoil(data.recoilForcePos, data.recoilForceRot, data.recoilForceCam);
                 StartCoroutine(ApplyMuzzle(data.muzzleTime));
-                projectile.Drop();
+                bulletDrop.Drop();
 
                 // Delegate
                 onFiring?.Invoke();
             }
         }
 
-        public IEnumerator CalculateDelay(float time, RaycastHit hit)
+        private IEnumerator CalculateDelay(float time, RaycastHit hit)
         {
             yield return new WaitForSeconds(time);
 
@@ -308,7 +301,7 @@ namespace Game.Weapon
             Rigidbody HitBody = hit.transform.GetComponent<Rigidbody>();
             if (HitBody)
             {
-                HitBody.AddForceAtPosition(fireTransform.forward * data.bulletHitForce, hit.point);
+                HitBody.AddForceAtPosition(fireRoot.forward * data.bulletHitForce, hit.point);
             }
 
             // Apply damage to IHealth
@@ -367,20 +360,20 @@ namespace Game.Weapon
 
         private IEnumerator ApplyMuzzle(float muzzleTime)
         {
-            muzzleObject.gameObject.SetActive(true);
+            muzzleObject.SetActive(true);
             yield return new WaitForSeconds(muzzleTime);
-            muzzleObject.gameObject.SetActive(false);
+            muzzleObject.SetActive(false);
         }
 
         private void OnDrawGizmos()
         {
             if (!Application.isPlaying)
             {
-                if (fireTransform != null)
+                if (fireRoot != null)
                 {
                     Gizmos.color = Color.green;
-                    Vector3 point1 = fireTransform.position;
-                    Vector3 predictedBulletVelocity = fireTransform.forward * data.maxBulletDistance;
+                    Vector3 point1 = fireRoot.position;
+                    Vector3 predictedBulletVelocity = fireRoot.forward * data.maxBulletDistance;
                     float stepSize = 0.01f;
 
                     for (float step = 0f; step < 1; step += stepSize)

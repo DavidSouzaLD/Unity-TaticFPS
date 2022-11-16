@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Weapon.Enums;
 
 namespace Game.Weapon
 {
@@ -6,29 +7,36 @@ namespace Game.Weapon
     [RequireComponent(typeof(Animator))]
     public class WeaponAnimation : MonoBehaviour
     {
+        private Weapon parent;
         private Animator animator;
 
         private void Awake()
         {
+            parent = GetComponentInParent<Weapon>();
             animator = GetComponent<Animator>();
             animator.keepAnimatorControllerStateOnDisable = true;
+
+            if (parent == null)
+            {
+                Debug.LogError("(WeaponAnimation) Parent not found!");
+            }
         }
 
         public void Init()
         {
             // Setting events
-            WeaponManager.Instance.currentWeapon.onFiring += BulletsCheck;
-            WeaponManager.Instance.currentWeapon.onSecureChanged += SafetyCheck;
-            WeaponManager.Instance.currentWeapon.onEndReload += BulletsCheck;
+            parent.onFiring += BulletsCheck;
+            parent.onSecureChanged += SafetyCheck;
+            parent.onEndReload += BulletsCheck;
         }
 
         public void Play(string animationName) => animator.Play(animationName);
 
         private void SafetyCheck()
-        => animator.SetBool("Safety", WeaponManager.Instance.currentWeapon.data.weaponMode == WeaponMode.Secure);
+        => animator.SetBool("Safety", parent.data.weaponMode == WeaponMode.Secure);
 
         private void BulletsCheck()
-        => animator.SetBool("NoBullet", !WeaponManager.Instance.currentWeapon.haveBullets);
+        => animator.SetBool("NoBullet", !parent.haveBullets);
 
         public void PlayEvent(WeaponEvents events)
         {
@@ -36,8 +44,8 @@ namespace Game.Weapon
             {
                 case WeaponEvents.StartAnimation:
 
-                    WeaponManager.Instance.currentWeapon.isReloading = true;
-                    WeaponManager.Instance.currentWeapon.onStartReload?.Invoke();
+                    parent.isReloading = true;
+                    parent.onStartReload?.Invoke();
 
                     break;
 
@@ -61,9 +69,10 @@ namespace Game.Weapon
 
                 case WeaponEvents.EndAnimation:
 
-                    WeaponManager.Instance.currentWeapon.isReloading = false;
-                    WeaponManager.Instance.currentWeapon.CalculateReload();
-                    WeaponManager.Instance.currentWeapon.onEndReload?.Invoke();
+                    parent.isReloading = false;
+                    parent.CalculateReload();
+                    parent.onEndReload?.Invoke();
+                    Debug.Log("OJ");
 
                     break;
             }

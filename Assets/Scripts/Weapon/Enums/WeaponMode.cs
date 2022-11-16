@@ -1,4 +1,4 @@
-namespace Game.Weapon
+namespace Game.Weapon.Enums
 {
     public enum WeaponMode
     {

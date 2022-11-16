@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Weapon.Components;
 
 namespace Game.Weapon
 {
@@ -45,7 +46,7 @@ namespace Game.Weapon
                 case "REMOVING_MAGAZINE": clip = currentWeapon.data.startReloadSound; break;
                 case "PUTTING_MAGAZINE": clip = currentWeapon.data.middleReloadSound; break;
                 case "COCKING": clip = currentWeapon.data.endReloadSound; break;
-                case "HITMARK": clip = Hitmark.GetHitMarkSound(); break;
+                case "HITMARK": clip = Hitmark.GetSound; break;
                 case "CUSTOM": clip = custom; break;
             }
 

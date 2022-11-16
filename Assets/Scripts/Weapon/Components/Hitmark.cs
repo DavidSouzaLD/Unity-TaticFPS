@@ -1,47 +1,42 @@
+using System.Collections;
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapon.Components
 {
     public class Hitmark : Singleton<Hitmark>
     {
-        [Header("HitMark")]
-        public GameObject hitMark;
-        public AudioClip hitMarkSound;
-        public float hitMarkTime;
-        private float timerHitMark;
+        [Header("Settings")]
+        public GameObject hitmarkObject;
+        public AudioClip hitmarkSound;
+        public float hitmarkTime;
 
-        public static AudioClip GetHitMarkSound()
+        public static AudioClip GetSound
         {
-            return Instance.hitMarkSound;
+            get
+            {
+                return Instance.hitmarkSound;
+            }
         }
 
         private void Start()
         {
-            // Others
-            hitMark.SetActive(false);
+            // Disable hitmark
+            hitmarkObject.SetActive(false);
         }
 
-        private void Update()
-        {
-            if (timerHitMark > 0)
-            {
-                if (timerHitMark - Time.deltaTime <= 0)
-                {
-                    hitMark.SetActive(false);
-                }
+        public static void ApplyHitMark(Vector3 hitmarkPositon)
+        => Instance.StartCoroutine(ApplyHitmark(hitmarkPositon));
 
-                timerHitMark -= Time.deltaTime;
-            }
-        }
-
-        public static void ApplyHitMark(Vector3 _position)
+        private static IEnumerator ApplyHitmark(Vector3 hitmarkPosition)
         {
-            if (Instance.timerHitMark <= 0)
-            {
-                Instance.hitMark.transform.position = _position;
-                Instance.hitMark.SetActive(true);
-                Instance.timerHitMark = Instance.hitMarkTime;
-            }
+            // Active hitmark
+            Instance.hitmarkObject.transform.position = hitmarkPosition;
+            Instance.hitmarkObject.SetActive(true);
+
+            yield return new WaitForSeconds(Instance.hitmarkTime);
+
+            // Disable hitmark
+            Instance.hitmarkObject.SetActive(false);
         }
     }
 }

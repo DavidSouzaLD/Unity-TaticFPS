@@ -1,19 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapon.Components
 {
     public class Recoil : Singleton<Recoil>
     {
         [Header("Settings")]
-        public float weaponResetSpeed = 5f;
+        public float resetSpeed = 5f;
         public float camResetSpeed = 8f;
 
-        [Header("Transforms")]
-        public Transform recoilTransform;
-        public Transform camRecoilTransform;
-
+        [Header("Roots")]
+        public Transform recoilRoot;
+        public Transform camRecoilRoot;
         private Vector3 initialRecoilPos;
         private Quaternion initialRecoilRot;
         private Vector3 camCurrentRotation;
@@ -21,47 +18,53 @@ namespace Game.Weapon
 
         private void Start()
         {
-            initialRecoilPos = recoilTransform.localPosition;
-            initialRecoilRot = recoilTransform.localRotation;
+            initialRecoilPos = recoilRoot.localPosition;
+            initialRecoilRot = recoilRoot.localRotation;
         }
 
         private void Update()
         {
-            // Weapon reset recoil
-            if (recoilTransform.localPosition != initialRecoilPos || recoilTransform.localRotation != initialRecoilRot)
+            ResetRecoil();
+        }
+
+        private void ResetRecoil()
+        {
+            if (recoilRoot != null)
             {
-                recoilTransform.localPosition = Vector3.Lerp(recoilTransform.localPosition, initialRecoilPos, weaponResetSpeed * Time.deltaTime);
-                recoilTransform.localRotation = Quaternion.Slerp(recoilTransform.localRotation, initialRecoilRot, weaponResetSpeed * Time.deltaTime);
+                if (recoilRoot.localPosition != initialRecoilPos || recoilRoot.localRotation != initialRecoilRot)
+                {
+                    recoilRoot.localPosition = Vector3.Lerp(recoilRoot.localPosition, initialRecoilPos, resetSpeed * Time.deltaTime);
+                    recoilRoot.localRotation = Quaternion.Slerp(recoilRoot.localRotation, initialRecoilRot, resetSpeed * Time.deltaTime);
+                }
             }
 
-            // Camera reset recoil
-            if (camRecoilTransform)
+            if (camRecoilRoot != null)
             {
                 camTargetRotation = Vector3.Lerp(camTargetRotation, Vector3.zero, camResetSpeed * Time.deltaTime);
                 camCurrentRotation = Vector3.Slerp(camCurrentRotation, camTargetRotation, camResetSpeed * Time.deltaTime);
-                camRecoilTransform.localRotation = Quaternion.Euler(camCurrentRotation);
+                camRecoilRoot.localRotation = Quaternion.Euler(camCurrentRotation);
             }
         }
 
-        public static void ApplyRecoil(Vector3 _recoilForcePos, Vector3 _recoilForceRot, Vector3 _recoilForceCam)
+        public static void ApplyRecoil(Vector3 recoilForcePos, Vector3 recoilForceRot, Vector3 recoilForceCam)
         {
             Vector3 pos = new Vector3(
-            Random.Range(_recoilForcePos.x / 2f, _recoilForcePos.x),
-            Random.Range(_recoilForcePos.y / 2f, _recoilForcePos.y),
-            Random.Range(_recoilForcePos.z / 2f, _recoilForcePos.z));
+            Random.Range(recoilForcePos.x / 2f, recoilForcePos.x),
+            Random.Range(recoilForcePos.y / 2f, recoilForcePos.y),
+            Random.Range(recoilForcePos.z / 2f, recoilForcePos.z));
 
             Vector3 rot = new Vector3(
-                Random.Range(_recoilForceRot.x / 2f, _recoilForceRot.x),
-                Random.Range(_recoilForceRot.y / 2f, _recoilForceRot.y),
-                Random.Range(_recoilForceRot.z / 2f, _recoilForceRot.z));
+                Random.Range(recoilForceRot.x / 2f, recoilForceRot.x),
+                Random.Range(recoilForceRot.y / 2f, recoilForceRot.y),
+                Random.Range(recoilForceRot.z / 2f, recoilForceRot.z));
 
-            Instance.recoilTransform.localPosition += pos;
-            Instance.recoilTransform.localRotation *= Quaternion.Euler(rot);
+            Instance.recoilRoot.localPosition += pos;
+            Instance.recoilRoot.localRotation *= Quaternion.Euler(rot);
 
             Instance.camTargetRotation += new Vector3(
-                -_recoilForceCam.x,
-                Random.Range(-_recoilForceCam.y, _recoilForceCam.y),
-                Random.Range(-_recoilForceCam.z, _recoilForceCam.z));
+                -recoilForceCam.x,
+                Random.Range(-recoilForceCam.y, recoilForceCam.y),
+                Random.Range(-recoilForceCam.z, recoilForceCam.z));
         }
     }
 }

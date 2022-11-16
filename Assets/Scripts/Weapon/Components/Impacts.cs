@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapon.Components
 {
     public class Impacts : Singleton<Impacts>
     {
@@ -11,19 +11,17 @@ namespace Game.Weapon
             public GameObject prefab;
         }
 
-        [Header("Settings")]
-        public Impact[] impacts;
+        public ImpactsData data;
 
         public static Impact GetImpactWithTag(string tag)
         {
-            foreach (Impact imp in Instance.impacts)
+            foreach (Impact impact in Instance.data.impacts)
             {
-                if (imp.name == tag)
+                if (impact.name == tag)
                 {
-                    return imp;
+                    return impact;
                 }
             }
-
             return null;
         }
     }

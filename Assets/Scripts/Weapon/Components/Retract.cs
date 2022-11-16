@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Weapon
+namespace Game.Weapon.Components
 {
     public class Retract : Singleton<Retract>
     {
@@ -11,34 +11,40 @@ namespace Game.Weapon
         public float retractAngle = -20f;
         public float retractSpeed = 6f;
 
-        [Header("Transforms")]
-        public Transform retractTransform;
-        public Transform retractRayTransform;
-
+        [Header("Roots")]
+        public Transform retractRoot;
+        public Transform retractRayRoot;
         private Vector3 initialRetractPos;
         private Quaternion initialRetractRot;
         public static bool isRetracting { get; private set; }
 
         private void Start()
         {
-            initialRetractPos = retractTransform.localPosition;
-            initialRetractRot = retractTransform.localRotation;
+            initialRetractPos = retractRoot.localPosition;
+            initialRetractRot = retractRoot.localRotation;
         }
 
         private void Update()
         {
-            RaycastHit hit;
-            Debug.DrawRay(retractRayTransform.position, retractRayTransform.forward * retractRayDistance, Color.red);
+            RetractUpdate();
+        }
 
-            if (Physics.Raycast(retractRayTransform.position, retractRayTransform.forward, out hit, retractRayDistance, rectractMask))
+        private void RetractUpdate()
+        {
+            if (retractRoot == null || retractRayRoot == null) return;
+
+            RaycastHit hit;
+            Debug.DrawRay(retractRayRoot.position, retractRayRoot.forward * retractRayDistance, Color.red);
+
+            if (Physics.Raycast(retractRayRoot.position, retractRayRoot.forward, out hit, retractRayDistance, rectractMask))
             {
                 if (hit.transform)
                 {
                     isRetracting = true;
-                    Vector3 targetPos = new Vector3(retractTransform.localPosition.x, retractTransform.localPosition.y, ((retractPosition * 0.001f) / hit.distance));
+                    Vector3 targetPos = new Vector3(retractRoot.localPosition.x, retractRoot.localPosition.y, ((retractPosition * 0.001f) / hit.distance));
                     Quaternion targetRot = Quaternion.Euler(new Vector3((retractAngle / hit.distance), initialRetractRot.y, initialRetractRot.z));
-                    retractTransform.localPosition = Vector3.Lerp(retractTransform.localPosition, targetPos, retractSpeed * Time.deltaTime);
-                    retractTransform.localRotation = Quaternion.Slerp(retractTransform.localRotation, targetRot, retractSpeed * Time.deltaTime);
+                    retractRoot.localPosition = Vector3.Lerp(retractRoot.localPosition, targetPos, retractSpeed * Time.deltaTime);
+                    retractRoot.localRotation = Quaternion.Slerp(retractRoot.localRotation, targetRot, retractSpeed * Time.deltaTime);
                 }
             }
             else
@@ -46,8 +52,8 @@ namespace Game.Weapon
                 isRetracting = false;
             }
 
-            retractTransform.localPosition = Vector3.Lerp(retractTransform.localPosition, initialRetractPos, retractSpeed * Time.deltaTime);
-            retractTransform.localRotation = Quaternion.Slerp(retractTransform.localRotation, initialRetractRot, retractSpeed * Time.deltaTime);
+            retractRoot.localPosition = Vector3.Lerp(retractRoot.localPosition, initialRetractPos, retractSpeed * Time.deltaTime);
+            retractRoot.localRotation = Quaternion.Slerp(retractRoot.localRotation, initialRetractRot, retractSpeed * Time.deltaTime);
         }
     }
 }
