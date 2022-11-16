@@ -1,7 +1,7 @@
 using UnityEngine;
 using Game.Weapon;
 
-namespace Game.Player
+namespace Game.Player.Components
 {
     public class PlayerAnimation : MonoBehaviour
     {

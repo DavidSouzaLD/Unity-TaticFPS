@@ -1,5 +1,6 @@
 using UnityEngine;
 using Game.Player;
+using Game.Player.Components;
 using Game.Weapon.Enums;
 using Game.Weapon.Components;
 using Game.Weapon.Others;
@@ -81,8 +82,6 @@ namespace Game.Weapon
 
             // Setting
             weaponAnimation.Init();
-
-            Hide();
         }
 
         public void Hide()

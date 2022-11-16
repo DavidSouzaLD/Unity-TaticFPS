@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Game.Player
+namespace Game.Player.Components
 {
     [RequireComponent(typeof(PlayerController))]
     public class PlayerFootsteps : MonoBehaviour

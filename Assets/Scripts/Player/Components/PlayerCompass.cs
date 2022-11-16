@@ -3,9 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Game.Player
+namespace Game.Player.Components
 {
-    public class Compass : StaticInstance<Compass>
+    public class PlayerCompass : StaticInstance<PlayerCompass>
     {
         public RawImage texture;
         public GameObject markerPrefab;

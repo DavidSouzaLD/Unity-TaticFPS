@@ -9,6 +9,7 @@ namespace Game.Weapon
     {
         private Weapon parent;
         private Animator animator;
+        private bool noBullets;
 
         private void Awake()
         {
@@ -36,7 +37,17 @@ namespace Game.Weapon
         => animator.SetBool("Safety", parent.data.weaponMode == WeaponMode.Secure);
 
         private void BulletsCheck()
-        => animator.SetBool("NoBullet", !parent.haveBullets);
+        {
+            if (!parent.isReloading)
+            {
+                noBullets = !parent.haveBullets;
+                animator.SetBool("NoBullet", noBullets);
+            }
+            else
+            {
+                animator.SetBool("NoBullet", false);
+            }
+        }
 
         public void PlayEvent(WeaponEvents events)
         {
@@ -46,6 +57,9 @@ namespace Game.Weapon
 
                     parent.isReloading = true;
                     parent.onStartReload?.Invoke();
+
+                    // Reset noBullet
+                    BulletsCheck();
 
                     break;
 
@@ -72,7 +86,6 @@ namespace Game.Weapon
                     parent.isReloading = false;
                     parent.CalculateReload();
                     parent.onEndReload?.Invoke();
-                    Debug.Log("OJ");
 
                     break;
             }
