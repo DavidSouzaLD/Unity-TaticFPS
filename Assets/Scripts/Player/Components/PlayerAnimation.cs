@@ -16,11 +16,11 @@ namespace Game.Player.Components
         private void BasicUpdate()
         {
             // Moving animation
-            if (WeaponSettings.CurrentWeapon != null)
+            if (WeaponManager.CurrentWeapon != null)
             {
-                BasicAnimator.SetBool("Aiming", WeaponSettings.CurrentWeapon.isAiming);
+                BasicAnimator.SetBool("Aiming", WeaponManager.CurrentWeapon.isAiming);
 
-                if (!WeaponSettings.CurrentWeapon.isAiming)
+                if (!WeaponManager.CurrentWeapon.isAiming)
                 {
                     if (PlayerController.isGrounded)
                     {
@@ -38,7 +38,7 @@ namespace Game.Player.Components
             else if (BasicAnimator.GetBool("Aiming") || BasicAnimator.GetBool("Walking") ||
                      BasicAnimator.GetBool("Running") || BasicAnimator.GetBool("Air"))
             {
-                BasicAnimator.SetBool("Aiming", WeaponSettings.CurrentWeapon.isAiming);
+                BasicAnimator.SetBool("Aiming", WeaponManager.CurrentWeapon.isAiming);
                 BasicAnimator.SetBool("Walking", false);
                 BasicAnimator.SetBool("Running", false);
                 BasicAnimator.SetBool("Air", false);

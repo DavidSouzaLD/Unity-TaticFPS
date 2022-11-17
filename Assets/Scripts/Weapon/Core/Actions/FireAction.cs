@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using WeaponSystem.Core.Visuals;
+using WeaponSystem.Others;
 
 namespace WeaponSystem.Core.Actions
 {
-    public class FireAction : WeaponAction
+    public class FireAction : IWeaponAction
     {
         public FireAction(Weapon weaponClass, WeaponSO weaponData)
         {
@@ -23,7 +23,7 @@ namespace WeaponSystem.Core.Actions
 
         public void Update()
         {
-            bool conditions = firerateTimer <= 0;
+            bool conditions = firerateTimer <= 0 && weapon.currentBullets > 0;
 
             if (conditions)
             {
@@ -72,7 +72,7 @@ namespace WeaponSystem.Core.Actions
         {
             // Bullet tracing
             List<Vector3> tracingPos = new List<Vector3>();
-            LineRenderer tracingLine = GameObject.Instantiate(WeaponSettings.TracerPrefab, weapon.fireRoot.position, Quaternion.identity).GetComponent<LineRenderer>();
+            LineRenderer tracingLine = GameObject.Instantiate(WeaponManager.TracerPrefab, weapon.fireRoot.position, Quaternion.identity).GetComponent<LineRenderer>();
             BulletTracing tracingScript = tracingLine.gameObject.GetComponent<BulletTracing>();
 
             Vector3 point1 = weapon.fireRoot.position;
@@ -96,7 +96,7 @@ namespace WeaponSystem.Core.Actions
                 Ray ray = new Ray(point1, point2 - point1);
                 RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit, (point2 - point1).magnitude, WeaponSettings.HittableMask))
+                if (Physics.Raycast(ray, out hit, (point2 - point1).magnitude, WeaponManager.HittableMask))
                 {
                     if (hit.transform)
                     {
@@ -114,17 +114,17 @@ namespace WeaponSystem.Core.Actions
 
             tracingScript.pos = tracingPos;
 
-            weapon.currentMagazine.currentBullets -= data.bulletsPerFire;
+            weapon.currentBullets -= data.bulletsPerFire;
             firerateTimer = data.firerate;
 
             // Animation and sound
-            //WeaponManager.PlaySound("Fire");
+            AudioManager.PlaySound(data.fireSounds[Random.Range(0, data.fireSounds.Length)]);
             //weaponAnimation.Play("Fire");
 
             // Events
-            //Recoil.ApplyRecoil(data.recoilForcePos, data.recoilForceRot, data.recoilForceCam);
-            //StartCoroutine(ApplyMuzzle(data.muzzleTime));
-            //bulletDrop.Drop();
+            WeaponManager.Recoil.ApplyRecoil(data.recoilForcePos, data.recoilForceRot, data.recoilForceCam);
+            weapon.StartCoroutine(ApplyMuzzle(data.muzzleTime));
+            weapon.bulletDropping.Drop();
 
             weapon.OnFiring?.Invoke();
         }
@@ -165,6 +165,13 @@ namespace WeaponSystem.Core.Actions
 
                 MonoBehaviour.Destroy(impact, 5f);
             }*/
+        }
+
+        protected IEnumerator ApplyMuzzle(float muzzleTime)
+        {
+            weapon.muzzleObject.SetActive(true);
+            yield return new WaitForSeconds(muzzleTime);
+            weapon.muzzleObject.SetActive(false);
         }
     }
 }

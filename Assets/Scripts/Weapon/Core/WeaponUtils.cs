@@ -7,11 +7,11 @@ namespace WeaponSystem.Core
     {
         public static WeaponMagazine[] CreateMagazines(int quantity, int bulletsPerMagazine)
         {
-            List<WeaponMagazine> magazines = new List<WeaponMagazine>(quantity);
+            List<WeaponMagazine> magazines = new List<WeaponMagazine>();
 
             for (int i = 0; i < quantity; i++)
             {
-                magazines[i] = new WeaponMagazine(bulletsPerMagazine);
+                magazines.Add(new WeaponMagazine(bulletsPerMagazine));
             }
 
             return magazines.ToArray();

@@ -18,7 +18,7 @@ namespace Game.Player
         [SerializeField] private Transform characterRoot;
 
         [Range(0f, 1f)]
-        public static float sensitivityScale;
+        public static float senseScale;
 
         // Private
         private bool changedFreeLook;
@@ -73,8 +73,8 @@ namespace Game.Player
                         cameraMaskRoot.localEulerAngles = Vector3.zero;
                     }
 
-                    mainRotateX += (-camAxis.y * sensitivity.y) * sensitivityScale;
-                    mainRotateY += (camAxis.x * sensitivity.x) * sensitivityScale;
+                    mainRotateX += (-camAxis.y * sensitivity.y) * senseScale;
+                    mainRotateY += (camAxis.x * sensitivity.x) * senseScale;
 
                     mainRotateX = Mathf.Clamp(mainRotateX, -90f, 90f);
 
@@ -99,8 +99,8 @@ namespace Game.Player
                         cameraMaskRoot.localEulerAngles = Vector3.zero;
                     }
 
-                    freeRotateX += (-camAxis.y * sensitivity.y) * sensitivityScale;
-                    freeRotateY += (camAxis.x * sensitivity.x) * sensitivityScale;
+                    freeRotateX += (-camAxis.y * sensitivity.y) * senseScale;
+                    freeRotateY += (camAxis.x * sensitivity.x) * senseScale;
 
                     freeRotateX = Mathf.Clamp(freeRotateX, -70f, 20f);
                     freeRotateY = Mathf.Clamp(freeRotateY, -45f, 45f);

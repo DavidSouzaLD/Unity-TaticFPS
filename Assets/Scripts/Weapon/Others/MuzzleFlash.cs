@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WeaponSystem.Core.Visuals
+namespace WeaponSystem.Core.Others
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class MuzzleFlash : MonoBehaviour

@@ -1,6 +1,6 @@
 namespace WeaponSystem.Core.Actions
 {
-    public interface WeaponAction
+    public interface IWeaponAction
     {
         public Weapon weapon { get; set; }
         public WeaponSO data { get; set; }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using WeaponSystem.Core.Actions;
+using WeaponSystem.Others;
 
 namespace WeaponSystem.Core
 {
@@ -11,13 +12,16 @@ namespace WeaponSystem.Core
         public FireMode fireMode;
         public WeaponSO data;
         public Transform fireRoot;
+        public GameObject muzzleObject;
+        public BulletDropping bulletDropping;
 
         [Header("Magazine")]
-        public WeaponMagazine currentMagazine;
-        public WeaponMagazine[] magazines;
+        public int currentBullets;
+        public int extraBullets;
+        public int bulletsPerMagazine;
 
         // Actions
-        WeaponAction[] actionList;
+        IWeaponAction[] actionList;
         public FireAction fireAction { get; private set; }
         public ReloadAction reloadAction { get; private set; }
         public AimAction aimAction { get; private set; }
@@ -44,7 +48,7 @@ namespace WeaponSystem.Core
             aimAction = new AimAction(this, data);
 
             // Setting actions
-            actionList = new WeaponAction[3];
+            actionList = new IWeaponAction[3];
             actionList[0] = fireAction;
             actionList[1] = reloadAction;
             actionList[2] = aimAction;
@@ -57,9 +61,6 @@ namespace WeaponSystem.Core
             {
                 actionList[i].Start();
             }
-
-            // Getting magazines
-            magazines = WeaponUtils.CreateMagazines(data.startMagazinesQuantity, data.bulletsPerMagazine);
         }
 
         private void Update()

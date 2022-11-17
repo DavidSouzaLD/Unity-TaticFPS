@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WeaponSystem.Core.Visuals
+namespace WeaponSystem.Others
 {
     [RequireComponent(typeof(LineRenderer))]
     public class BulletTracing : MonoBehaviour
