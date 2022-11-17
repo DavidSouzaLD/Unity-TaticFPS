@@ -1,5 +1,4 @@
 using UnityEngine;
-using Game.Player.Components;
 
 namespace Game.Player
 {
@@ -58,9 +57,9 @@ namespace Game.Player
             // Camera
             if (currentCam != null)
             {
-                Vector2 camAxis = PlayerKeys.GetAxis("CameraAxis");
+                Vector2 camAxis = InputManager.GetAxis("CameraAxis");
 
-                if (!PlayerKeys.Press("FreeLook"))
+                if (!InputManager.Press("FreeLook"))
                 {
                     if (changedFreeLook)
                     {

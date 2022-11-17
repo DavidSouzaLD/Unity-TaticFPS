@@ -1,5 +1,5 @@
 using UnityEngine;
-using Game.WeaponSystem;
+using WeaponSystem.Core;
 
 namespace Game.Player.Components
 {
@@ -28,7 +28,7 @@ namespace Game.Player.Components
 
         private void Update()
         {
-            float leanInput = PlayerKeys.GetFloat("Lean");
+            float leanInput = InputManager.GetFloat("Lean");
             bool conditions = leanInput != 0;
 
             if (conditions)
@@ -36,7 +36,7 @@ namespace Game.Player.Components
                 Vector3 targetPos = new Vector3(leanAmount * leanCamScale * leanInput, 0f, 0f);
                 Quaternion targetRot = Quaternion.Euler(new Vector3(0f, 0f, leanAmount * -leanInput));
 
-                bool conditionsToLeanWeapon = WeaponManager.currentWeapon != null && !WeaponManager.currentWeapon.isAiming;
+                bool conditionsToLeanWeapon = WeaponSettings.CurrentWeapon != null && !WeaponSettings.CurrentWeapon.isAiming;
 
                 if (conditionsToLeanWeapon)
                 {

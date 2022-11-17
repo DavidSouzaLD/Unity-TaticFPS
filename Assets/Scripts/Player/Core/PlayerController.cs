@@ -1,5 +1,4 @@
 using UnityEngine;
-using Game.Player.Components;
 
 namespace Game.Player
 {
@@ -41,7 +40,7 @@ namespace Game.Player
         {
             get
             {
-                return PlayerKeys.GetAxisRaw("MoveAxis").normalized;
+                return InputManager.GetAxisRaw("MoveAxis").normalized;
             }
         }
 
@@ -122,7 +121,7 @@ namespace Game.Player
             }
 
             isWalking = InputAxis != Vector2.zero;
-            isRunning = isWalking && InputAxis.y > 0 && PlayerKeys.Press("Run");
+            isRunning = isWalking && InputAxis.y > 0 && InputManager.Press("Run");
 
             controller.Move(Direction.normalized * CurrentSpeed * Time.deltaTime);
 
@@ -145,7 +144,7 @@ namespace Game.Player
         private void UpdateJump()
         {
             bool conditionsToJump =
-            PlayerKeys.Click("Jump") && isGrounded && jumpTimer <= 0;
+            InputManager.Click("Jump") && isGrounded && jumpTimer <= 0;
 
             if (conditionsToJump)
             {
@@ -166,7 +165,7 @@ namespace Game.Player
         private void UpdateCrouch()
         {
             bool conditionsToCrouch =
-            PlayerKeys.Press("Crouch") && !PlayerKeys.Press("Run");
+            InputManager.Press("Crouch") && !InputManager.Press("Run");
 
             if (conditionsToCrouch)
             {
