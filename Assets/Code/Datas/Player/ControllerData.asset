@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fccfdec5a0c716c49af87adc9310d183, type: 3}
+  m_Name: ControllerData
+  m_EditorClassIdentifier: 
+  horizontalSensitivity: 1.5
+  verticalSensitivity: 1.5
+  smoothness: 20
+  verticalAngleLimit: {x: -90, y: 90}
+  freeLookVerticalLimit: {x: -20, y: 20}
+  freeLookHorizontalLimit: {x: -70, y: 70}
+  walkingMask:
+    serializedVersion: 2
+    m_Bits: 8
+  walkingAcceleration: 2
+  runningAcceleration: 4
+  crouchingAcceleration: 1
+  jumpingForce: 1
+  jumpRate: 0.3
+  gravityScale: 2
+  crouchSpeed: 5
+  standardHeight: 2
+  standardCamHeight: 1.6
+  crouchHeight: 1
+  crouchCamHeight: 1
+  leanAmount: 10
+  leanCamScale: 0.02
+  leanSpeed: 6
+  walkStepSpeed: 0.5
+  runStepSpeed: 0.2
+  crouchStepSpeed: 1.5
+  footstepVolume: 0.5
