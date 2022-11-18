@@ -6,6 +6,9 @@ namespace Code.Player
 {
     [RequireComponent(typeof(PlayerCamera))]
     [RequireComponent(typeof(PlayerLean))]
+    [RequireComponent(typeof(PlayerCompass))]
+    [RequireComponent(typeof(PlayerFootsteps))]
+    [RequireComponent(typeof(PlayerHeadbob))]
     public class PlayerController : MonoBehaviour
     {
         public PlayerControllerData data;
@@ -29,6 +32,9 @@ namespace Code.Player
         public CharacterController characterController { get; private set; }
         public PlayerCamera playerCamera { get; private set; }
         public PlayerLean playerLean { get; private set; }
+        public PlayerCompass playerCompass { get; private set; }
+        public PlayerFootsteps playerFootsteps { get; private set; }
+        public PlayerHeadbob playerHeadbob { get; private set; }
 
         public static string currentGroundTag { get; private set; }
 
@@ -96,12 +102,21 @@ namespace Code.Player
             characterController = GetComponent<CharacterController>();
             playerCamera = GetComponent<PlayerCamera>();
             playerLean = GetComponent<PlayerLean>();
+            playerCompass = GetComponent<PlayerCompass>();
+            playerFootsteps = GetComponent<PlayerFootsteps>();
+            playerHeadbob = GetComponent<PlayerHeadbob>();
         }
 
         private void InitVariables()
         {
+            // Set components
             playerCamera.SetPlayerController(this);
             playerLean.SetPlayerController(this);
+            playerCompass.SetPlayerController(this);
+            playerFootsteps.SetPlayerController(this);
+            playerHeadbob.SetPlayerController(this);
+
+            // Init variables
             jumpTimer = data.jumpRate;
             initialCamHeight = playerCamera.standardCam.transform.localPosition.y;
         }
@@ -121,7 +136,7 @@ namespace Code.Player
                 jumpTimer -= Time.deltaTime;
             }
 
-            if (jumpTimer <= 0 || isGrounded)
+            if (isJumping && isGrounded)
             {
                 isJumping = false;
             }

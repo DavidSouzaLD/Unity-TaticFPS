@@ -14,9 +14,8 @@ namespace Code.Player
             public AudioClip[] clips;
         }
 
-        public Footsteps[] footsteps;
-        public PlayerController playerController { get; set; }
         private float footstepTimer;
+        public PlayerController playerController { get; set; }
 
         public void SetPlayerController(PlayerController playerController)
         {
@@ -26,7 +25,7 @@ namespace Code.Player
         public Footsteps GetFootstepsWithTag(string tagName)
         {
             var sound1 =
-            from sound in footsteps
+            from sound in playerController.data.footsteps
             where sound.tagName.ToUpper() == tagName.ToUpper()
             select sound;
 
@@ -35,7 +34,7 @@ namespace Code.Player
 
         private void Update()
         {
-            bool conditions = PlayerController.isWalking;
+            bool conditions = playerController.data.footsteps.Length > 0 && PlayerController.isWalking;
 
             if (conditions)
             {

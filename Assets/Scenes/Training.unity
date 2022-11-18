@@ -124,6 +124,38 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &67957545
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 67957546}
+  m_Layer: 0
+  m_Name: Headbob
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &67957546
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67957545}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1862425321}
+  m_Father: {fileID: 153037550}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &90206770
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,6 +265,9 @@ GameObject:
   - component: {fileID: 153037552}
   - component: {fileID: 153037551}
   - component: {fileID: 153037553}
+  - component: {fileID: 153037556}
+  - component: {fileID: 153037555}
+  - component: {fileID: 153037554}
   - component: {fileID: 153037549}
   m_Layer: 0
   m_Name: Player
@@ -271,7 +306,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1862425321}
+  - {fileID: 67957546}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -315,8 +350,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf7ce830415caf042a424fdb333d07c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leanWeaponRoot: {fileID: 408720594}
   leanCamRoot: {fileID: 1862425321}
+  leanWeaponRoot: {fileID: 408720594}
+--- !u!114 &153037554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153037548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f205dcfaaea001146b07a7772ea34e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headbobRoot: {fileID: 67957546}
+--- !u!114 &153037555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153037548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 981a96b8d4b23644d87934620943b923, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &153037556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153037548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43daff0c4ad291842b2a94b8808f0b28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  texture: {fileID: 0}
+  markerPrefab: {fileID: 0}
+  markerHeight: 0
+  markers: []
 --- !u!1 &210163889
 GameObject:
   m_ObjectHideFlags: 0
@@ -2423,7 +2499,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2105129242}
-  m_Father: {fileID: 153037550}
+  m_Father: {fileID: 67957546}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2100539584

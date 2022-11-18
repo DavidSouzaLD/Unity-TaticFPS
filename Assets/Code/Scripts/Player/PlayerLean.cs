@@ -6,16 +6,16 @@ namespace Code.Player
 {
     public class PlayerLean : MonoBehaviour, IPlayerControllerComponent
     {
-        [Header("Settings")]
-        [SerializeField] private Transform leanWeaponRoot;
+        [Header("Roots")]
         [SerializeField] private Transform leanCamRoot;
-
-        public PlayerController playerController { get; set; }
-        public bool isLeaning { get; set; }
+        [SerializeField] private Transform leanWeaponRoot;
 
         private Vector3 initialLeanCamPos;
         private Quaternion initialLeanRot;
         private Quaternion initialLeanCamRot;
+
+        public PlayerController playerController { get; set; }
+        public bool isLeaning { get; set; }
 
         public void SetPlayerController(PlayerController playerController)
         {

@@ -40,17 +40,25 @@ namespace Code.Player
         }
 
         [Header("Settings")]
-        public RawImage texture;
+        [SerializeField] private RawImage texture;
 
         [Header("Markers")]
-        public GameObject markerPrefab;
-        public float markerHeight;
-        public List<Marker> markers = new List<Marker>();
-        public PlayerController playerController { get; set; }
+        [SerializeField] private GameObject markerPrefab;
+        [SerializeField] private float markerHeight;
+        [SerializeField] private List<Marker> markers = new List<Marker>();
+
         private float halfSize = 600;
+        public PlayerController playerController { get; set; }
+
+        public void SetPlayerController(PlayerController playerController)
+        {
+            this.playerController = playerController;
+        }
 
         private void LateUpdate()
         {
+            if (texture == null) return;
+
             if (texture.texture != null)
             {
                 texture.uvRect = new Rect(playerController.localYRotation / 360f, 0, 1f, 1f);

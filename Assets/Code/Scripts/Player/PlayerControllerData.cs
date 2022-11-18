@@ -13,6 +13,7 @@ namespace Code.Player
         public Vector2 verticalAngleLimit = new Vector2(-90f, 90f);
         public Vector2 freeLookVerticalLimit = new Vector2(-70, 20);
         public Vector2 freeLookHorizontalLimit = new Vector2(-45, 45);
+        public PlayerHeadbob.HeadbobSettings headbobSettings = new PlayerHeadbob.HeadbobSettings();
 
         [Header("Movement")]
         public LayerMask walkingMask;
@@ -44,5 +45,6 @@ namespace Code.Player
         public float crouchStepSpeed = 1.5f;
         [Space]
         public float footstepVolume = 0.5f;
+        public PlayerFootsteps.Footsteps[] footsteps;
     }
 }

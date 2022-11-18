@@ -6,14 +6,12 @@ namespace Code.Player
 {
     public class PlayerCamera : MonoBehaviour, IPlayerControllerComponent
     {
-        [Header("Settings")]
+        [Header("Cameras")]
         public Camera standardCam;
         public Camera freeLookCam;
-        public Transform weaponMaskRoot;
 
-        public PlayerController playerController { get; set; }
-        public bool isCursorLocked { get; private set; }
-        public float sensitivityScale { get; set; }
+        [Header("Roots")]
+        [SerializeField] private Transform weaponMaskRoot;
 
         private bool clickFreeLook;
         private float mainRotateX;
@@ -24,6 +22,10 @@ namespace Code.Player
         private Quaternion camTargetRot;
         private Quaternion characerTargetRot;
         private Camera currentCam;
+
+        public PlayerController playerController { get; set; }
+        public bool isCursorLocked { get; private set; }
+        public float sensitivityScale { get; set; }
 
         public Vector3 WorldToScreen(Vector3 _position)
         {
