@@ -19,6 +19,7 @@ MonoBehaviour:
   freeLookVerticalLimit: {x: -20, y: 20}
   freeLookHorizontalLimit: {x: -70, y: 70}
   headbobSettings:
+    resetSpeed: 5
     standard:
       frequency: 0.5
       amplitude: 1

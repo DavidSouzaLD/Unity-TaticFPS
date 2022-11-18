@@ -26,6 +26,7 @@ namespace Code.Player
                 crouching = new HeadbobCurve();
             }
 
+            public float resetSpeed = 5f;
             public HeadbobCurve standard;
             public HeadbobCurve walking;
             public HeadbobCurve running;
@@ -60,35 +61,42 @@ namespace Code.Player
         {
             if (playerController.data == null) return;
 
-            HeadbobSettings settings = playerController.data.headbobSettings;
-
-            if (PlayerController.isCrouching)
+            if (PlayerController.isGrounded)
             {
-                // Crouching
-                AddFrequency(settings.crouching.frequency);
-                SetHeadbob(settings.crouching);
+                HeadbobSettings settings = playerController.data.headbobSettings;
+
+                if (PlayerController.isCrouching)
+                {
+                    // Crouching
+                    AddFrequency(settings.crouching.frequency);
+                    SetHeadbob(settings.crouching);
+                }
+                else
+                {
+                    if (!PlayerController.isWalking)
+                    {
+                        // Standard
+                        AddFrequency(settings.standard.frequency);
+                        SetHeadbob(settings.standard);
+                    }
+                    else if (!PlayerController.isRunning)
+                    {
+                        // Walking
+                        AddFrequency(settings.walking.frequency);
+                        SetHeadbob(settings.walking);
+                    }
+
+                    if (PlayerController.isRunning)
+                    {
+                        // Running
+                        AddFrequency(settings.running.frequency);
+                        SetHeadbob(settings.running);
+                    }
+                }
             }
             else
             {
-                if (!PlayerController.isWalking)
-                {
-                    // Standard
-                    AddFrequency(settings.standard.frequency);
-                    SetHeadbob(settings.standard);
-                }
-                else if (!PlayerController.isRunning)
-                {
-                    // Walking
-                    AddFrequency(settings.walking.frequency);
-                    SetHeadbob(settings.walking);
-                }
-
-                if (PlayerController.isRunning)
-                {
-                    // Running
-                    AddFrequency(settings.running.frequency);
-                    SetHeadbob(settings.running);
-                }
+                ResetHeadbob();
             }
         }
 
@@ -115,7 +123,14 @@ namespace Code.Player
 
         private void ResetHeadbob()
         {
-            headbobRoot.localPosition = defaultHeadbobPosition;
+            if (headbobRoot.localPosition != defaultHeadbobPosition)
+            {
+                headbobRoot.localPosition = Vector3.Lerp(
+                    headbobRoot.localPosition,
+                    defaultHeadbobPosition,
+                    playerController.data.headbobSettings.resetSpeed * Time.deltaTime
+                );
+            }
         }
 
         private void OnDisable()
