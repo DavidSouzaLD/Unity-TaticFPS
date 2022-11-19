@@ -21,7 +21,7 @@ MonoBehaviour:
   headbobSettings:
     resetSpeed: 5
     standard:
-      frequency: 0.5
+      frequency: 0.3
       amplitude: 1
       verticalCurve:
         serializedVersion: 2

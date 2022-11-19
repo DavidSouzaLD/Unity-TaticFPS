@@ -15,7 +15,7 @@ namespace Code.Player
 
         // Jump
         private Vector3 verticalVelocity;
-        private float jumpTimer;
+        private float jumpCountdown;
         private bool jumpRequested;
 
         // Crouch
@@ -30,11 +30,11 @@ namespace Code.Player
         public static bool isRetracting { get; private set; }
 
         public CharacterController characterController { get; private set; }
-        public PlayerCamera playerCamera { get; private set; }
-        public PlayerLean playerLean { get; private set; }
-        public PlayerCompass playerCompass { get; private set; }
-        public PlayerFootsteps playerFootsteps { get; private set; }
-        public PlayerHeadbob playerHeadbob { get; private set; }
+        public static PlayerCamera playerCamera { get; private set; }
+        public static PlayerLean playerLean { get; private set; }
+        public static PlayerCompass playerCompass { get; private set; }
+        public static PlayerFootsteps playerFootsteps { get; private set; }
+        public static PlayerHeadbob playerHeadbob { get; private set; }
 
         public static string currentGroundTag { get; private set; }
 
@@ -117,23 +117,23 @@ namespace Code.Player
             playerHeadbob.SetPlayerController(this);
 
             // Init variables
-            jumpTimer = data.jumpRate;
+            jumpCountdown = data.jumpRate;
             initialCamHeight = playerCamera.standardCam.transform.localPosition.y;
         }
 
         private void Update()
         {
             // Jump
-            bool jump = InputSystem.OnClick("Jump") && isGrounded && jumpTimer <= 0;
+            bool jump = InputSystem.OnClick("Jump") && isGrounded && jumpCountdown <= 0;
 
             if (jump)
             {
                 jumpRequested = true;
             }
 
-            if (jumpTimer > 0)
+            if (jumpCountdown > 0)
             {
-                jumpTimer -= Time.deltaTime;
+                jumpCountdown -= Time.deltaTime;
             }
 
             if (isJumping && isGrounded)
@@ -184,7 +184,7 @@ namespace Code.Player
                 verticalVelocity.y += Mathf.Sqrt(data.jumpingForce * -3f * (Physics.gravity.y * data.gravityScale));
 
                 isJumping = true;
-                jumpTimer = data.jumpRate;
+                jumpCountdown = data.jumpRate;
                 jumpRequested = false;
             }
 

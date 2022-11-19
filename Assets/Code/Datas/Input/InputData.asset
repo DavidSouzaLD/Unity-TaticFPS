@@ -21,6 +21,12 @@ MonoBehaviour:
     value: 6300000032010000
   - name: FreeLook
     value: 34010000
+  - name: Fire
+    value: 43010000
+  - name: Aim
+    value: 44010000
+  - name: Reload
+    value: 72000000
   floatKeys:
   - name: Lean
     minValue: 113
